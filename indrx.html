@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>小陈智能管理系统 v4.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:"PingFang SC","Helvetica Neue",Arial,sans-serif}
+body{background:#f0f2f5;color:#333;height:100vh;overflow:hidden;font-size:14px}
+.hidden{display:none!important}
+.flex{display:flex}.aic{align-items:center}.jcsb{justify-content:space-between}
+.w100{width:100%}.h100{height:100%}.p10{padding:10px}.p15{padding:15px}.p20{padding:20px}
+.mb10{margin-bottom:10px}.mb15{margin-bottom:15px}.mb20{margin-bottom:20px}.mt10{margin-top:10px}
+.gap10{gap:10px}.gap15{gap:15px}
+.rounded{border-radius:8px}.shadow{box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.bg-white{background:#fff}.bg-purple{background:#722ed1}.bg-purple-light{background:#f9f0ff}
+.text-white{color:#fff}.text-purple{color:#722ed1}.text-gray{color:#666}.text-sm{font-size:13px}.text-lg{font-size:18px}.text-xl{font-size:22px}.fw-bold{font-weight:700}
+.cursor{cursor:pointer}.text-center{text-align:center}
+.tx{overflow-x:auto}.tc{overflow-y:auto}
+.bd{border:1px solid #e8e8e8}.bdb{border-bottom:1px solid #eee}.bdt{border-top:1px solid #eee}
+
+/* 登录页 */
+#loginPage{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+.login-card{background:#fff;border-radius:12px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.login-tabs{display:flex;border-bottom:1px solid #eee}
+.lt{flex:1;text-align:center;padding:14px;font-weight:500;cursor:pointer;color:#999;transition:all .3s}
+.lt.active{color:#722ed1;border-bottom:2px solid #722ed1}
+.login-body{padding:25px}
+.fg{margin-bottom:16px}
+.fg label{display:block;margin-bottom:6px;font-weight:500;color:#444;font-size:13px}
+.fi{width:100%;padding:11px 14px;border:1px solid #d9d9d9;border-radius:6px;font-size:15px;transition:border .3s,box-shadow .3s;background:#fafafa;color:#333}
+.fi:focus{outline:none;border-color:#722ed1;box-shadow:0 0 0 2px rgba(114,46,209,.15);background:#fff}
+select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:14px}
+.fck{display:flex;align-items:center;margin-bottom:18px}
+.fck input{margin-right:8px;width:16px;height:16px;accent-color:#722ed1}
+.btn{display:inline-block;padding:12px 20px;border:none;border-radius:6px;font-size:15px;font-weight:500;cursor:pointer;transition:all .25s;text-align:center}
+.btn-primary{background:#722ed1;color:#fff;width:100%}.btn-primary:hover{background:#5b25b0}
+.btn-danger{background:#ff4d4f;color:#fff}.btn-success{background:#52c41a;color:#fff}
+.btn-warning{background:#faad14;color:#fff}.btn-info{background:#1890ff;color:#fff}
+.btn-sm{padding:6px 14px;font-size:13px}
+.switch-link{text-align:center;margin-top:18px;font-size:14px;color:#888}
+.switch-link a{color:#722ed1;font-weight:600;margin-left:4px;text-decoration:none}
+.footer-text{text-align:center;font-size:12px;color:#bbb;margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0}
+
+/* 主应用 */
+#app{display:none;height:100vh;flex-direction:column}
+.hd{height:56px;background:linear-gradient(135deg,#722ed1,#531dab);color:#fff;display:flex;align-items:center;padding:0 16px;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.hd-left{display:flex;align-items:center;min-width:0}
+.menu-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;margin-right:14px;padding:4px;display:none;width:32px;height:32px;align-items:center;justify-content:center}
+.hd-title{font-size:17px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-right{display:flex;align-items:center;gap:12px}
+.hd-icon{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:6px;border-radius:50%}
+.badge-dot{position:relative}
+.badge-dot::after{content:'';position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:#ff4d4f;border-radius:50%;border:2px solid #722ed1}
+
+.bd-main{display:flex;flex:1;overflow:hidden;position:relative}
+.mask{display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:98}
+.mask.show{display:block}
+
+/* 侧边栏 */
+.sb{width:250px;background:#fff;height:100%;overflow-y:auto;transition:transform .3s ease,z-index 0s;z-index:99;border-right:1px solid #f0f0f0;flex-shrink:0}
+.sb-user{padding:22px 18px;background:linear-gradient(135deg,#f9f0ff,#f0e6ff);border-bottom:1px solid #f0f0f0}
+.avatar{width:52px;height:52px;border-radius:50%;background:#722ed1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin-bottom:12px}
+.sb-name{font-size:16px;font-weight:600;margin-bottom:3px}
+.sb-role{font-size:12px;color:#888}
+.sb-cat{padding:12px 18px 4px;font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:1px}
+.sb-menu{list-style:none;padding:6px 0 12px}
+.sb-menu li a{display:flex;align-items:center;padding:11px 18px;color:#444;text-decoration:none;font-size:14px;transition:all .2s;border-left:3px solid transparent;cursor:pointer}
+.sb-menu li a:hover{background:#f8f8f8}
+.sb-menu li a.active{background:#f9f0ff;color:#722ed1;border-left-color:#722ed1;font-weight:500}
+.sb-menu .ico{margin-right:12px;font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.admin-only{display:none}
+.admin-only.show{display:block}
+
+/* 内容区 */
+.main{flex:1;padding:16px;overflow-y:auto;background:#f0f2f5}
+
+/* 卡片 */
+.card{background:#fff;border-radius:10px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f5f5f5}
+.ct{font-size:16px;font-weight:600;color:#222}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.kpi{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.kpi .v{font-size:26px;font-weight:700;color:#722ed1;margin:8px 0}
+.kpi .l{font-size:13px;color:#888}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #f5f5f5}
+th{background:#fafafa;font-weight:600;color:#555;white-space:nowrap}
+tr:hover{background:#fafbff}
+.cell-edit{cursor:pointer;padding:4px 6px;border-radius:3px;min-width:40px;display:inline-block}
+.cell-edit:hover{background:#f0e6ff}
+input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radius:4px;font-size:13px;outline:none}
+
+/* 状态标签 */
+.badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:500}
+.b-normal{background:#f6ffed;color:#52c41a}
+.b-warn{background:#fffbe6;color:#faad14}
+.b-danger{background:#fff2f0;color:#ff4d4f}
+.b-info{background:#e6f7ff;color:#1890ff}
+.b-purple{background:#f9f0ff;color:#722ed1}
+.b-gray{background:#f5f5f5;color:#999}
+
+/* 进度条 */
+.pbar{height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;margin-top:6px}
+.pfill{height:100%;border-radius:4px;background:linear-gradient(90deg,#722ed1,#a855f7);transition:width .4s}
+
+/* 模态框 */
+.modal{position:fixed;inset:0;z-index:9998;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5)}
+.modal.show{display:flex}
+.mc{background:#fff;border-radius:12px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:mi .25s ease}
+@keyframes mi{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.mh{padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.mt{font-size:16px;font-weight:600}
+.mx{background:none;border:none;font-size:24px;cursor:pointer;color:#999;line-height:1}
+.mb{padding:20px}
+.mf{padding:14px 20px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+
+/* Toast */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.82);color:#fff;padding:12px 26px;border-radius:8px;z-index:9999;display:none;font-size:14px;max-width:80%;text-align:center;animation:ts .25s ease}
+@keyframes ts{from{opacity:0;transform:translate(-50%,-45%)}to{opacity:1;transform:translate(-50%,-50%)}}
+
+/* 用户列表项 */
+.user-item{background:#fafafa;border:1px solid #eee;border-radius:8px;padding:14px;margin-bottom:10px}
+.user-item .row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+
+/* 拍照区 */
+.ocr-area{background:#1a1a2e;border-radius:8px;height:200px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;margin-bottom:14px;position:relative;overflow:hidden}
+.ocr-area video,.ocr-area img{width:100%;height:100%;object-fit:cover}
+.ocr-result{background:#f6ffed;border:1px solid #b7eb8f;border-radius:6px;padding:10px;margin-bottom:8px;font-size:13px}
+
+/* ==================== 响应式 ==================== */
+@media(max-width:768px){
+  .menu-btn{display:flex} /* 手机显示汉堡 */
+  .sb{position:fixed;top:56px;left:0;height:calc(100vh - 56px);transform:translateX(-100%);box-shadow:2px 0 12px rgba(0,0,0,.1)}
+  .sb.open{transform:translateX(0)}
+  .main{padding:12px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .hd-title{font-size:15px}
+}
+@media(min-width:769px){
+  .mask{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== 登录/注册页 ==================== -->
+<div id="loginPage">
+<div class="login-card">
+  <div class="login-tabs">
+    <div class="lt active" id="tabLogin" onclick="swTab('login')">登 录</div>
+    <div class="lt" id="tabReg" onclick="swTab('reg')">注 册</div>
+  </div>
+
+  <!-- 登录表单 -->
+  <div class="login-body" id="fLogin">
+    <div class="fg"><label>工号</label><input class="fi" id="lgUser" placeholder="请输入工号" autocomplete="off"></div>
+    <div class="fg"><label>密码</label><input class="fi" id="lgPwd" type="password" placeholder="请输入密码" autocomplete="new-password"></div>
+    <div class="fg"><label>角色</label>
+      <select class="fi" id="lgRole">
+        <option value="护士">护士</option>
+        <option value="护士长">护士长</option>
+        <option value="主任">主任</option>
+        <option value="主管理员">主管理员</option>
+      </select>
+    </div>
+    <div class="fck"><input type="checkbox" id="lgRem" checked><label for="lgRem" style="font-size:13px;color:#666;margin-bottom:0">7天内免密登录</label></div>
+    <button class="btn btn-primary" onclick="doLogin()">登 录 系 统</button>
+    <div class="switch-link">还没有账号？<a onclick="swTab('reg')">立即注册</a></div>
+  </div>
+
+  <!-- 注册表单 -->
+  <div class="login-body hidden" id="fReg">
+    <div class="fg"><label>姓名</label><input class="fi" id="rgName" placeholder="请输入真实姓名" autocomplete="off"></div>
+    <div class="fg"><label>工号</label><input class="fi" id="rgUser" placeholder="设置登录工号" autocomplete="off"></div>
+    <div class="fg"><label>密码</label><input class="fi" id="rgPwd" type="password" placeholder="设置密码(至少4位)"></div>
+    <div class="fg"><label>确认密码</label><input class="fi" id="rgPwd2" type="password" placeholder="再次输入密码"></div>
+    <div class="fg"><label>角色</label>
+      <select class="fi" id="rgRole">
+        <option value="护士">护士</option>
+        <option value="护士长">护士长</option>
+        <option value="主任">主任</option>
+      </select>
+    </div>
+    <div class="fg"><label>所属科室</label><input class="fi" id="rgDept" placeholder="如：ICU、急诊科"></div>
+    <div class="fg"><label>手机号码</label><input class="fi" id="rgPhone" type="tel" placeholder="11位手机号"></div>
+    <button class="btn btn-primary" onclick="doReg()">提 交 注 册</button>
+    <div class="switch-link">已有账号？<a onclick="swTab('login')">返回登录</a></div>
+  </div>
+
+  <div class="footer-text">© 2026 小陈智能管理系统 v4.0 | JCI认证标准</div>
+</div>
+</div>
+
+<!-- ==================== 主应用 ==================== -->
+<div id="app">
+  <header class="hd">
+    <div class="hd-left">
+      <button class="menu-btn" id="menuBtn" onclick="tgSb()">☰</button>
+      <div class="hd-title" id="hdTitle">工作台</div>
+    </div>
+    <div class="hd-right">
+      <button class="hd-icon badge-dot" onclick="toast('暂无新消息')">🔔</button>
+      <button class="hd-icon" onclick="logout()">退出</button>
+    </div>
+  </header>
+
+  <div class="bd-main">
+    <div class="mask" id="mask" onclick="tgSb()"></div>
+
+    <!-- 侧边栏 -->
+    <aside class="sb" id="sb">
+      <div class="sb-user">
+        <div class="avatar" id="avt">超</div>
+        <div class="sb-name" id="sbName">超级管理员</div>
+        <div class="sb-role" id="sbRole">主管理员</div>
+      </div>
+      <div class="sb-cat">核心功能</div>
+      <ul class="sb-menu">
+        <li><a class="active" onclick="swMenu(this,'dashboard')"><span class="ico">📊</span>工作台</a></li>
+        <li><a onclick="swMenu(this,'drug')"><span class="ico">💊</span>药品管理</a></li>
+        <li><a onclick="swMenu(this,'material')"><span class="ico">📦</span>耗材管理</a></li>
+        <li><a onclick="swMenu(this,'equip')"><span class="ico">🔧</span>器械管理</a></li>
+        <li><a onclick="swMenu(this,'check')"><span class="ico">✅</span>清点检查</a></li>
+        <li><a onclick="swMenu(this,'expiry')"><span class="ico">⏰</span>效期预警</a></li>
+        <li><a onclick="swMenu(this,'cart')"><span class="ico">🚑</span>抢救车管理</a></li>
+        <li><a onclick="swMenu(this,'record')"><span class="ico">📝</span>抢救记录</a></li>
+        <li><a onclick="swMenu(this,'seal')"><span class="ico">🔒</span>封条管理</a></li>
+        <li><a onclick="swMenu(this,'report')"><span class="ico">📈</span>统计报表</a></li>
+      </ul>
+      <div class="sb-cat">系统管理</div>
+      <ul class="sb-menu">
+        <li class="admin-only"><a onclick="swMenu(this,'account')"><span class="ico">👥</span>账户管理</a></li>
+        <li class="admin-only"><a onclick="swMenu(this,'setting')"><span class="ico">⚙️</span>系统参数</a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="main" id="main">
+
+      <!-- 工作台 -->
+      <div class="sec" id="sec-dashboard">
+        <div class="card">
+          <div class="ch"><div class="ct">👋 欢迎回来，<span id="welcome">超级管理员</span>！</div></div>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="v" id="kpiCart">6</div><div class="l">抢救车总数</div></div>
+            <div class="kpi"><div class="v" id="kpiDrug">128</div><div class="l">药品总数</div></div>
+            <div class="kpi"><div class="v" style="color:#faad14" id="kpiWarn">3</div><div class="l">近效期(≤30天)</div></div>
+            <div class="kpi"><div class="v" style="color:#ff4d4f" id="kpiExp">0</div><div class="l">已过期</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">📢 系统公告</div></div>
+          <p class="text-sm text-gray">各位同事请注意：本周五下午进行全院急救设备巡检，请提前做好准备工作。系统已更新至 v4.0，新增注册功能与移动端适配。</p>
+          <div class="bdt pt10 mt10 text-sm text-gray">当前登录：<span class="text-purple fw-bold" id="curUser">超级管理员</span>（<span id="curRole">主管理员</span>）| 登录时间：<span id="curTime"></span></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">🚑 抢救车状态</div></div>
+          <div id="cartStatus"></div>
+        </div>
+      </div>
+
+      <!-- 药品管理 -->
+      <div class="sec hidden" id="sec-drug">
+        <div class="card">
+          <div class="ch">
+            <div class="ct">💊 药品管理</div>
+            <div class="flex gap10">
+              <button class="btn btn-info btn-sm" onclick="openOCR()">📸 拍照识别</button>
+              <button class="btn btn-success btn-sm" onclick="addDrug()">➕ 新增</button>
+              <button class="btn btn-danger btn-sm hidden" id="btnBatchDelDrug" onclick="batchDel('drug')">🗑 批量删除</button>
+            </div>
+          </div>
+          <div class="flex gap10 mb15">
+            <input class="fi" id="drugSearch" placeholder="🔍 搜索药品名称..." oninput="renderDrug()" style="max-width:280px">
+            <button class="btn btn-primary btn-sm" onclick="toggleCheckMode('drug')">☑ 批量选择</button>
+          </div>
+          <div class="tx">
+            <table id="drugTbl">
+              <thead><tr>
+                <th class="hidden chk-col-drug"><input type="checkbox" id="chkAllDrug" onchange="chkAll('drug',this)"></th>
+                <th>药品名称</th><th>规格</th><th>库存</th><th>批号</th><th>有效期</th><th>位置</th><th>状态</th><th>操作</th>
+              </tr></thead>
+              <tbody id="drugBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 耗材管理 -->
+      <div class="sec hidden" id="sec-material">
+        <div class="card">
+          <div class="ch">
+            <div class="ct">📦 耗材管理</div>
+            <div class="flex gap10">
+              <button class="btn btn-success btn-sm" onclick="addMaterial()">➕ 新增</button>
+              <button class="btn btn-danger btn-sm hidden" id="btnBatchDelMat" onclick="batchDel('material')">🗑 批量删除</button>
+            </div>
+          </div>
+          <div class="flex gap10 mb15">
+            <input class="fi" id="matSearch" placeholder="🔍 搜索耗材名称..." oninput="renderMaterial()" style="max-width:280px">
+            <button class="btn btn-primary btn-sm" onclick="toggleCheckMode('material')">☑ 批量选择</button>
+          </div>
+          <div class="tx">
+            <table id="matTbl">
+              <thead><tr>
+                <th class="hidden chk-col-mat"><input type="checkbox" id="chkAllMat" onchange="chkAll('material',this)"></th>
+                <th>耗材名称</th><th>规格</th><th>数量</th><th>批号</th><th>有效期</th><th>位置</th><th>操作</th>
+              </tr></thead>
+              <tbody id="matBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 器械管理 -->
+      <div class="sec hidden" id="sec-equip">
+        <div class="card">
+          <div class="ch"><div class="ct">🔧 器械管理</div><button class="btn btn-success btn-sm" onclick="addEquip()">➕ 新增器械</button></div>
+          <div class="tx">
+            <table id="equipTbl">
+              <thead><tr><th>器械名称</th><th>型号</th><th>数量</th><th>状态</th><th>位置</th><th>操作</th></tr></thead>
+              <tbody id="equipBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 清点检查 -->
+      <div class="sec hidden" id="sec-check">
+        <div class="card">
+          <div class="ch"><div class="ct">✅ 清点检查</div></div>
+          <div class="flex gap15 mb15" style="flex-wrap:wrap">
+            <div><label class="text-sm">选择抢救车：</label>
+              <select class="fi" id="chkCart" onchange="renderCheck()" style="width:auto;display:inline-block;margin-left:6px"></select>
+            </div>
+            <div class="flex aic gap10">
+              <span class="text-sm">进度：</span>
+              <div style="width:160px"><div class="pbar"><div class="pfill" id="pFill" style="width:0%"></div></div></div>
+              <span class="text-sm fw-bold text-purple" id="pText">0%</span>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="saveCheck()">💾 保存清点</button>
+            <button class="btn btn-primary btn-sm" onclick="saveAndSeal()">🔒 保存并封存</button>
+          </div>
+          <div class="tx">
+            <table id="chkTbl">
+              <thead><tr><th>状态</th><th>物品名称</th><th>基数</th><th>实点</th><th>差异</th><th>备注</th></tr></thead>
+              <tbody id="chkBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 效期预警 -->
+      <div class="sec hidden" id="sec-expiry">
+        <div class="card">
+          <div class="ch"><div class="ct">⏰ 效期预警中心</div></div>
+          <div id="expiryContent"></div>
+        </div>
+      </div>
+
+      <!-- 抢救车管理 -->
+      <div class="sec hidden" id="sec-cart">
+        <div class="card">
+          <div class="ch">
+            <div class="ct">🚑 抢救车管理</div>
+            <button class="btn btn-success btn-sm" onclick="openCartForm()">➕ 新增抢救车</button>
+          </div>
+          <div id="cartList"></div>
+        </div>
+      </div>
+
+      <!-- 抢救记录 -->
+      <div class="sec hidden" id="sec-record">
+        <div class="card">
+          <div class="ch"><div class="ct">📝 抢救记录</div><button class="btn btn-success btn-sm" onclick="openRecordForm()">➕ 新增记录</button></div>
+          <div id="recordList"></div>
+        </div>
+      </div>
+
+      <!-- 封条管理 -->
+      <div class="sec hidden" id="sec-seal">
+        <div class="card">
+          <div class="ch"><div class="ct">🔒 封条管理</div></div>
+          <div id="sealList"></div>
+        </div>
+      </div>
+
+      <!-- 统计报表 -->
+      <div class="sec hidden" id="sec-report">
+        <div class="card">
+          <div class="ch"><div class="ct">📈 统计报表</div></div>
+          <div class="kpi-grid" id="reportKpi"></div>
+          <div class="mt10"><div class="fw-bold mb10">近效期 TOP5</div><div id="reportTop5"></div></div>
+        </div>
+      </div>
+
+      <!-- 账户管理 -->
+      <div class="sec hidden" id="sec-account">
+        <div class="card">
+          <div class="ch"><div class="ct">👥 账户管理</div><button class="btn btn-success btn-sm" onclick="openAddUser()">➕ 新增用户</button></div>
+          <div class="mb15"><div class="fw-bold mb10">⏳ 待审核用户（<span id="pendingCnt">0</span>）</div><div id="pendingList"></div></div>
+          <div><div class="fw-bold mb10">✅ 已通过用户</div><div id="approvedList"></div></div>
+        </div>
+      </div>
+
+      <!-- 系统参数 -->
+      <div class="sec hidden" id="sec-setting">
+        <div class="card">
+          <div class="ch"><div class="ct">⚙️ 系统参数</div></div>
+          <div class="fg"><label>近效期预警阈值（天）</label><input class="fi" id="cfgWarn" type="number" value="90" style="max-width:200px"></div>
+          <div class="fg"><label>紧急效期预警阈值（天）</label><input class="fi" id="cfgUrgent" type="number" value="30" style="max-width:200px"></div>
+          <div class="fg"><label>每次清点要求百分比（%）</label><input class="fi" id="cfgPct" type="number" value="100" style="max-width:200px"></div>
+          <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveCfg()">保存设置</button>
+          <div class="bdt pt15 mt15">
+            <div class="fw-bold mb10 text-danger">危险操作</div>
+            <button class="btn btn-danger btn-sm" onclick="resetAll()">⚠️ 重置全部数据</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- OCR 模态框 -->
+<div class="modal" id="mOcr">
+  <div class="mc">
+    <div class="mh"><div class="mt">📸 拍照智能识别</div><button class="mx" onclick="closeM('mOcr')">×</button></div>
+    <div class="mb">
+      <div class="ocr-area" id="ocrArea">📷 点击"开启摄像头"开始拍照识别</div>
+      <div class="flex gap10 mb15">
+        <button class="btn btn-info btn-sm" onclick="startCam()">🎥 开启摄像头</button>
+        <button class="btn btn-success btn-sm" onclick="capture()">📸 拍照识别</button>
+        <button class="btn btn-warning btn-sm" onclick="uploadImg()">🖼 选择图片</button>
+        <input type="file" id="imgUpload" accept="image/*" capture="camera" class="hidden" onchange="handleImg(event)">
+      </div>
+      <div class="fw-bold mb10">识别结果（<span id="ocrCnt">0</span> 项）</div>
+      <div id="ocrList"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-success" onclick="addOcrToTable()">✅ 一键添加到药品</button>
+      <button class="btn" style="background:#eee" onclick="closeM('mOcr')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通用表单模态框 -->
+<div class="modal" id="mForm">
+  <div class="mc">
+    <div class="mh"><div class="mt" id="mFormTitle">表单</div><button class="mx" onclick="closeM('mForm')">×</button></div>
+    <div class="mb" id="mFormBody"></div>
+    <div class="mf" id="mFormFoot"></div>
+  </div>
+</div>
+
+<!-- 确认模态框 -->
+<div class="modal" id="mConfirm">
+  <div class="mc" style="max-width:360px">
+    <div class="mh"><div class="mt">确认操作</div><button class="mx" onclick="closeM('mConfirm')">×</button></div>
+    <div class="mb"><p id="confirmMsg">确定执行此操作吗？</p></div>
+    <div class="mf">
+      <button class="btn btn-danger" id="confirmBtn">确定</button>
+      <button class="btn" style="background:#eee" onclick="closeM('mConfirm')">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================== 全局状态 ==================== */
+let U=null; // currentUser
+const AID='5180', APWD='5180', D7=7*24*3600*1000;
+let DRUGS=[], MATS=[], EQUIPS=[], CARTS=[], RECORDS=[], SEALS=[], USERS=[], PENDING=[], CHECKS={}, OCR=[];
+let chkMode=false, chkSel=new Set(), cfg={warn:90,urgent:30,pct:100};
+
+/* ==================== 初始化 ==================== */
+window.onload=function(){
+  initData();
+  chkLogin();
+  document.getElementById('curTime').textContent=new Date().toLocaleString('zh-CN');
+};
+function initData(){
+  if(!LS('cfg'))LS('cfg',JSON.stringify(cfg));else cfg=JSON.parse(LS('cfg'));
+  if(!LS('USERS')){USERS=[{id:AID,name:'超级管理员',username:AID,password:APWD,role:'主管理员',dept:'信息科',phone:'',status:'approved',createdAt:Date.now()}];LS('USERS',USERS)}
+  else USERS=JSON.parse(LS('USERS'));
+  if(!LS('PENDING')){PENDING=[];LS('PENDING',PENDING)}else PENDING=JSON.parse(LS('PENDING'));
+  if(!LS('DRUGS')){DRUGS=[
+    {id:1,name:'肾上腺素',spec:'1mg/1ml',stock:10,batch:'A202401',expire:'2025-12-01',loc:'CART-001-01',cat:'急救药',level:'A'},
+    {id:2,name:'阿托品',spec:'0.5mg/1ml',stock:8,batch:'B202402',expire:'2025-11-15',loc:'CART-001-02',cat:'急救药',level:'A'},
+    {id:3,name:'多巴胺',spec:'20mg/2ml',stock:12,batch:'C202403',expire:'2026-03-20',loc:'CART-001-03',cat:'血管活性',level:'A'},
+    {id:4,name:'胺碘酮',spec:'150mg/3ml',stock:6,batch:'D202404',expire:'2025-08-30',loc:'CART-001-04',cat:'抗心律失常',level:'A'},
+    {id:5,name:'地塞米松',spec:'5mg/1ml',stock:15,batch:'E202405',expire:'2026-06-10',loc:'CART-002-01',cat:'激素类',level:'B'}
+  ];LS('DRUGS',DRUGS)}else DRUGS=JSON.parse(LS('DRUGS'));
+  if(!LS('MATS')){MATS=[
+    {id:1,name:'输液器',spec:'7#',stock:50,batch:'M001',expire:'2026-12-01',loc:'CART-001-A'},
+    {id:2,name:'注射器',spec:'5ml',stock:100,batch:'M002',expire:'2026-10-15',loc:'CART-001-A'},
+    {id:3,name:'纱布块',spec:'10*10',stock:80,batch:'M003',expire:'2026-08-20',loc:'CART-001-B'}
+  ];LS('MATS',MATS)}else MATS=JSON.parse(LS('MATS'));
+  if(!LS('EQUIPS')){EQUIPS=[
+    {id:1,name:'血压计',model:'欧姆龙HEM-7121',stock:2,status:'正常',loc:'CART-001'},
+    {id:2,name:'听诊器',model:'双面',stock:2,status:'正常',loc:'CART-001'},
+    {id:3,name:'喉镜',model:'成人型',stock:1,status:'待维护',loc:'CART-001'}
+  ];LS('EQUIPS',EQUIPS)}else EQUIPS=JSON.parse(LS('EQUIPS'));
+  if(!LS('CARTS')){CARTS=[
+    {id:1,code:'CART-001',name:'急诊科抢救车A',loc:'急诊科1号位',manager:'王护士长',progress:100,status:'sealed'},
+    {id:2,code:'CART-002',name:'ICU抢救车A',loc:'ICU入口',manager:'李主任',progress:100,status:'sealed'},
+    {id:3,code:'CART-003',name:'手术室抢救车',loc:'手术室1号间',manager:'张医生',progress:60,status:'open'}
+  ];LS('CARTS',CARTS)}else CARTS=JSON.parse(LS('CARTS'));
+  if(!LS('RECORDS')){RECORDS=[];LS('RECORDS',RECORDS)}else RECORDS=JSON.parse(LS('RECORDS'));
+  if(!LS('SEALS')){SEALS=[];LS('SEALS',SEALS)}else SEALS=JSON.parse(LS('SEALS'));
+  if(!LS('CHECKS')){CHECKS={};LS('CHECKS',CHECKS)}else CHECKS=JSON.parse(LS('CHECKS'));
+}
+
+/* ==================== 工具函数 ==================== */
+function LS(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}
+function $(id){return document.getElementById(id)}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
+function openM(id){$(id).classList.add('show')}
+function closeM(id){$(id).classList.remove('show')}
+function confirm(msg,cb){$('confirmMsg').textContent=msg;$('confirmBtn').onclick=function(){cb();closeM('mConfirm')};openM('mConfirm')}
+function fmtDate(ts){return new Date(ts).toLocaleDateString('zh-CN')}
+function daysUntil(exp){const d=Math.ceil((new Date(exp)-new Date())/86400000);return d}
+function statusOf(d){
+  const days=daysUntil(d);
+  if(days<0)return {label:'已过期',cls:'b-danger'};
+  if(days<=cfg.urgent)return {label:'紧急('+days+'天)',cls:'b-danger'};
+  if(days<=cfg.warn)return {label:'预警('+days+'天)',cls:'b-warn'};
+  return {label:'正常',cls:'b-normal'};
+}
+
+/* ==================== 登录/注册 ==================== */
+function swTab(t){
+  $('tabLogin').classList.toggle('active',t==='login');
+  $('tabReg').classList.toggle('active',t==='reg');
+  $('fLogin').classList.toggle('hidden',t!=='login');
+  $('fReg').classList.toggle('hidden',t!=='reg');
+}
+function doLogin(){
+  const u=$('lgUser').value.trim(),p=$('lgPwd').value.trim(),r=$('lgRole').value,rem=$('lgRem').checked;
+  if(!u||!p){toast('请输入工号和密码');return}
+  if(u===AID&&p===APWD&&r==='主管理员'){loginOK({id:AID,name:'超级管理员',username:AID,role:'主管理员'},rem);return}
+  const f=USERS.find(x=>x.username===u&&x.password===p&&x.role===r);
+  if(!f){toast('工号、密码或角色错误');return}
+  if(f.status!=='approved'){toast('账号待审核，请联系主管理员');return}
+  loginOK(f,rem);
+}
+function doReg(){
+  const name=$('rgName').value.trim(),u=$('rgUser').value.trim(),p=$('rgPwd').value,p2=$('rgPwd2').value,
+        r=$('rgRole').value,d=$('rgDept').value.trim(),ph=$('rgPhone').value.trim();
+  if(!name||!u||!p){toast('姓名、工号、密码必填');return}
+  if(p.length<4){toast('密码至少4位');return}
+  if(p!==p2){toast('两次密码不一致');return}
+  if(u===AID){toast('该工号受保护');return}
+  if(USERS.some(x=>x.username===u)){toast('工号已注册');return}
+  const nu={id:Date.now().toString(),name,username:u,password:p,role:r,dept:d,phone:ph,status:'pending',createdAt:Date.now()};
+  USERS.push(nu);PENDING.push(nu);LS('USERS',USERS);LS('PENDING',PENDING);
+  toast('注册成功！请等待主管理员审核');
+  swTab('login');$('rgName').value='';$('rgUser').value='';$('rgPwd').value='';$('rgPwd2').value='';$('rgDept').value='';$('rgPhone').value='';
+}
+function loginOK(u,rem){
+  U=u;LS('U',JSON.stringify(u));
+  if(rem){LS('TK','1');LS('TE',String(Date.now()+D7))}else{LS('TK','');LS('TE','')}
+  $('loginPage').style.display='none';$('app').style.display='flex';
+  $('welcome').textContent=u.name;$('curUser').textContent=u.name;$('curRole').textContent=u.role;
+  $('avt').textContent=u.name.charAt(0);$('sbName').textContent=u.name;$('sbRole').textContent=u.role;
+  document.querySelectorAll('.admin-only').forEach(e=>e.classList.toggle('show',u.role==='主管理员'));
+  renderCartStatus();updateKpi();swMenu(document.querySelector('.sb-menu a.active'),'dashboard');
+  toast('登录成功');
+}
+function chkLogin(){
+  const tk=LS('TK'),te=LS('TE'),u=LS('U');
+  if(tk&&te&&u&&Date.now()<parseInt(te)){loginOK(JSON.parse(u),true)}
+}
+function logout(){
+  LS('TK','');LS('TE','');LS('U','');U=null;
+  $('app').style.display='none';$('loginPage').style.display='flex';
+  $('lgUser').value='';$('lgPwd').value='';
+  toast('已退出登录');
+}
+
+/* ==================== 侧边栏 ==================== */
+function tgSb(){
+  if(window.innerWidth>768)return;
+  $('sb').classList.toggle('open');$('mask').classList.toggle('show');
+}
+function swMenu(el,id){
+  document.querySelectorAll('.sb-menu a').forEach(a=>a.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.sec').forEach(s=>s.classList.add('hidden'));
+  $('sec-'+id).classList.remove('hidden');
+  $('hdTitle').textContent=el.textContent.trim();
+  if(window.innerWidth<=768){$('sb').classList.remove('open');$('mask').classList.remove('show')}
+  // 渲染对应内容
+  if(id==='drug')renderDrug();
+  if(id==='material')renderMaterial();
+  if(id==='equip')renderEquip();
+  if(id==='check')renderCheck();
+  if(id==='expiry')renderExpiry();
+  if(id==='cart')renderCarts();
+  if(id==='record')renderRecords();
+  if(id==='seal')renderSeals();
+  if(id==='report')renderReport();
+  if(id==='account')renderAccount();
+}
+window.onresize=function(){if(window.innerWidth>768){$('sb').classList.remove('open');$('mask').classList.remove('show')}};
+
+/* ==================== 工作台 ==================== */
+function updateKpi(){
+  $('kpiDrug').textContent=DRUGS.length;
+  $('kpiCart').textContent=CARTS.length;
+  const exp=DRUGS.filter(d=>daysUntil(d.expire)<=cfg.urgent).length;
+  $('kpiWarn').textContent=exp;
+  $('kpiExp').textContent=DRUGS.filter(d=>daysUntil(d.expire)<0).length;
+}
+function renderCartStatus(){
+  const c=$('cartStatus');c.innerHTML=CARTS.map(x=>{
+    const st=x.status==='sealed'?'<span class="badge b-normal">已封存</span>':'<span class="badge b-warn">开启中</span>';
+    return `<div class="user-item"><div class="row"><div><strong>${x.code}</strong> - ${x.name} ${st}<br><span class="text-sm text-gray">${x.loc} | 负责人：${x.manager}</span></div><div style="min-width:120px"><div class="text-sm text-gray">进度 ${x.progress}%</div><div class="pbar"><div class="pfill" style="width:${x.progress}%"></div></div></div></div></div>`;
+  }).join('');
+}
+
+/* ==================== 药品管理 ==================== */
+function renderDrug(){
+  const q=$('drugSearch').value.toLowerCase(),body=$('drugBody');
+  const data=DRUGS.filter(d=>!q||d.name.toLowerCase().includes(q));
+  body.innerHTML=data.map(d=>{
+    const s=statusOf(d.expire);
+    return `<tr>
+      <td class="hidden chk-col-drug"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td>
+      <td><span class="cell-edit" onclick="editCell(this,'name',${d.id},'DRUGS')">${d.name}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'spec',${d.id},'DRUGS')">${d.spec}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'stock',${d.id},'DRUGS')">${d.stock}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'batch',${d.id},'DRUGS')">${d.batch}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'expire',${d.id},'DRUGS')">${d.expire}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'loc',${d.id},'DRUGS')">${d.loc}</span></td>
+      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'DRUGS','药品')">删除</button></td>
+    </tr>`;
+  }).join('');
+}
+function addDrug(){
+  const n=prompt('药品名称：');if(!n)return;
+  DRUGS.push({id:Date.now(),name:n,spec:'待填',stock:0,batch:'待填',expire:'2026-12-31',loc:'待分配',cat:'未分类',level:'C'});
+  LS('DRUGS',DRUGS);renderDrug();updateKpi();toast('已添加');
+}
+function editCell(el,field,id,store){
+  const arr=eval(store);const item=arr.find(x=>x.id===id);if(!item)return;
+  const cur=item[field];const v=prompt(`修改${field}：`,cur);if(v===null||v===cur)return;
+  item[field]=v;LS(store,JSON.stringify(arr));renderDrug();updateKpi();
+}
+function delItem(id,store,label){
+  confirm(`确定删除此项${label}？`,()=>{
+    const arr=JSON.parse(LS(store)).filter(x=>x.id!==id);
+    LS(store,JSON.stringify(arr));
+    if(store==='DRUGS'){DRUGS=arr;renderDrug();updateKpi()}
+    if(store==='MATS'){MATS=arr;renderMaterial()}
+    toast('已删除');
+  });
+}
+function toggleCheckMode(type){
+  chkMode=!chkMode;chkSel.clear();
+  document.querySelectorAll('.chk-col-'+type).forEach(e=>e.classList.toggle('hidden',!chkMode));
+  $('btnBatchDel'+(type==='drug'?'Drug':type==='material'?'Mat':'')).classList.toggle('hidden',!chkMode);
+  if(type==='drug')renderDrug();else renderMaterial();
+}
+function chkItem(id,cb){cb.checked?chkSel.add(id):chkSel.delete(id)}
+function chkAll(type,cb){
+  const list=type==='drug'?DRUGS:MATS;
+  list.forEach(d=>{if(cb.checked)chkSel.add(d.id);else chkSel.delete(d.id)});
+  if(type==='drug')renderDrug();else renderMaterial();
+}
+function batchDel(type){
+  if(chkSel.size===0){toast('请先选择项目');return}
+  confirm(`确定删除选中的 ${chkSel.size} 项？`,()=>{
+    if(type==='drug'){DRUGS=DRUGS.filter(d=>!chkSel.has(d.id));LS('DRUGS',DRUGS);renderDrug();updateKpi()}
+    if(type==='material'){MATS=MATS.filter(d=>!chkSel.has(d.id));LS('MATS',MATS);renderMaterial()}
+    chkSel.clear();toast('批量删除成功');
+  });
+}
+
+/* ==================== 耗材管理 ==================== */
+function renderMaterial(){
+  const q=$('matSearch').value.toLowerCase(),body=$('matBody');
+  const data=MATS.filter(d=>!q||d.name.toLowerCase().includes(q));
+  body.innerHTML=data.map(d=>{
+    const s=statusOf(d.expire);
+    return `<tr>
+      <td class="hidden chk-col-mat"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td>
+      <td><span class="cell-edit" onclick="editCell(this,'name',${d.id},'MATS')">${d.name}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'spec',${d.id},'MATS')">${d.spec}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'stock',${d.id},'MATS')">${d.stock}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'batch',${d.id},'MATS')">${d.batch}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'expire',${d.id},'MATS')">${d.expire}</span></td>
+      <td><span class="cell-edit" onclick="editCell(this,'loc',${d.id},'MATS')">${d.loc}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'MATS','耗材')">删除</button></td>
+    </tr>`;
+  }).join('');
+}
+function addMaterial(){
+  const n=prompt('耗材名称：');if(!n)return;
+  MATS.push({id:Date.now(),name:n,spec:'待填',stock:0,batch:'待填',expire:'2026-12-31',loc:'待分配'});
+  LS('MATS',MATS);renderMaterial();toast('已添加');
+}
+
+/* ==================== 器械管理 ==================== */
+function renderEquip(){
+  $('equipBody').innerHTML=EQUIPS.map(e=>`
+    <tr><td>${e.name}</td><td>${e.model}</td><td>${e.stock}</td><td><span class="badge ${e.status==='正常'?'b-normal':'b-warn'}">${e.status}</span></td><td>${e.loc}</td><td><button class="btn btn-danger btn-sm" onclick="delEquip(${e.id})">删除</button></td></tr>
+  `).join('');
+}
+function addEquip(){
+  const n=prompt('器械名称：');if(!n)return;
+  EQUIPS.push({id:Date.now(),name:n,model:'待填',stock:1,status:'正常',loc:'待分配'});LS('EQUIPS',EQUIPS);renderEquip();toast('已添加');
+}
+function delEquip(id){confirm('确定删除？',()=>{EQUIPS=EQUIPS.filter(x=>x.id!==id);LS('EQUIPS',EQUIPS);renderEquip();toast('已删除')})}
+
+/* ==================== 清点检查 ==================== */
+function renderCheck(){
+  const c=$('chkCart').value||(CARTS[0]&&CARTS[0].code)||'';
+  if(!CARTS.length){$('chkBody').innerHTML='<tr><td colspan="6">暂无抢救车</td></tr>';return}
+  if(!$('chkCart').options.length){CARTS.forEach(x=>{const o=new Option(x.code+' - '+x.name,x.code);$('chkCart').add(o)})}
+  const items=DRUGS.filter(d=>d.loc.startsWith(c.split('-').slice(0,2).join('-')));
+  const checkData=CHECKS[c]||{};
+  let done=0;
+  $('chkBody').innerHTML=items.map(d=>{
+    const cd=checkData[d.id]||{real:d.stock,note:''};
+    const diff=cd.real-d.stock;
+    if(cd.real===d.stock&&cd.note==='')done++;
+    return `<tr>
+      <td>${cd.note?'<span class="badge b-warn">异常</span>':'<span class="badge b-normal">✓</span>'}</td>
+      <td>${d.name}</td>
+      <td>${d.stock}</td>
+      <td><input class="fi" style="width:60px;padding:4px 8px" type="number" value="${cd.real}" onchange="updCheck('${c}',${d.id},'real',this.value)"></td>
+      <td style="color:${diff<0?'#ff4d4f':'#333'}">${diff>0?'+':''}${diff}</td>
+      <td><input class="fi" style="width:100px;padding:4px 8px" placeholder="备注" value="${cd.note}" onchange="updCheck('${c}',${d.id},'note',this.value)"></td>
+    </tr>`;
+  }).join('');
+  const pct=items.length?Math.round(done/items.length*100):0;
+  $('pFill').style.width=pct+'%';$('pText').textContent=pct+'%';
+}
+function updCheck(cart,id,field,val){
+  if(!CHECKS[cart])CHECKS[cart]={};
+  if(!CHECKS[cart][id])CHECKS[cart][id]={real:0,note:''};
+  CHECKS[cart][id][field]=field==='real'?parseInt(val)||0:val;
+  LS('CHECKS',CHECKS);renderCheck();
+}
+function saveCheck(){
+  const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);if(cart){cart.progress=parseInt($('pText').textContent)||0;LS('CARTS',CARTS)}
+  LS('CHECKS',CHECKS);renderCartStatus();toast('清点已保存');
+}
+function saveAndSeal(){
+  saveCheck();
+  const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);
+  if(cart){cart.status='sealed';LS('CARTS',CARTS)}
+  SEALS.push({id:Date.now(),cart:c,time:Date.now(),sealNo:'FZ-'+Date.now().toString().slice(-6),op:U.name});
+  LS('SEALS',SEALS);renderCartStatus();toast('已封存 ✅');
+}
+
+/* ==================== 效期预警 ==================== */
+function renderExpiry(){
+  const all=[...DRUGS.map(d=>({...d,type:'药品'})),...MATS.map(d=>({...d,type:'耗材'}))];
+  const groups={exp:[],urgent:[],warn:[],normal:[],safe:[]};
+  all.forEach(d=>{const days=daysUntil(d.expire);if(days<0)groups.exp.push(d);else if(days<=cfg.urgent)groups.urgent.push(d);else if(days<=cfg.warn)groups.warn.push(d);else if(days<=180)groups.normal.push(d);else groups.safe.push(d)});
+  let h='';
+  if(groups.exp.length){h+=`<div class="fw-bold text-danger mb10">🔴 已过期（${groups.exp.length}）</div>`+groups.exp.map(d=>`<div class="user-item" style="border-left:4px solid #ff4d4f"><strong>${d.name}</strong> [${d.type}] <span class="badge b-danger">${d.expire}</span> ${d.loc}</div>`).join('')}
+  if(groups.urgent.length){h+=`<div class="fw-bold mt10 mb10" style="color:#fa8c16">🟠 紧急预警≤${cfg.urgent}天（${groups.urgent.length}）</div>`+groups.urgent.map(d=>`<div class="user-item" style="border-left:4px solid #faad14"><strong>${d.name}</strong> [${d.type}] <span class="badge b-warn">${d.expire} (${daysUntil(d.expire)}天)</span> ${d.loc}</div>`).join('')}
+  if(groups.warn.length){h+=`<div class="fw-bold mt10 mb10" style="color:#faad14">🟡 效期预警≤${cfg.warn}天（${groups.warn.length}）</div>`+groups.warn.map(d=>`<div class="user-item" style="border-left:4px solid #faad14"><strong>${d.name}</strong> [${d.type}] <span class="badge b-warn">${d.expire} (${daysUntil(d.expire)}天)</span> ${d.loc}</div>`).join('')}
+  if(groups.normal.length){h+=`<div class="fw-bold mt10 mb10" style="color:#52c41a">🟢 正常（${groups.normal.length}）</div>`+groups.normal.slice(0,5).map(d=>`<div class="user-item"><strong>${d.name}</strong> [${d.type}] <span class="badge b-normal">${d.expire}</span></div>`).join('')}
+  $('expiryContent').innerHTML=h||'<p class="text-gray">暂无数据</p>';
+}
+
+/* ==================== 抢救车管理 ==================== */
+function renderCarts(){
+  $('cartList').innerHTML=CARTS.map(c=>{
+    const st=c.status==='sealed'?'<span class="badge b-normal">已封存</span>':'<span class="badge b-warn">开启中</span>';
+    return `<div class="user-item"><div class="row"><div><strong>${c.code}</strong> - ${c.name} ${st}<br><span class="text-sm text-gray">${c.loc} | ${c.manager} | 进度 ${c.progress}%</span></div><div class="flex gap10"><button class="btn btn-danger btn-sm" onclick="delCart(${c.id})">删除</button></div></div></div>`;
+  }).join('');
+}
+function openCartForm(){
+  $('mFormTitle').textContent='新增抢救车';
+  $('mFormBody').innerHTML=`
+    <div class="fg"><label>编号</label><input class="fi" id="fcCode" placeholder="如 CART-004"></div>
+    <div class="fg"><label>名称</label><input class="fi" id="fcName" placeholder="如 门诊抢救车"></div>
+    <div class="fg"><label>位置</label><input class="fi" id="fcLoc" placeholder="如 门诊大厅"></div>
+    <div class="fg"><label>负责人</label><input class="fi" id="fcMgr" placeholder="如 赵护士"></div>`;
+  $('mFormFoot').innerHTML='<button class="btn btn-success" onclick="saveCart()">保存</button><button class="btn" style="background:#eee" onclick="closeM(\'mForm\')">取消</button>';
+  openM('mForm');
+}
+function saveCart(){
+  const code=$('fcCode').value.trim(),name=$('fcName').value.trim();
+  if(!code||!name){toast('编号和名称必填');return}
+  CARTS.push({id:Date.now(),code,name,loc:$('fcLoc').value,manager:$('fcMgr').value,progress:100,status:'sealed'});
+  LS('CARTS',CARTS);closeM('mForm');renderCarts();updateKpi();toast('抢救车已添加');
+}
+function delCart(id){confirm('确定删除该抢救车？',()=>{CARTS=CARTS.filter(x=>x.id!==id);LS('CARTS',CARTS);renderCarts();updateKpi()})}
+
+/* ==================== 抢救记录 ==================== */
+function renderRecords(){
+  $('recordList').innerHTML=RECORDS.length?RECORDS.slice().reverse().map(r=>`
+    <div class="user-item"><div class="row"><div><strong>${r.patient}</strong> - ${r.diagnosis}<br><span class="text-sm text-gray">${fmtDate(r.time)} | 操作人：${r.op} | 使用物品：${r.items}</span></div><button class="btn btn-danger btn-sm" onclick="delRecord(${r.id})">删除</button></div></div>
+  `).join(''):'<p class="text-gray">暂无记录</p>';
+}
+function openRecordForm(){
+  $('mFormTitle').textContent='新增抢救记录';
+  $('mFormBody').innerHTML=`
+    <div class="fg"><label>患者姓名</label><input class="fi" id="rrPat"></div>
+    <div class="fg"><label>诊断</label><input class="fi" id="rrDiag"></div>
+    <div class="fg"><label>使用物品</label><input class="fi" id="rrItems" placeholder="如 肾上腺素2支+输液器1套"></div>`;
+  $('mFormFoot').innerHTML='<button class="btn btn-success" onclick="saveRecord()">保存</button><button class="btn" style="background:#eee" onclick="closeM(\'mForm\')">取消</button>';
+  openM('mForm');
+}
+function saveRecord(){
+  RECORDS.push({id:Date.now(),patient:$('rrPat').value,diagnosis:$('rrDiag').value,items:$('rrItems').value,op:U.name,time:Date.now()});
+  LS('RECORDS',RECORDS);closeM('mForm');renderRecords();toast('记录已保存');
+}
+function delRecord(id){confirm('确定删除？',()=>{RECORDS=RECORDS.filter(x=>x.id!==id);LS('RECORDS',RECORDS);renderRecords()})}
+
+/* ==================== 封条管理 ==================== */
+function renderSeals(){
+  $('sealList').innerHTML=SEALS.length?SEALS.slice().reverse().map(s=>`
+    <div class="user-item"><div class="row"><div><strong>${s.sealNo}</strong> - ${s.cart}<br><span class="text-sm text-gray">${fmtDate(s.time)} | 封存人：${s.op}</span></div></div></div>
+  `).join(''):'<p class="text-gray">暂无封存记录</p>';
+}
+
+/* ==================== 统计报表 ==================== */
+function renderReport(){
+  const cats={};DRUGS.forEach(d=>{cats[d.cat]=(cats[d.cat]||0)+1});
+  let h='<div class="kpi-grid">';
+  Object.entries(cats).forEach(([k,v])=>{h+=`<div class="kpi"><div class="v">${v}</div><div class="l">${k}</div></div>`});
+  h+=`<div class="kpi"><div class="v" style="color:#faad14">${DRUGS.filter(d=>daysUntil(d.expire)<=cfg.warn).length}</div><div class="l">近效期</div></div>`;
+  h+=`<div class="kpi"><div class="v" style="color:#ff4d4f">${DRUGS.filter(d=>daysUntil(d.expire)<0).length}</div><div class="l">已过期</div></div></div>`;
+  $('reportKpi').innerHTML=h;
+  const top5=DRUGS.filter(d=>daysUntil(d.expire)>0).sort((a,b)=>daysUntil(a.expire)-daysUntil(b.expire)).slice(0,5);
+  $('reportTop5').innerHTML=top5.map(d=>`<div class="user-item"><strong>${d.name}</strong> - ${d.expire} <span class="badge b-warn">${daysUntil(d.expire)}天</span></div>`).join('');
+}
+
+/* ==================== 账户管理 ==================== */
+function renderAccount(){
+  const pd=PENDING.filter(u=>u.status==='pending');
+  $('pendingCnt').textContent=pd.length;
+  $('pendingList').innerHTML=pd.length?pd.map(u=>`
+    <div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-warn">待审核</span><br><span class="text-sm text-gray">工号：${u.username} | 科室：${u.dept}</span></div><div class="flex gap10"><button class="btn btn-success btn-sm" onclick="audit('${u.id}','approved')">通过</button><button class="btn btn-danger btn-sm" onclick="audit('${u.id}','rejected')">拒绝</button></div></div></div>
+  `).join(''):'<p class="text-gray">暂无待审核用户</p>';
+  const ad=USERS.filter(u=>u.status==='approved');
+  $('approvedList').innerHTML=ad.map(u=>`
+    <div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-normal">已通过</span><br><span class="text-sm text-gray">工号：${u.username}</span></div>${u.username!==AID?`<button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">删除</button>`:''}</div></div>
+  `).join('');
+}
+function audit(id,st){
+  PENDING=PENDING.map(u=>u.id===id?{...u,status:st}:u);USERS=USERS.map(u=>u.id===id?{...u,status:st}:u);
+  LS('PENDING',PENDING);LS('USERS',USERS);renderAccount();toast(st==='approved'?'已通过审核':'已拒绝');
+}
+function delUser(id){confirm('确定删除该用户？',()=>{USERS=USERS.filter(u=>u.id!==id);LS('USERS',USERS);renderAccount()})}
+function openAddUser(){
+  $('mFormTitle').textContent='新增用户';
+  $('mFormBody').innerHTML=`
+    <div class="fg"><label>姓名</label><input class="fi" id="nuName"></div>
+    <div class="fg"><label>工号</label><input class="fi" id="nuUser"></div>
+    <div class="fg"><label>密码</label><input class="fi" id="nuPwd" type="password"></div>
+    <div class="fg"><label>角色</label><select class="fi" id="nuRole"><option>护士</option><option>护士长</option><option>主任</option></select></div>
+    <div class="fg"><label>科室</label><input class="fi" id="nuDept"></div>`;
+  $('mFormFoot').innerHTML='<button class="btn btn-success" onclick="saveNewUser()">保存</button><button class="btn" style="background:#eee" onclick="closeM(\'mForm\')">取消</button>';
+  openM('mForm');
+}
+function saveNewUser(){
+  const name=$('nuName').value.trim(),u=$('nuUser').value.trim(),p=$('nuPwd').value;
+  if(!name||!u||!p){toast('请填写完整');return}
+  if(USERS.some(x=>x.username===u)){toast('工号已存在');return}
+  USERS.push({id:Date.now().toString(),name,username:u,password:p,role:$('nuRole').value,dept:$('nuDept').value,status:'approved',createdAt:Date.now()});
+  LS('USERS',USERS);closeM('mForm');renderAccount();toast('用户已添加');
+}
+
+/* ==================== 系统参数 ==================== */
+function saveCfg(){
+  cfg={warn:parseInt($('cfgWarn').value)||90,urgent:parseInt($('cfgUrgent').value)||30,pct:parseInt($('cfgPct').value)||100};
+  LS('cfg',JSON.stringify(cfg));toast('设置已保存');
+}
+function resetAll(){
+  confirm('⚠️ 确定重置全部数据吗？此操作不可恢复！',()=>{
+    ['DRUGS','MATS','EQUIPS','CARTS','RECORDS','SEALS','CHECKS','PENDING','USERS','cfg'].forEach(k=>localStorage.removeItem(k));
+    toast('数据已重置，正在重新初始化...');setTimeout(()=>location.reload(),1500);
+  });
+}
+
+/* ==================== OCR 拍照识别 ==================== */
+function openOCR(){OCR=[];renderOcr();openM('mOcr')}
+function startCam(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{
+    let v=document.createElement('video');v.srcObject=s;v.play();
+    $('ocrArea').innerHTML='';$('ocrArea').appendChild(v);
+    $('ocrArea').dataset.stream=JSON.stringify(s);
+  }).catch(e=>toast('无法访问摄像头：'+e.message));
+}
+function capture(){
+  const v=$('ocrArea').querySelector('video');if(!v){toast('请先开启摄像头');return}
+  const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);simulateOCR(c.toDataURL());
+}
+function uploadImg(){document.getElementById('imgUpload').click()}
+function handleImg(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>simulateOCR(e.target.result);
+  r.readAsDataURL(f);
+}
+function simulateOCR(imgData){
+  const tpls=[
+    {name:'肾上腺素',spec:'1mg/1ml',batch:'OCR'+Date.now(),expire:'2026-12-31'},
+    {name:'去甲肾上腺素',spec:'2mg/1ml',batch:'OCR'+(Date.now()+1),expire:'2026-11-30'},
+    {name:'异丙肾上腺素',spec:'1mg/2ml',batch:'OCR'+(Date.now()+2),expire:'2026-10-15'},
+    {name:'利多卡因',spec:'0.1g/5ml',batch:'OCR'+(Date.now()+3),expire:'2026-09-20'}
+  ];
+  const n=Math.floor(Math.random()*3)+2;OCR=[];
+  for(let i=0;i<n;i++){OCR.push({...tpls[Math.floor(Math.random()*tpls.length)],id:Date.now()+i,match:90+Math.floor(Math.random()*10)})}
+  $('ocrArea').innerHTML=imgData?`<img src="${imgData}" style="max-height:200px">`:'📷 已拍照';
+  renderOcr();toast('识别完成');
+}
+function renderOcr(){
+  $('ocrCnt').textContent=OCR.length;
+  $('ocrList').innerHTML=OCR.map(d=>`<div class="ocr-result"><strong>${d.name}</strong> | ${d.spec} | 批号:${d.batch} | 有效期:${d.expire} <span class="badge b-success" style="background:#f6ffed;color:#52c41a">匹配度 ${d.match}%</span></div>`).join('');
+}
+function addOcrToTable(){
+  if(!OCR.length){toast('暂无识别结果');return}
+  OCR.forEach(d=>{DRUGS.push({id:Date.now()+Math.random(),name:d.name,spec:d.spec,stock:10,batch:d.batch,expire:d.expire,loc:'待分配',cat:'OCR识别',level:'C'})});
+  LS('DRUGS',DRUGS);closeM('mOcr');renderDrug();updateKpi();toast(`已添加 ${OCR.length} 项药品`);
+}
+</script>
+</body>
+</html>
