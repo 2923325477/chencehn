@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>小陈智能管理系统 v4.3（自定义模板版）</title>
+<title>小陈智能管理系统 v5.0（Supabase 共用版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:"PingFang SC","Helvetica Neue",Arial,sans-serif}
 body{background:#f0f2f5;color:#333;height:100vh;overflow:hidden;font-size:14px}
@@ -148,7 +148,6 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 }
 
 /* ==================== v4.3 模板管理样式 ==================== */
-/* 模板编辑器 */
 .tpl-editor{background:#fafcff;border:1px solid #e8eeff;border-radius:8px;padding:16px;margin-bottom:12px}
 .tpl-layer{background:#fff;border:1px solid #e0e6ff;border-radius:8px;padding:14px;margin-bottom:10px;position:relative}
 .tpl-layer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -162,16 +161,12 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 .tpl-add-cell:hover{background:#e8d9ff}
 .tpl-layer-del{background:none;border:none;color:#ff4d4f;cursor:pointer;font-size:13px;padding:4px 8px;border-radius:4px}
 .tpl-layer-del:hover{background:#fff2f0}
-
-/* 模板列表 */
 .tpl-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:16px;margin-bottom:12px;transition:all .2s}
 .tpl-card:hover{box-shadow:0 4px 12px rgba(114,46,209,.1);border-color:#d0bfff}
 .tpl-card .tpl-name{font-size:16px;font-weight:600;color:#333;margin-bottom:6px}
 .tpl-card .tpl-desc{font-size:12px;color:#999;margin-bottom:8px}
 .tpl-card .tpl-stats{display:flex;gap:12px;font-size:12px;color:#666;margin-bottom:10px}
 .tpl-card .tpl-stats span{background:#f5f5f5;padding:2px 8px;border-radius:4px}
-
-/* 位置选择器（基于模板动态渲染） */
 .pos-picker{display:grid;gap:6px;margin-top:8px}
 .pos-btn{aspect-ratio:1;border:1px solid #d9d9d9;background:#fff;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;text-align:center}
 .pos-btn:hover{background:#f0e6ff;border-color:#722ed1}
@@ -183,8 +178,6 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 .pos-preview{background:#fafafa;border:1px solid #eee;border-radius:6px;padding:10px;margin-top:10px;text-align:center}
 .pos-preview .code{font-size:22px;font-weight:700;color:#722ed1}
 .pos-preview .desc{font-size:12px;color:#999;margin-top:4px}
-
-/* 模板预览（可视化抢救车） */
 .cart-visual{background:#f9f0ff;border:2px solid #d9c2ff;border-radius:12px;padding:16px;margin-top:12px}
 .cart-layer{margin-bottom:12px;padding:10px;background:#fff;border-radius:8px;border:1px solid #eee}
 .cart-layer:last-child{margin-bottom:0}
@@ -197,10 +190,160 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 .cart-cell.has-items{border-color:#b7eb8f;background:#f6ffed}
 .cart-cell.has-items .cell-count{color:#52c41a;font-weight:500}
 
-/* ==================== v4.3 结束 ==================== */
+/* ==================== v4.5 电子签名样式 ==================== */
+.sig-box{background:#fff;border:2px dashed #722ed1;border-radius:8px;padding:10px;text-align:center;cursor:crosshair;touch-action:none}
+.sig-box canvas{width:100%;height:120px;border-radius:4px;background:#fafafa}
+.sig-tip{font-size:12px;color:#999;margin-top:6px}
+.sig-preview img{max-width:180px;height:60px;border:1px solid #e8e8e8;border-radius:6px;background:#fff}
+.sig-actions{display:flex;gap:8px;margin-top:8px;justify-content:center}
+.sig-actions button{padding:4px 12px;font-size:12px;border-radius:4px;border:none;cursor:pointer}
+.sig-actions .clear{background:#fff2f0;color:#ff4d4f}
+.sig-actions .ok{background:#f6ffed;color:#52c41a}
+.sig-status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.sig-status.has{background:#f6ffed;color:#52c41a}
+.sig-status.none{background:#fff2f0;color:#ff4d4f}
+
+/* ==================== v4.7 打印/导出样式 ==================== */
+.print-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px;background:#f9f0ff;border-radius:8px;border:1px solid #e8d9ff}
+.print-toolbar label{font-size:13px;color:#444;font-weight:500;align-self:center}
+.print-toolbar select,.print-toolbar input{flex:1;min-width:140px;max-width:200px}
+.shift-card{position:relative}
+.shift-card .print-btn{position:absolute;top:10px;right:10px}
+.shift-card .export-btn{position:absolute;top:10px;right:80px}
+
+/* 打印专用样式 */
+@media print{
+  @page{size:A4;margin:15mm}
+  *{box-shadow:none!important}
+  body{background:#fff!important;overflow:visible!important;height:auto!important;font-size:12pt;color:#000}
+  #loginPage,.hd,.sb,.mask,.modal,.toast,.print-toolbar,.shift-card .print-btn,.shift-card .export-btn,.menu-btn,.hd-right,.sidebar,.sb,.admin-only{display:none!important}
+  #app{display:block!important;height:auto!important}
+  .main{padding:0!important;overflow:visible!important}
+  .card{box-shadow:none!important;border:1px solid #ddd!important;page-break-inside:avoid;margin-bottom:12px}
+  .sec{display:block!important}
+  .hidden{display:block!important}
+  .kpi-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important}
+  .no-print{display:none!important}
+  .print-header{display:block!important;text-align:center;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #722ed1}
+  .print-header h1{font-size:18pt;color:#722ed1;margin-bottom:4px}
+  .print-header .sub{font-size:10pt;color:#666}
+  .print-footer{display:block!important;margin-top:20px;padding-top:10px;border-top:1px solid #ddd;font-size:9pt;color:#999;text-align:center}
+  .shift-print-item{page-break-inside:avoid;margin-bottom:16px;padding:14px;border:1px solid #ccc;border-radius:8px}
+  .shift-print-item h3{font-size:13pt;color:#722ed1;margin-bottom:8px}
+  .shift-print-item table{width:100%;border-collapse:collapse;font-size:11pt}
+  .shift-print-item td{padding:6px 10px;border:1px solid #eee}
+  .shift-print-item .label{background:#f9f0ff;font-weight:600;width:120px;color:#555}
+  .shift-sign{display:inline-block;max-height:60px;max-width:200px}
+  .page-num{position:fixed;bottom:10mm;right:15mm;font-size:9pt;color:#999}
+}
+
+/* 打印时显示的页眉页脚模板 */
+.print-header,.print-footer,.page-num{display:none}
+</style>
+
+<!-- v4.9 真 OCR 引擎（Tesseract.js v5，纯前端） -->
+<script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ==================== v5.0 云端同步状态栏 ==================== */
+.cloud-bar{display:flex;align-items:center;gap:10px;padding:6px 16px;font-size:12px;background:#f0f5ff;border-bottom:1px solid #d6e4ff;color:#333;z-index:101;min-height:36px}
+.cloud-bar .dot{width:8px;height:8px;border-radius:50%;background:#bbb;flex-shrink:0;transition:background .3s}
+.cloud-bar.online .dot{background:#52c41a;box-shadow:0 0 6px #52c41a}
+.cloud-bar.offline .dot{background:#ff4d4f}
+.cloud-bar.syncing .dot{background:#faad14;animation:cloudPulse 1s infinite}
+@keyframes cloudPulse{0%,100%{opacity:1}50%{opacity:.4}}
+.cloud-bar .text{flex:1}
+.cloud-bar button{font-size:12px;padding:4px 12px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;cursor:pointer;color:#555;transition:all .2s}
+.cloud-bar button:hover{background:#f5f5f5}
+.cloud-bar button.primary{background:#722ed1;color:#fff;border-color:#722ed1}
+.cloud-bar button.primary:hover{background:#5b25b0}
+.cloud-bar button:disabled{opacity:.5;cursor:not-allowed}
+</style>
+<style>
+.ocr-progress{margin:10px 0;padding:10px;background:#f0f5ff;border:1px solid #d6e4ff;border-radius:8px;font-size:13px;color:#333}
+.ocr-progress .bar{height:6px;background:#e6e6e6;border-radius:3px;overflow:hidden;margin-top:6px}
+.ocr-progress .bar>div{height:100%;width:0;background:linear-gradient(90deg,#722ed1,#a855f7);transition:width .3s}
+.ocr-progress .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ocr-status-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
+.ocr-status-tag.idle{background:#f5f5f5;color:#999}
+.ocr-status-tag.run{background:#fffbe6;color:#faad14}
+.ocr-status-tag.ok{background:#f6ffed;color:#52c41a}
+.ocr-status-tag.err{background:#fff2f0;color:#ff4d4f}
+.ocr-line{font-family:monospace;font-size:12px;color:#444;white-space:pre-wrap;word-break:break-all;max-height:140px;overflow:auto;background:#fafafa;border:1px solid #eee;border-radius:4px;padding:8px;margin-top:8px}
+.ocr-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn-ghost{background:#f5f5f5;color:#555;border:1px solid #ddd;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px}
+.btn-ghost:hover{background:#eee}
+
+/* ==================== v4.9 药品基数管理样式 ==================== */
+.base-tbl input{width:100%;padding:4px 6px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;box-sizing:border-box}
+.base-tbl input:focus{outline:none;border-color:#722ed1;box-shadow:0 0 0 2px rgba(114,46,209,.15)}
+
+/* v4.9 数据版本提示 */
+.data-migrate-msg{background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#d48806;line-height:1.6}
+.data-migrate-msg.ok{background:#f6ffed;border-color:#b7eb8f;color:#52c41a}
+.data-migrate-msg.err{background:#fff2f0;border-color:#ffccc7;color:#ff4d4f}
+
+/* v4.9 清点差异高亮 */
+.diff-cell{font-weight:700}
+.diff-zero{color:#52c41a}
+.diff-nonzero{color:#ff4d4f;background:#fff2f0;padding:2px 6px;border-radius:3px}
 </style>
 </head>
 <body>
+
+<!-- ==================== v5.0 云端同步状态栏 ==================== -->
+<div class="cloud-bar offline" id="cloudBar">
+  <div class="dot"></div>
+  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
+  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
+  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
+</div>
+
+<!-- v5.0 云端配置弹窗 -->
+<div class="modal" id="mCloud">
+  <div class="mc" style="max-width:540px">
+    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
+    <div class="mb">
+      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
+        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
+        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
+        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
+        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
+      </div>
+      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
+      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
+      <div class="fg"><label>同步模式</label>
+        <select class="fi" id="cfgMode">
+          <option value="cloud">☁️ 云端优先（推荐）</option>
+          <option value="local">💾 仅本地（离线）</option>
+          <option value="hybrid">🔄 云端 + 本地双写</option>
+        </select>
+      </div>
+      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
+      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
+-- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
+create table if not exists kv (
+  key text primary key,
+  val text not null,
+  updated_at timestamptz default now()
+);
+alter table kv enable row level security;
+create policy "public all" on kv for all to anon using (true) with check (true);
+-- 可选：开启实时订阅 --
+alter publication supabase_realtime add table kv;
+
+-- 导入初始数据（可选，系统首次启动会自动建）--
+-- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
+      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
+      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
+    </div>
+  </div>
+</div>
 
 <!-- ==================== 登录/注册页 ==================== -->
 <div id="loginPage">
@@ -241,7 +384,8 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
     <button class="btn btn-primary" onclick="doReg()">提 交 注 册</button>
     <div class="switch-link">已有账号？<a onclick="swTab('login')">返回登录</a></div>
   </div>
-  <div class="footer-text">© 2026 小陈智能管理系统 v4.3 | 自定义模板版</div>
+  <div class="footer-text">© 2026 小陈智能管理系统 v5.0 | Supabase 共用版</div>
+  <div id="bootStatus" style="text-align:center;font-size:12px;color:#aaa;margin-top:8px">⏳ 系统初始化中…（首次加载约 1-3 秒）</div>
 </div>
 </div>
 
@@ -276,6 +420,7 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
         <li><a onclick="swMenu(this,'cart')"><span class="ico">🚑</span>抢救车管理</a></li>
         <li><a onclick="swMenu(this,'record')"><span class="ico">📝</span>抢救记录</a></li>
         <li><a onclick="swMenu(this,'seal')"><span class="ico">🔒</span>封条管理</a></li>
+        <li><a onclick="swMenu(this,'shift')"><span class="ico">🤝</span>交接班管理</a></li>
         <li><a onclick="swMenu(this,'report')"><span class="ico">📈</span>统计报表</a></li>
       </ul>
       <div class="sb-cat">系统管理</div>
@@ -290,6 +435,7 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 
       <!-- 工作台 -->
       <div class="sec" id="sec-dashboard">
+        <div id="dataMigrateBanner"></div>
         <div class="card">
           <div class="ch"><div class="ct">👋 欢迎回来，<span id="welcome">超级管理员</span>！</div></div>
           <div class="kpi-grid">
@@ -301,12 +447,16 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
         </div>
         <div class="card">
           <div class="ch"><div class="ct">📢 系统公告</div></div>
-          <p class="text-sm text-gray">系统已更新至 v4.3，新增「自定义模板」功能！护士长可自由定义每辆抢救车的格子布局，点选即可完成物品归位。</p>
+          <p class="text-sm text-gray">系统已更新至 v4.9！🔢 新增药品标准基数管理：模板绑定标准基数表，一键套用，清点可复位为基数，报表增加"基数符合率"KPI。v4.9 修复：数据版本校验、药品批号维度唯一性、OCR Worker 内存管理、权限粒度细化。</p>
           <div class="bdt pt10 mt10 text-sm text-gray">当前登录：<span class="text-purple fw-bold" id="curUser">超级管理员</span>（<span id="curRole">主管理员</span>）| 登录时间：<span id="curTime"></span></div>
         </div>
         <div class="card">
           <div class="ch"><div class="ct">🚑 抢救车状态</div></div>
           <div id="cartStatus"></div>
+        </div>
+        <div class="card" id="recentShiftCard">
+          <div class="ch"><div class="ct">🤝 最近交接班</div><button class="btn btn-primary btn-sm" onclick="swMenuNav('shift')">查看全部</button></div>
+          <div id="recentShifts"></div>
         </div>
       </div>
 
@@ -320,6 +470,7 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
                 <span class="text-sm text-gray">当前车辆：</span>
                 <select class="fi" id="drugCartSelect" onchange="switchDrugCart()" style="width:auto;min-width:160px;padding:8px 12px"></select>
               </div>
+              <button class="btn btn-purple btn-sm" onclick="applyBaseToCurrentCart()">🔢 一键套用标准基数</button>
               <button class="btn btn-success btn-sm" onclick="batchAddCommonDrugs()">➕ 一键加常用药品</button>
               <button class="btn btn-info btn-sm" onclick="openOCR()">📸 拍照识别</button>
               <button class="btn btn-warning btn-sm" onclick="openTextOCR()">📝 文本识别</button>
@@ -409,6 +560,7 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
               <div style="width:160px"><div class="pbar"><div class="pfill" id="pFill" style="width:0%"></div></div></div>
               <span class="text-sm fw-bold text-purple" id="pText">0%</span>
             </div>
+            <button class="btn btn-purple btn-sm" onclick="resetCheckToBase()">↩️ 复位为基数</button>
             <button class="btn btn-success btn-sm" onclick="saveCheck()">💾 保存清点</button>
             <button class="btn btn-primary btn-sm" onclick="saveAndSeal()">🔒 保存并封存</button>
           </div>
@@ -453,16 +605,45 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
         </div>
       </div>
 
+      <!-- 交接班管理 -->
+      <div class="sec hidden" id="sec-shift">
+        <div class="card">
+          <div class="ch">
+            <div class="ct">🤝 交接班管理</div>
+            <div class="flex gap10">
+              <button class="btn btn-success btn-sm" onclick="openShiftModal()">➕ 新增交接班</button>
+              <button class="btn btn-info btn-sm" onclick="quickShift()">⚡ 快速接班</button>
+            </div>
+          </div>
+          <div class="print-toolbar">
+            <label>筛选车辆：</label>
+            <select class="fi" id="printCartFilter" onchange="renderShifts()">
+              <option value="">全部抢救车</option>
+            </select>
+            <label>筛选状态：</label>
+            <select class="fi" id="printStatusFilter" onchange="renderShifts()">
+              <option value="">全部</option>
+              <option value="正常">仅正常</option>
+              <option value="异常">仅异常</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="printShifts()">🖨️ 打印当前列表</button>
+            <button class="btn btn-warning btn-sm" onclick="exportShiftsHTML()">💾 导出HTML文件</button>
+          </div>
+          <div id="shiftList"></div>
+        </div>
+      </div>
+
       <!-- 统计报表 -->
       <div class="sec hidden" id="sec-report">
         <div class="card">
           <div class="ch"><div class="ct">📈 统计报表</div></div>
           <div class="kpi-grid" id="reportKpi"></div>
           <div class="mt10"><div class="fw-bold mb10">近效期 TOP5</div><div id="reportTop5"></div></div>
+          <div class="mt15"><div class="fw-bold mb10">🤝 交接班统计</div><div id="reportShift"></div></div>
         </div>
       </div>
 
-      <!-- 模板管理（v4.3 新增） -->
+      <!-- 模板管理 -->
       <div class="sec hidden" id="sec-template">
         <div class="card">
           <div class="ch">
@@ -474,7 +655,6 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
           </div>
           <div id="tplList"></div>
         </div>
-        <!-- 选中模板的预览 -->
         <div class="card hidden" id="tplPreviewCard">
           <div class="ch"><div class="ct">👁️ 模板预览：<span id="tplPreviewName"></span></div></div>
           <div id="tplPreviewBody"></div>
@@ -487,6 +667,7 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
           <div class="ch"><div class="ct">👥 账户管理</div><button class="btn btn-success btn-sm" onclick="openAddUserModal()">➕ 新增用户</button></div>
           <div class="mb15"><div class="fw-bold mb10">⏳ 待审核用户（<span id="pendingCnt">0</span>）</div><div id="pendingList"></div></div>
           <div><div class="fw-bold mb10">✅ 已通过用户</div><div id="approvedList"></div></div>
+          <div class="mt15"><div class="fw-bold mb10">✍️ 电子签名统计</div><div id="sigStatList"></div></div>
         </div>
       </div>
 
@@ -499,8 +680,10 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
           <div class="fg"><label>每次清点要求百分比（%）</label><input class="fi" id="cfgPct" type="number" value="100" style="max-width:200px"></div>
           <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="saveCfg()">保存设置</button>
           <div class="bdt pt15 mt15">
-            <div class="fw-bold mb10 text-danger">危险操作</div>
-            <button class="btn btn-danger btn-sm" onclick="resetAll()">⚠️ 重置全部数据</button>
+            <div class="fw-bold mb10" style="color:#ff4d4f">危险操作</div>
+            <button class="btn btn-danger btn-sm" onclick="backupData()">📤 导出全部数据备份</button>
+            <button class="btn btn-warning btn-sm" style="margin-left:8px" onclick="restoreDataPrompt()">📥 从备份恢复</button>
+            <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="resetAll()">⚠️ 重置全部数据</button>
           </div>
         </div>
       </div>
@@ -519,9 +702,16 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
         <button class="btn btn-info btn-sm" onclick="startCam()">🎥 开启摄像头</button>
         <button class="btn btn-success btn-sm" onclick="capture()">📸 拍照识别</button>
         <button class="btn btn-warning btn-sm" onclick="uploadImg()">🖼 选择图片</button>
+        <button class="btn btn-ghost btn-sm" onclick="reOcrCurrent()">🔄 重新识别</button>
+        <button class="btn btn-ghost btn-sm" onclick="stopCamBtn()">⏹ 关摄像头</button>
         <input type="file" id="imgUpload" accept="image/*" capture="camera" class="hidden" onchange="handleImg(event)">
       </div>
-      <div class="fw-bold mb10">识别结果（<span id="ocrCnt">0</span> 项）</div>
+      <div class="ocr-progress">
+        <div class="row"><span class="fw-bold">识别状态</span><span id="ocrStatusTag" class="ocr-status-tag idle">待拍照/选图</span></div>
+        <div class="bar"><div id="ocrProgressBar"></div></div>
+        <div id="ocrLine" class="ocr-line"></div>
+      </div>
+      <div class="fw-bold mb10 mt10">识别结果（<span id="ocrCnt">0</span> 项，可编辑批号/有效期）</div>
       <div id="ocrList"></div>
     </div>
     <div class="mf">
@@ -578,48 +768,66 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
   </div>
 </div>
 
+<!-- 电子签名模态框 -->
+<div class="modal" id="mSign">
+  <div class="mc" style="max-width:480px">
+    <div class="mh"><div class="mt" id="mSignTitle">✍️ 电子签名</div><button class="mx" onclick="closeM('mSign')">×</button></div>
+    <div class="mb">
+      <p class="text-sm text-gray mb15" id="mSignDesc">请在下方区域手写签名</p>
+      <div class="sig-box" onclick="this.querySelector('canvas').focus()">
+        <canvas id="sigCanvas" width="420" height="140"></canvas>
+        <div class="sig-tip">✍️ 请用手指/鼠标在上方区域书写</div>
+      </div>
+      <div class="sig-actions">
+        <button class="clear" onclick="clearSignature()">🧹 重写</button>
+        <button class="ok" onclick="saveSignature()">✅ 确认签名</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 打印隐藏页眉页脚模板 -->
+<div class="print-header">
+  <h1>小陈智能管理系统 v5.0</h1>
+  <div class="sub">交接班记录 · 打印时间：<span id="printTime"></span></div>
+</div>
+<div class="print-footer">
+  本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。
+</div>
+<div class="page-num">第 <span id="pageNum">1</span> 页</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-/* ==================== 全局状态 ==================== */
+/* ==================== v4.9 全局状态 ==================== */
+const DATA_VERSION = '5.0';  // v4.9 数据版本号，用于迁移检测
 let U=null;
 const AID='5180', APWD='5180', D7=7*24*3600*1000;
 let DRUGS=[], MATS=[], EQUIPS=[], CARTS=[], RECORDS=[], SEALS=[], USERS=[], PENDING=[], CHECKS=[], OCR=[];
+let SHIFTS=[], SIGNATURES={};
+let BASE_TABLES={};
+let TEMPLATES=[], CART_TPL_MAP={};
 let chkMode=false, chkSel=new Set(), cfg={warn:90,urgent:30,pct:100};
+let currentDrugCart='CART-001', currentMatCart='CART-001', currentEqCart='CART-001';
 
-// v4.3 新增：模板系统
-let TEMPLATES = []; // {id, name, desc, layers:[{name, cells:[{code, label}]}]}
-let CART_TPL_MAP = {}; // cartCode -> templateId
+// v4.5 电子签名临时状态
+let _sigCanvas=null, _sigCtx=null, _sigDone=false, _sigDataUrl='', _sigTargetUser=null, _sigCallback=null;
 
-let currentDrugCart = 'CART-001';
-let currentMatCart = 'CART-001';
-let currentEqCart = 'CART-001';
-
-/* ==================== 默认模板 & 数据 ==================== */
+/* ==================== v4.9 默认模板 & 数据 ==================== */
 function defaultTemplate(){
   return {
-    id: 'TPL-DEFAULT',
-    name: '标准抢救车模板',
-    desc: '4层结构：第一层急救药、第二层心血管药、第三层辅助药、第四层耗材',
-    layers: [
-      { name: '第一层（急救药）', cells: [
-        {code:'A1',label:'左1格'},{code:'A2',label:'左2格'},{code:'A3',label:'左3格'},{code:'A4',label:'左4格'},
-        {code:'A5',label:'右1格'},{code:'A6',label:'右2格'}
-      ]},
-      { name: '第二层（心血管）', cells: [
-        {code:'B1',label:'抽屉1'},{code:'B2',label:'抽屉2'},{code:'B3',label:'抽屉3'},{code:'B4',label:'抽屉4'}
-      ]},
-      { name: '第三层（辅助药）', cells: [
-        {code:'C1',label:'左格'},{code:'C2',label:'右格'}
-      ]},
-      { name: '第四层（耗材）', cells: [
-        {code:'D1',label:'输液器'},{code:'D2',label:'注射器'},{code:'D3',label:'敷料'},{code:'D4',label:'消毒'}
-      ]}
+    id:'TPL-DEFAULT',name:'标准抢救车模板',
+    desc:'4层结构：第一层急救药、第二层心血管药、第三层辅助药、第四层耗材',
+    layers:[
+      {name:'第一层（急救药）',cells:[{code:'A1',label:'左1格'},{code:'A2',label:'左2格'},{code:'A3',label:'左3格'},{code:'A4',label:'左4格'},{code:'A5',label:'右1格'},{code:'A6',label:'右2格'}]},
+      {name:'第二层（心血管）',cells:[{code:'B1',label:'抽屉1'},{code:'B2',label:'抽屉2'},{code:'B3',label:'抽屉3'},{code:'B4',label:'抽屉4'}]},
+      {name:'第三层（辅助药）',cells:[{code:'C1',label:'左格'},{code:'C2',label:'右格'}]},
+      {name:'第四层（耗材）',cells:[{code:'D1',label:'输液器'},{code:'D2',label:'注射器'},{code:'D3',label:'敷料'},{code:'D4',label:'消毒'}]}
     ]
   };
 }
 
-const COMMON_DRUGS = [
+const COMMON_DRUGS=[
   {name:'肾上腺素注射液',spec:'1mg/ml*1ml',stock:10,batch:'AUTO',expire:'2025-12-01',loc:'A1',cat:'急救药',level:'A'},
   {name:'阿托品注射液',spec:'0.5mg/ml*1ml',stock:8,batch:'AUTO',expire:'2025-11-15',loc:'A2',cat:'急救药',level:'A'},
   {name:'多巴胺注射液',spec:'20mg/ml*2ml',stock:12,batch:'AUTO',expire:'2026-03-20',loc:'B1',cat:'心血管药',level:'A'},
@@ -634,7 +842,7 @@ const COMMON_DRUGS = [
   {name:'葡萄糖酸钙注射液',spec:'1g/10ml',stock:20,batch:'AUTO',expire:'2026-05-20',loc:'A4',cat:'电解质',level:'B'}
 ];
 
-const COMMON_MATS = [
+const COMMON_MATS=[
   {name:'输液器',spec:'7#',stock:50,loc:'D1'},
   {name:'注射器',spec:'5ml',stock:100,loc:'D2'},
   {name:'注射器',spec:'10ml',stock:80,loc:'D2'},
@@ -645,33 +853,103 @@ const COMMON_MATS = [
   {name:'酒精棉片',spec:'70%',stock:100,loc:'D4'}
 ];
 
-/* ==================== 初始化 ==================== */
+/* ==================== v4.9 数据迁移系统 ==================== */
+function migrateData(oldVersion){
+  // 从任意旧版本迁移到 v4.9
+  console.log('[v4.9] 数据迁移：从版本', oldVersion || '未知', '→ 4.9');
+
+  // 确保 BASE_TABLES 存在
+  if(!LS('BASE_TABLES')){
+    const defaultBase = {
+      'TPL-DEFAULT': COMMON_DRUGS.map(d=>({
+        name:d.name, spec:d.spec, loc:d.loc, base:d.stock, cat:d.cat, level:d.level
+      }))
+    };
+    LS('BASE_TABLES', defaultBase);
+    BASE_TABLES = defaultBase;
+  }
+
+  // v4.9：为已有药品补充 batch+expire 唯一性字段（如缺失）
+  DRUGS.forEach(d=>{
+    if(!d.batch) d.batch = '未知批号';
+    if(!d.expire) d.expire = '2026-12-31';
+    if(!d.cat) d.cat = '急救药';
+    if(!d.level) d.level = 'A';
+  });
+  MATS.forEach(m=>{
+    if(!m.batch) m.batch = '未知批号';
+    if(!m.expire) m.expire = '2026-12-31';
+  });
+
+  // v4.9：为已有交接班补充签名快照字段（如缺失）
+  SHIFTS.forEach(s=>{
+    if(!s.fromSign && SIGNATURES[s.from]) s.fromSign = SIGNATURES[s.from];
+    if(!s.toSign && SIGNATURES[s.to]) s.toSign = SIGNATURES[s.to];
+  });
+
+  // 写入新版本号
+  LS('DATA_VERSION', DATA_VERSION);
+  return true;
+}
+
+/* ==================== v4.9 初始化（含版本校验） ==================== */
 window.onload=function(){
+  const boot=$('bootStatus');
+  if(boot)boot.style.display='none';
+
+  // v4.9：检测数据版本
+  const storedVersion = LS('DATA_VERSION');
+  if(storedVersion && storedVersion !== DATA_VERSION){
+    // 需要迁移
+    migrateData(storedVersion);
+    showMigrateBanner('success', `✅ 数据已从 v${storedVersion} 自动迁移至 v${DATA_VERSION}`);
+  } else if(!storedVersion){
+    // 全新安装
+    migrateData(null);
+  } else {
+    // 版本一致，正常加载
+    LS('DATA_VERSION', DATA_VERSION);
+  }
+
   initData();
   chkLogin();
-  document.getElementById('curTime').textContent=new Date().toLocaleString('zh-CN');
+  $('curTime').textContent=new Date().toLocaleString('zh-CN');
+  renderDashboard();
+
+  if(document.getElementById('loginPage').style.display!=='none'){
+    if(boot){boot.textContent='✅ 系统就绪，请登录';boot.style.color='#52c41a';boot.style.display='block';}
+  }
+
+  // v4.9：页面卸载时清理 OCR Worker
+  window.addEventListener('beforeunload', cleanupOnUnload);
 };
+
+function showMigrateBanner(type, msg){
+  const banner = $('dataMigrateBanner');
+  if(!banner) return;
+  banner.className = 'data-migrate-msg ' + (type==='success'?'ok':type==='error'?'err':'');
+  banner.textContent = msg;
+  banner.style.display = 'block';
+  setTimeout(()=>{ banner.style.display='none'; }, 5000);
+}
+
+/* ==================== 初始化数据 ==================== */
 function initData(){
   if(!LS('cfg'))LS('cfg',JSON.stringify(cfg));else cfg=JSON.parse(LS('cfg'));
-  
+
   if(!LS('USERS')){
     USERS=[{id:AID,name:'超级管理员',username:AID,password:APWD,role:'主管理员',dept:'信息科',phone:'',status:'approved',createdAt:Date.now()}];
-    LS('USERS',USERS)
+    LS('USERS',USERS);
   }else USERS=JSON.parse(LS('USERS'));
-  
+
   if(!LS('PENDING')){PENDING=[];LS('PENDING',PENDING)}else PENDING=JSON.parse(LS('PENDING'));
-  
-  // 模板初始化
-  if(!LS('TEMPLATES')){
-    TEMPLATES=[defaultTemplate()];
-    LS('TEMPLATES',TEMPLATES);
-  }else TEMPLATES=JSON.parse(LS('TEMPLATES'));
-  
-  if(!LS('CART_TPL_MAP')){
-    CART_TPL_MAP={};
-    LS('CART_TPL_MAP',CART_TPL_MAP);
-  }else CART_TPL_MAP=JSON.parse(LS('CART_TPL_MAP'));
-  
+
+  if(!LS('TEMPLATES')){TEMPLATES=[defaultTemplate()];LS('TEMPLATES',TEMPLATES);}
+  else TEMPLATES=JSON.parse(LS('TEMPLATES'));
+
+  if(!LS('CART_TPL_MAP')){CART_TPL_MAP={};LS('CART_TPL_MAP',CART_TPL_MAP);}
+  else CART_TPL_MAP=JSON.parse(LS('CART_TPL_MAP'));
+
   if(!LS('CARTS')){
     CARTS=[
       {id:1,code:'CART-001',name:'急诊科抢救车A',loc:'急诊科1号位',manager:'王护士长',progress:100,status:'sealed',templateId:'TPL-DEFAULT'},
@@ -679,50 +957,370 @@ function initData(){
       {id:3,code:'CART-003',name:'内科抢救车',loc:'内科病房',manager:'张医生',progress:60,status:'open',templateId:'TPL-DEFAULT'},
       {id:4,code:'CART-004',name:'外科抢救车',loc:'外科处置室',manager:'刘护士',progress:100,status:'sealed',templateId:'TPL-DEFAULT'}
     ];
-    LS('CARTS',CARTS)
+    LS('CARTS',CARTS);
   }else CARTS=JSON.parse(LS('CARTS'));
-  
-  // 药品数据
+
   if(!LS('DRUGS')){
-    DRUGS=COMMON_DRUGS.map((d,i)=>({
-      id:i+1,name:d.name,spec:d.spec,stock:d.stock,batch:d.batch,expire:d.expire,
-      loc:`CART-001-${d.loc}`,cat:d.cat,level:d.level.charAt(0)
-    }));
-    LS('DRUGS',DRUGS)
+    DRUGS=COMMON_DRUGS.map((d,i)=>({id:i+1,name:d.name,spec:d.spec,stock:d.stock,batch:d.batch,expire:d.expire,loc:`CART-001-${d.loc}`,cat:d.cat,level:d.level.charAt(0)}));
+    LS('DRUGS',DRUGS);
   }else DRUGS=JSON.parse(LS('DRUGS'));
-  
-  // 耗材数据
+
   if(!LS('MATS')){
     MATS=COMMON_MATS.map((m,i)=>({id:i+1,name:m.name,spec:m.spec,stock:m.stock,batch:'M001',expire:'2026-12-01',loc:`CART-001-${m.loc}`}));
-    LS('MATS',MATS)
+    LS('MATS',MATS);
   }else MATS=JSON.parse(LS('MATS'));
-  
-  // 器械数据
+
   if(!LS('EQUIPS')){
     EQUIPS=[{id:1,name:'血压计',model:'欧姆龙HEM-7121',stock:2,status:'正常',loc:'CART-001'}];
-    LS('EQUIPS',EQUIPS)
+    LS('EQUIPS',EQUIPS);
   }else EQUIPS=JSON.parse(LS('EQUIPS'));
-  
+
   if(!LS('RECORDS')){RECORDS=[];LS('RECORDS',RECORDS)}else RECORDS=JSON.parse(LS('RECORDS'));
-  if(!LS('SEALS')){SEALS=[];LS('SEALS')}else SEALS=JSON.parse(LS('SEALS'));
+  if(!LS('SEALS')){SEALS=[];LS('SEALS',SEALS)}else SEALS=JSON.parse(LS('SEALS'));
   if(!LS('CHECKS')){CHECKS={};LS('CHECKS',CHECKS)}else CHECKS=JSON.parse(LS('CHECKS'));
+
+  // v4.4 交接班
+  if(!LS('SHIFTS')){
+    SHIFTS=[
+      {id:'demo1',cartCode:'CART-001',from:'王芳',to:'李敏',time:Date.now()-86400000,status:'正常',remark:'封条完好，药品齐全',abnormal:'',fromSign:'',toSign:''},
+      {id:'demo2',cartCode:'CART-002',from:'李敏',to:'张伟',time:Date.now()-3600000,status:'异常',remark:'封条有轻微破损',abnormal:'已更换新封条，已上报',fromSign:'',toSign:''}
+    ];
+    LS('SHIFTS',SHIFTS);
+  }else SHIFTS=JSON.parse(LS('SHIFTS'));
+
+  // v4.5 电子签名
+  if(!LS('SIGNATURES')){SIGNATURES={};LS('SIGNATURES',SIGNATURES);}
+  else SIGNATURES=JSON.parse(LS('SIGNATURES'));
+
+  // v4.8.2 / v4.9 药品标准基数表
+  if(!LS('BASE_TABLES')){
+    BASE_TABLES={
+      'TPL-DEFAULT': COMMON_DRUGS.map(d=>({
+        name:d.name, spec:d.spec, loc:d.loc, base:d.stock, cat:d.cat, level:d.level
+      }))
+    };
+    LS('BASE_TABLES',BASE_TABLES);
+  }else BASE_TABLES=JSON.parse(LS('BASE_TABLES'));
 }
 
 /* ==================== 工具函数 ==================== */
-function LS(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}
-function $(id){return document.getElementById(id)}
-function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
-function openM(id){$(id).classList.add('show')}
-function closeM(id){$(id).classList.remove('show')}
-function confirm(msg,cb){$('confirmMsg').textContent=msg;$('confirmBtn').onclick=function(){cb();closeM('mConfirm')};openM('mConfirm')}
-function fmtDate(ts){return new Date(ts).toLocaleDateString('zh-CN')}
-function daysUntil(exp){const d=Math.ceil((new Date(exp)-new Date())/86400000);return d}
+/* ==================== v5.0 存储层（localStorage + Supabase 叠加） ==================== */
+let _sbClient = null;
+let _cloudMode = 'local';
+let _cloudOnline = false;
+let _cloudReady = false;
+let _cloudInited = false;
+
+// 启动：从 localStorage 恢复云端配置
+(function loadCloudConfig(){
+  try{
+    const c = JSON.parse(localStorage.getItem('CLOUD_CFG')||'null');
+    if(c && c.url && c.key){
+      _cloudMode = c.mode || 'cloud';
+      initSupabase(c.url, c.key);
+    }
+  }catch(e){ console.warn('[v5.0] 读取云端配置失败', e); }
+  _cloudInited = true;
+  // 异步尝试连接
+  if(_cloudReady) {
+    setCloudStatus('syncing','⏳ 正在从云端同步...');
+    initCloudSync();
+  } else {
+    setCloudStatus('offline','⚠️ 未连接云端 — 当前为本地模式');
+  }
+})();
+
+function initSupabase(url, key){
+  try{
+    _sbClient = supabase.createClient(url, key);
+    _cloudReady = true;
+    console.log('[v5.0] Supabase client created');
+  }catch(e){
+    console.error('[v5.0] Supabase init failed', e);
+    _sbClient = null;
+    _cloudReady = false;
+  }
+}
+
+// 同步 LS（保持原 v4.9 行为不变）
+function LS(k,v){
+  if(v===undefined) return localStorage.getItem(k);
+  localStorage.setItem(k, typeof v==='string' ? v : JSON.stringify(v));
+  // 叠加：异步同步到云端（不阻塞）
+  cloudWrite(k, typeof v==='string' ? v : JSON.stringify(v));
+  return;
+}
+
+// 云端写入（fire-and-forget）
+function cloudWrite(k, val){
+  if(!_cloudReady || !_sbClient || _cloudMode==='local') return;
+  _sbClient
+    .from('kv')
+    .upsert({ key:k, val:val, updated_at:new Date().toISOString() })
+    .then(({error})=>{
+      if(error) console.warn('[v5.0] 云端写入失败', k, error.message);
+    })
+    .catch(e=>console.warn('[v5.0] 云端写入异常', e));
+}
+
+// 云端读取
+async function cloudRead(k){
+  if(!_cloudReady || !_sbClient) return null;
+  try{
+    const { data, error } = await _sbClient
+      .from('kv').select('val').eq('key', k).single();
+    if(error) throw error;
+    return data ? data.val : null;
+  }catch(e){ return null; }
+}
+
+// 批量从云端加载全部数据 → 写入 localStorage → 触发刷新
+async function initCloudSync(){
+  if(!_cloudReady || !_sbClient) return false;
+  try{
+    const { data, error } = await _sbClient.from('kv').select('key,val');
+    if(error) throw error;
+    let count = 0;
+    if(data && data.length){
+      data.forEach(row=>{
+        try{ localStorage.setItem(row.key, row.val); count++; }catch(e){}
+      });
+      console.log('[v5.0] 从云端加载了', count, '条数据');
+      // 同步到内存
+      syncCloudToMemory();
+      setCloudStatus('online', `☁️ 云端已连接 · 已同步 ${count} 条数据`);
+      // 刷新所有视图
+      refreshAllViews();
+      return true;
+    }
+  }catch(e){
+    console.warn('[v5.0] 批量加载失败', e);
+  }
+  setCloudStatus('offline','⚠️ 云端连接失败 — 使用本地数据');
+  return false;
+}
+
+// 云端数据 → 内存变量
+function syncCloudToMemory(){
+  try{
+    if(localStorage.getItem('cfg')) cfg = JSON.parse(localStorage.getItem('cfg'));
+    if(localStorage.getItem('USERS')) USERS = JSON.parse(localStorage.getItem('USERS'));
+    if(localStorage.getItem('PENDING')) PENDING = JSON.parse(localStorage.getItem('PENDING'));
+    if(localStorage.getItem('TEMPLATES')) TEMPLATES = JSON.parse(localStorage.getItem('TEMPLATES'));
+    if(localStorage.getItem('CART_TPL_MAP')) CART_TPL_MAP = JSON.parse(localStorage.getItem('CART_TPL_MAP'));
+    if(localStorage.getItem('CARTS')) CARTS = JSON.parse(localStorage.getItem('CARTS'));
+    if(localStorage.getItem('DRUGS')) DRUGS = JSON.parse(localStorage.getItem('DRUGS'));
+    if(localStorage.getItem('MATS')) MATS = JSON.parse(localStorage.getItem('MATS'));
+    if(localStorage.getItem('EQUIPS')) EQUIPS = JSON.parse(localStorage.getItem('EQUIPS'));
+    if(localStorage.getItem('RECORDS')) RECORDS = JSON.parse(localStorage.getItem('RECORDS'));
+    if(localStorage.getItem('SEALS')) SEALS = JSON.parse(localStorage.getItem('SEALS'));
+    if(localStorage.getItem('CHECKS')) CHECKS = JSON.parse(localStorage.getItem('CHECKS'));
+    if(localStorage.getItem('SHIFTS')) SHIFTS = JSON.parse(localStorage.getItem('SHIFTS'));
+    if(localStorage.getItem('SIGNATURES')) SIGNATURES = JSON.parse(localStorage.getItem('SIGNATURES'));
+    if(localStorage.getItem('BASE_TABLES')) BASE_TABLES = JSON.parse(localStorage.getItem('BASE_TABLES'));
+  }catch(e){ console.warn('[v5.0] syncCloudToMemory 部分失败', e); }
+}
+
+// 刷新所有可见视图
+function refreshAllViews(){
+  try{
+    renderDashboard();
+    if(document.getElementById('sec-drug') && !document.getElementById('sec-drug').classList.contains('hidden')) renderDrug();
+    if(document.getElementById('sec-material') && !document.getElementById('sec-material').classList.contains('hidden')) renderMaterial();
+    if(document.getElementById('sec-equip') && !document.getElementById('sec-equip').classList.contains('hidden')) renderEquip();
+    if(document.getElementById('sec-cart') && !document.getElementById('sec-cart').classList.contains('hidden')) renderCarts();
+    if(document.getElementById('sec-record') && !document.getElementById('sec-record').classList.contains('hidden')) renderRecords();
+    if(document.getElementById('sec-seal') && !document.getElementById('sec-seal').classList.contains('hidden')) renderSeals();
+    if(document.getElementById('sec-shift') && !document.getElementById('sec-shift').classList.contains('hidden')) renderShifts();
+    if(document.getElementById('sec-report') && !document.getElementById('sec-report').classList.contains('hidden')) renderReport();
+    if(document.getElementById('sec-template') && !document.getElementById('sec-template').classList.contains('hidden')) renderTemplates();
+    if(document.getElementById('sec-account') && !document.getElementById('sec-account').classList.contains('hidden')) renderAccount();
+    if(document.getElementById('sec-setting') && !document.getElementById('sec-setting').classList.contains('hidden')) {/* settings has no render */}
+  }catch(e){ console.warn('[v5.0] refreshAllViews', e); }
+}
+
+// 状态栏
+function setCloudStatus(state, text){
+  const bar = document.getElementById('cloudBar');
+  const txt = document.getElementById('cloudText');
+  const btn = document.getElementById('btnCloudToggle');
+  if(!bar) return;
+  bar.className = 'cloud-bar ' + state;
+  if(txt) txt.textContent = text;
+  if(btn){
+    if(state==='online'){ btn.textContent='☁️ 云端在线'; btn.disabled=true; }
+    else { btn.textContent='启用云端'; btn.disabled=false; }
+  }
+}
+
+// 测试连接
+async function testCloudConnection(){
+  const url = document.getElementById('cfgUrl').value.trim();
+  const key = document.getElementById('cfgKey').value.trim();
+  const out = document.getElementById('cloudTestResult');
+  if(!url || !key){ out.innerHTML='<span style="color:#ff4d4f">请先填写 URL 和 Key</span>'; return; }
+  out.innerHTML='<span style="color:#faad14">⏳ 测试中...</span>';
+  try{
+    const testClient = supabase.createClient(url, key);
+    const { data, error } = await testClient.from('kv').select('key').limit(1);
+    if(error) throw error;
+    out.innerHTML='<span style="color:#52c41a">✅ 连接成功！表结构正常。</span>';
+  }catch(e){
+    out.innerHTML='<span style="color:#ff4d4f">❌ 连接失败：'+ (e.message||e) +'<br>请检查 URL/Key，并确认已执行 SQL 建表脚本。</span>';
+  }
+}
+
+// 显示/隐藏 SQL 帮助
+function showSQLHelp(){
+  const el = document.getElementById('sqlHelp');
+  if(el) el.style.display = (el.style.display==='none') ? 'block' : 'none';
+}
+
+// 保存配置
+function saveCloudConfig(){
+  const url = document.getElementById('cfgUrl').value.trim();
+  const key = document.getElementById('cfgKey').value.trim();
+  const mode = document.getElementById('cfgMode').value;
+  if(!url || !key){ toast('请填写完整的 URL 和 Key'); return; }
+  localStorage.setItem('CLOUD_CFG', JSON.stringify({url, key, mode}));
+  _cloudMode = mode;
+  initSupabase(url, key);
+  setCloudStatus('syncing','⏳ 正在从云端同步...');
+  initCloudSync().then(ok=>{
+    if(ok){
+      toast('✅ 云端已启用，数据已同步');
+      closeM('mCloud');
+      // 重新初始化
+      initData();
+      renderDashboard();
+      subscribeRealtime();
+    } else {
+      setCloudStatus('offline','⚠️ 云端连接失败 — 使用本地模式');
+      toast('⚠️ 云端连接失败，使用本地模式');
+      closeM('mCloud');
+    }
+  });
+}
+
+// 切换云端/本地
+function toggleCloudMode(){
+  if(_cloudReady){
+    _cloudMode = (_cloudMode==='cloud'||_cloudMode==='hybrid') ? 'local' : 'cloud';
+    localStorage.setItem('CLOUD_CFG', JSON.stringify({
+      url: _sbClient.supabaseUrl, key: _sbClient.supabaseKey, mode: _cloudMode
+    }));
+    toast(`已切换为 ${_cloudMode==='cloud'?'☁️ 云端':'💾 本地'} 模式`);
+    if(_cloudMode==='cloud'||_cloudMode==='hybrid'){
+      initCloudSync(); subscribeRealtime();
+    } else {
+      unsubscribeRealtime();
+      setCloudStatus('offline','💾 本地模式（云端已暂停）');
+    }
+  } else {
+    openCloudConfig();
+  }
+}
+
+function openCloudConfig(){
+  try{
+    const c = JSON.parse(localStorage.getItem('CLOUD_CFG')||'null');
+    if(c){
+      document.getElementById('cfgUrl').value = c.url||'';
+      document.getElementById('cfgKey').value = c.key||'';
+      document.getElementById('cfgMode').value = c.mode||'local';
+    }
+  }catch(e){}
+  openM('mCloud');
+}
+
+// ==================== v5.0 Realtime 实时订阅 ====================
+let _realtimeChannel = null;
+function subscribeRealtime(){
+  if(!_cloudReady || !_sbClient) return;
+  try{
+    if(_realtimeChannel) _realtimeChannel.unsubscribe();
+    const channel = _sbClient
+      .channel('kv-changes')
+      .on('postgres_changes', { event:'*', schema:'public', table:'kv' }, payload=>{
+        console.log('[v5.0] 实时更新:', payload);
+        if(payload.new && payload.new.key){
+          try{ localStorage.setItem(payload.new.key, payload.new.val); }catch(e){}
+          // 同步到内存 + 防抖刷新
+          debouncedRefresh(payload.new.key);
+        }
+      })
+      .subscribe();
+    _realtimeChannel = channel;
+    console.log('[v5.0] Realtime subscribed');
+  }catch(e){ console.warn('[v5.0] Realtime failed', e); }
+}
+function unsubscribeRealtime(){
+  if(_realtimeChannel){ _realtimeChannel.unsubscribe(); _realtimeChannel=null; }
+}
+
+let _refreshTimer = null;
+function debouncedRefresh(key){
+  clearTimeout(_refreshTimer);
+  _refreshTimer = setTimeout(()=>{
+    // 同步该 key 到内存
+    try{
+      const raw = localStorage.getItem(key);
+      if(raw){
+        if(key==='DRUGS') DRUGS = JSON.parse(raw);
+        else if(key==='MATS') MATS = JSON.parse(raw);
+        else if(key==='CARTS') CARTS = JSON.parse(raw);
+        else if(key==='USERS') USERS = JSON.parse(raw);
+        else if(key==='PENDING') PENDING = JSON.parse(raw);
+        else if(key==='TEMPLATES') TEMPLATES = JSON.parse(raw);
+        else if(key==='CART_TPL_MAP') CART_TPL_MAP = JSON.parse(raw);
+        else if(key==='EQUIPS') EQUIPS = JSON.parse(raw);
+        else if(key==='RECORDS') RECORDS = JSON.parse(raw);
+        else if(key==='SEALS') SEALS = JSON.parse(raw);
+        else if(key==='CHECKS') CHECKS = JSON.parse(raw);
+        else if(key==='SHIFTS') SHIFTS = JSON.parse(raw);
+        else if(key==='SIGNATURES') SIGNATURES = JSON.parse(raw);
+        else if(key==='BASE_TABLES') BASE_TABLES = JSON.parse(raw);
+        else if(key==='cfg') cfg = JSON.parse(raw);
+      }
+    }catch(e){}
+    // 刷新对应视图
+    if(key==='DRUGS'||key==='MATS'){ if($('sec-drug')&&!$('sec-drug').classList.contains('hidden')) renderDrug(); if($('sec-material')&&!$('sec-material').classList.contains('hidden')) renderMaterial(); }
+    if(key==='CARTS'){ renderCartStatus(); }
+    if(key==='SHIFTS'){ renderShifts(); renderRecentShifts(); }
+    if(key==='USERS'||key==='PENDING'||key==='SIGNATURES'){ if($('sec-account')&&!$('sec-account').classList.contains('hidden')) renderAccount(); }
+    if(key==='TEMPLATES'||key==='BASE_TABLES'){ if($('sec-template')&&!$('sec-template').classList.contains('hidden')) renderTemplates(); }
+    updateKpi();
+  }, 300);
+}
+
+// 页面卸载时清理
+window.addEventListener('beforeunload', ()=>{
+  unsubscribeRealtime();
+  cleanupOCR();
+});
+
+function $(id){return document.getElementById(id);}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
+function openM(id){$(id).classList.add('show');}
+function closeM(id){$(id).classList.remove('show');}
+function confirm(msg,cb){$('confirmMsg').textContent=msg;$('confirmBtn').onclick=function(){cb();closeM('mConfirm');};openM('mConfirm');}
+function fmtDate(ts){return new Date(ts).toLocaleString('zh-CN');}
+function daysUntil(exp){return Math.ceil((new Date(exp)-new Date())/86400000);}
 function statusOf(d){
   const days=daysUntil(d);
   if(days<0)return {label:'已过期',cls:'b-danger'};
   if(days<=cfg.urgent)return {label:'紧急('+days+'天)',cls:'b-danger'};
   if(days<=cfg.warn)return {label:'预警('+days+'天)',cls:'b-warn'};
   return {label:'正常',cls:'b-normal'};
+}
+function swMenuNav(id){
+  const map={shift:'sec-shift'};
+  if(map[id]){
+    document.querySelectorAll('.sec').forEach(s=>s.classList.add('hidden'));
+    $(map[id]).classList.remove('hidden');
+    $('hdTitle').textContent='🤝 交接班管理';
+    renderShifts();
+  }
 }
 
 /* ==================== 登录/注册 ==================== */
@@ -734,57 +1332,57 @@ function swTab(t){
 }
 function doLogin(){
   const u=$('lgUser').value.trim(),p=$('lgPwd').value.trim(),r=$('lgRole').value,rem=$('lgRem').checked;
-  if(!u||!p){toast('请输入工号和密码');return}
-  if(u===AID&&p===APWD&&r==='主管理员'){loginOK({id:AID,name:'超级管理员',username:AID,role:'主管理员'},rem);return}
+  if(!u||!p){toast('请输入工号和密码');return;}
+  if(u===AID&&p===APWD&&r==='主管理员'){loginOK({id:AID,name:'超级管理员',username:AID,role:'主管理员'},rem);return;}
   const f=USERS.find(x=>x.username===u&&x.password===p&&x.role===r);
-  if(!f){toast('工号、密码或角色错误');return}
-  if(f.status!=='approved'){toast('账号待审核，请联系主管理员');return}
+  if(!f){toast('工号、密码或角色错误');return;}
+  if(f.status!=='approved'){toast('账号待审核，请联系主管理员');return;}
   loginOK(f,rem);
 }
 function doReg(){
   const name=$('rgName').value.trim(),u=$('rgUser').value.trim(),p=$('rgPwd').value,p2=$('rgPwd2').value,
         r=$('rgRole').value,d=$('rgDept').value.trim(),ph=$('rgPhone').value.trim();
-  if(!name||!u||!p){toast('姓名、工号、密码必填');return}
-  if(p.length<4){toast('密码至少4位');return}
-  if(p!==p2){toast('两次密码不一致');return}
-  if(u===AID){toast('该工号受保护');return}
-  if(USERS.some(x=>x.username===u)){toast('工号已注册');return}
+  if(!name||!u||!p){toast('姓名、工号、密码必填');return;}
+  if(p.length<4){toast('密码至少4位');return;}
+  if(p!==p2){toast('两次密码不一致');return;}
+  if(u===AID){toast('该工号受保护');return;}
+  if(USERS.some(x=>x.username===u)){toast('工号已注册');return;}
   const nu={id:Date.now().toString(),name,username:u,password:p,role:r,dept:d,phone:ph,status:'pending',createdAt:Date.now()};
   USERS.push(nu);PENDING.push(nu);LS('USERS',USERS);LS('PENDING',PENDING);
   toast('注册成功！请等待主管理员审核');swTab('login');
 }
 function loginOK(u,rem){
   U=u;LS('U',JSON.stringify(u));
-  if(rem){LS('TK','1');LS('TE',String(Date.now()+D7))}else{LS('TK','');LS('TE','')}
+  if(rem){LS('TK','1');LS('TE',String(Date.now()+D7));}else{LS('TK','');LS('TE','');}
   $('loginPage').style.display='none';$('app').style.display='flex';
   $('welcome').textContent=u.name;$('curUser').textContent=u.name;$('curRole').textContent=u.role;
   $('avt').textContent=u.name.charAt(0);$('sbName').textContent=u.name;$('sbRole').textContent=u.role;
   document.querySelectorAll('.admin-only').forEach(e=>e.classList.toggle('show',u.role==='主管理员'));
   renderCartStatus();updateKpi();
-  toast('登录成功');
+  if(!SIGNATURES[u.username]){toast('⚠️ 您尚未设置电子签名，建议前往「账户管理」设置');}
+  else{toast('登录成功');}
+  // v4.9：登录后应用权限控制
+  applyPermissions();
 }
 function chkLogin(){
   const tk=LS('TK'),te=LS('TE'),u=LS('U');
-  if(tk&&te&&u&&Date.now()<parseInt(te)){loginOK(JSON.parse(u),true)}
+  if(tk&&te&&u&&Date.now()<parseInt(te)){loginOK(JSON.parse(u),true);}
 }
-function logout(){
+function logout(){cleanupOCR();
   LS('TK','');LS('TE','');LS('U','');U=null;
   $('app').style.display='none';$('loginPage').style.display='flex';
   toast('已退出登录');
 }
 
 /* ==================== 侧边栏 ==================== */
-function tgSb(){
-  if(window.innerWidth>768)return;
-  $('sb').classList.toggle('open');$('mask').classList.toggle('show');
-}
+function tgSb(){if(window.innerWidth>768)return;$('sb').classList.toggle('open');$('mask').classList.toggle('show');}
 function swMenu(el,id){
   document.querySelectorAll('.sb-menu a').forEach(a=>a.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('.sec').forEach(s=>s.classList.add('hidden'));
   $('sec-'+id).classList.remove('hidden');
   $('hdTitle').textContent=el.textContent.trim();
-  if(window.innerWidth<=768){$('sb').classList.remove('open');$('mask').classList.remove('show')}
+  if(window.innerWidth<=768){$('sb').classList.remove('open');$('mask').classList.remove('show');}
   if(id==='drug'){initDrugCartSelect();renderDrug();}
   if(id==='material'){initMatCartSelect();renderMaterial();}
   if(id==='equip'){initEqCartSelect();renderEquip();}
@@ -793,11 +1391,12 @@ function swMenu(el,id){
   if(id==='cart')renderCarts();
   if(id==='record')renderRecords();
   if(id==='seal')renderSeals();
+  if(id==='shift')renderShifts();
   if(id==='report')renderReport();
   if(id==='template')renderTemplates();
   if(id==='account')renderAccount();
 }
-window.onresize=function(){if(window.innerWidth>768){$('sb').classList.remove('open');$('mask').classList.remove('show')}};
+window.onresize=function(){if(window.innerWidth>768){$('sb').classList.remove('open');$('mask').classList.remove('show');}};
 
 /* ==================== 工作台 ==================== */
 function updateKpi(){
@@ -807,674 +1406,1297 @@ function updateKpi(){
   $('kpiExp').textContent=DRUGS.filter(d=>daysUntil(d.expire)<0).length;
 }
 function renderCartStatus(){
-  const c=$('cartStatus');c.innerHTML=CARTS.map(x=>{
+  $('cartStatus').innerHTML=CARTS.map(x=>{
     const st=x.status==='sealed'?'<span class="badge b-normal">已封存</span>':'<span class="badge b-warn">开启中</span>';
     const tpl=TEMPLATES.find(t=>t.id===x.templateId);
     return `<div class="user-item"><div class="row"><div><strong>${x.code}</strong> - ${x.name} ${st}<br><span class="text-sm text-gray">${x.loc} | ${x.manager} | 模板：${tpl?tpl.name:'未分配'}</span></div><div style="min-width:120px"><div class="text-sm text-gray">进度 ${x.progress}%</div><div class="pbar"><div class="pfill" style="width:${x.progress}%"></div></div></div></div></div>`;
   }).join('');
 }
-
-/* ==================== 模板系统（v4.3 核心） ==================== */
-
-// 获取某辆车的模板
-function getCartTemplate(cartCode){
-  const tplId = CART_TPL_MAP[cartCode] || CARTS.find(c=>c.code===cartCode)?.templateId || 'TPL-DEFAULT';
-  return TEMPLATES.find(t=>t.id===tplId) || TEMPLATES[0];
+function renderDashboard(){
+  renderCartStatus();
+  updateKpi();
+  renderRecentShifts();
 }
 
-// 获取模板中所有格子的扁平列表 [{code,label,layerName}]
+/* ==================== 模板系统 ==================== */
+function getCartTemplate(cartCode){
+  const tplId=CART_TPL_MAP[cartCode]||CARTS.find(c=>c.code===cartCode)?.templateId||'TPL-DEFAULT';
+  return TEMPLATES.find(t=>t.id===tplId)||TEMPLATES[0];
+}
 function getTemplateCells(template){
   const cells=[];
-  template.layers.forEach(layer=>{
-    layer.cells.forEach(cell=>{
-      cells.push({code:cell.code, label:cell.label, layerName:layer.name});
-    });
-  });
+  template.layers.forEach(layer=>{layer.cells.forEach(cell=>{cells.push({code:cell.code,label:cell.label,layerName:layer.name});});});
   return cells;
 }
-
-// 渲染模板列表
 function renderTemplates(){
-  const container=$('tplList');
-  if(TEMPLATES.length===0){
-    container.innerHTML='<p class="text-gray">暂无模板，点击「新建模板」开始创建</p>';
-    $('tplPreviewCard').classList.add('hidden');
-    return;
-  }
-  container.innerHTML=TEMPLATES.map(tpl=>{
-    const totalCells = getTemplateCells(tpl).length;
-    const usedBy = CARTS.filter(c=>c.templateId===tpl.id).map(c=>c.code).join('、') || '未分配';
-    return `<div class="tpl-card">
-      <div class="tpl-name">📋 ${tpl.name}</div>
-      <div class="tpl-desc">${tpl.desc}</div>
-      <div class="tpl-stats">
-        <span>📐 ${tpl.layers.length} 层</span>
-        <span>🔲 ${totalCells} 格</span>
-        <span>🚑 用于：${usedBy}</span>
-      </div>
-      <div class="flex gap10">
-        <button class="btn btn-primary btn-sm" onclick="previewTemplate('${tpl.id}')">👁️ 预览</button>
-        <button class="btn btn-warning btn-sm" onclick="editTemplate('${tpl.id}')">✏️ 编辑</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteTemplate('${tpl.id}')">🗑 删除</button>
-      </div>
-    </div>`;
+  const c=$('tplList');
+  if(TEMPLATES.length===0){c.innerHTML='<p class="text-gray">暂无模板</p>';$('tplPreviewCard').classList.add('hidden');return;}
+  c.innerHTML=TEMPLATES.map(tpl=>{
+    const totalCells=getTemplateCells(tpl).length;
+    const usedBy=CARTS.filter(c=>c.templateId===tpl.id).map(c=>c.code).join('、')||'未分配';
+    const baseCnt = BASE_TABLES[tpl.id] ? BASE_TABLES[tpl.id].length : 0;
+  return `<div class="tpl-card"><div class="tpl-name">📋 ${tpl.name}</div><div class="tpl-desc">${tpl.desc}</div><div class="tpl-stats"><span>📐 ${tpl.layers.length} 层</span><span>🔲 ${totalCells} 格</span><span>🚑 用于：${usedBy}</span><span>🔢 ${baseCnt} 项标准基数</span></div><div class="flex gap10"><button class="btn btn-primary btn-sm" onclick="previewTemplate('${tpl.id}')">👁️ 预览</button><button class="btn btn-warning btn-sm" onclick="editTemplate('${tpl.id}')">✏️ 编辑</button><button class="btn btn-purple btn-sm" onclick="openBaseTableModal('${tpl.id}')">📋 配置标准基数</button><button class="btn btn-danger btn-sm" onclick="deleteTemplate('${tpl.id}')">🗑 删除</button></div></div>`;
   }).join('');
 }
-
-// 预览模板（可视化抢救车）
 function previewTemplate(tplId){
   const tpl=TEMPLATES.find(t=>t.id===tplId);
-  if(!tpl) return;
+  if(!tpl)return;
   $('tplPreviewCard').classList.remove('hidden');
   $('tplPreviewName').textContent=tpl.name;
-  
-  // 统计每个格子的物品数量
   const cellCounts={};
-  DRUGS.forEach(d=>{
-    const parts=d.loc.split('-');
-    const code=parts.pop();
-    const cart=parts.join('-');
-    if(CARTS.find(c=>c.code===cart && c.templateId===tplId)){
-      cellCounts[code]=(cellCounts[code]||0)+1;
-    }
-  });
-  MATS.forEach(m=>{
-    const parts=m.loc.split('-');
-    const code=parts.pop();
-    const cart=parts.join('-');
-    if(CARTS.find(c=>c.code===cart && c.templateId===tplId)){
-      cellCounts[code]=(cellCounts[code]||0)+1;
-    }
-  });
-
+  DRUGS.forEach(d=>{const p=d.loc.split('-');const code=p.pop();const cart=p.join('-');if(CARTS.find(c=>c.code===cart&&c.templateId===tplId))cellCounts[code]=(cellCounts[code]||0)+1;});
+  MATS.forEach(m=>{const p=m.loc.split('-');const code=p.pop();const cart=p.join('-');if(CARTS.find(c=>c.code===cart&&c.templateId===tplId))cellCounts[code]=(cellCounts[code]||0)+1;});
   let html='<div class="cart-visual">';
-  tpl.layers.forEach((layer,li)=>{
-    const cols=Math.min(layer.cells.length,6);
-    html+=`<div class="cart-layer">
-      <div class="cart-layer-label">${layer.name}</div>
-      <div class="cart-cells" style="grid-template-columns:repeat(${cols},1fr)">`;
-    layer.cells.forEach(cell=>{
-      const cnt=cellCounts[cell.code]||0;
-      html+=`<div class="cart-cell ${cnt>0?'has-items':''}" title="${cell.label}">
-        <div class="cell-name">${cell.label}</div>
-        <div class="cell-count">${cnt>0?cnt+'件物品':'空'}</div>
-      </div>`;
-    });
-    html+=`</div></div>`;
-  });
-  html+='</div>';
-  $('tplPreviewBody').innerHTML=html;
+  tpl.layers.forEach((layer,li)=>{const cols=Math.min(layer.cells.length,6);html+=`<div class="cart-layer"><div class="cart-layer-label">${layer.name}</div><div class="cart-cells" style="grid-template-columns:repeat(${cols},1fr)">`;layer.cells.forEach(cell=>{const cnt=cellCounts[cell.code]||0;html+=`<div class="cart-cell ${cnt>0?'has-items':''}"><div class="cell-name">${cell.label}</div><div class="cell-count">${cnt>0?cnt+'件物品':'空'}</div></div>`;});html+=`</div></div>`;});
+  html+='</div>';$('tplPreviewBody').innerHTML=html;
 }
-
-// 新建/编辑模板模态框
 let editingTplId=null;
 function openTplModal(tplId){
   editingTplId=tplId||null;
   const tpl=tplId?TEMPLATES.find(t=>t.id===tplId):{name:'',desc:'',layers:[{name:'第一层',cells:[{code:'A1',label:'格子1'}]}]};
   $('mFormTitle').textContent=tplId?'编辑模板：'+tpl.name:'新建模板';
-  let html=`
-    <div class="fg"><label>模板名称</label><input class="fi" id="tplName" value="${tpl.name}" placeholder="如：标准抢救车模板"></div>
-    <div class="fg"><label>模板描述</label><input class="fi" id="tplDesc" value="${tpl.desc}" placeholder="如：适用于急诊科标准抢救车"></div>
-    <div class="fg"><label>层数</label>
-      <select class="fi" id="tplLayerCount" onchange="renderLayerEditor()" style="max-width:100px">
-        ${[1,2,3,4,5,6].map(n=>`<option ${tpl.layers.length===n?'selected':''}>${n}</option>`).join('')}
-      </select>
-    </div>
-    <div id="layerEditor"></div>
-  `;
-  $('mFormBody').innerHTML=html;
-  // 存储当前编辑的layers到全局
-  window._editingLayers = JSON.parse(JSON.stringify(tpl.layers));
+  $('mFormBody').innerHTML=`<div class="fg"><label>模板名称</label><input class="fi" id="tplName" value="${tpl.name}"></div><div class="fg"><label>模板描述</label><input class="fi" id="tplDesc" value="${tpl.desc}"></div><div class="fg"><label>层数</label><select class="fi" id="tplLayerCount" onchange="renderLayerEditor()" style="max-width:100px">${[1,2,3,4,5,6].map(n=>`<option ${tpl.layers.length===n?'selected':''}>${n}</option>`).join('')}</select></div><div id="layerEditor"></div>`;
+  window._editingLayers=JSON.parse(JSON.stringify(tpl.layers));
   renderLayerEditor();
   $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveTemplate()">💾 保存模板</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
   openM('mForm');
-  // 如果已有layers，渲染它们
-  if(tplId) renderLayerEditor();
 }
-
 function renderLayerEditor(){
   const layerCount=parseInt($('tplLayerCount').value)||1;
-  const container=$('layerEditor');
-  // 调整layers数组长度
-  while(window._editingLayers.length<layerCount){
-    const idx=window._editingLayers.length;
-    const letter=String.fromCharCode(65+idx);
-    window._editingLayers.push({name:`第${idx+1}层`,cells:[{code:letter+'1',label:'格子1'}]});
-  }
+  while(window._editingLayers.length<layerCount){const idx=window._editingLayers.length;const letter=String.fromCharCode(65+idx);window._editingLayers.push({name:`第${idx+1}层`,cells:[{code:letter+'1',label:'格子1'}]});}
   window._editingLayers=window._editingLayers.slice(0,layerCount);
-  
   let html='';
-  window._editingLayers.forEach((layer,li)=>{
-    const letter=String.fromCharCode(65+li);
-    html+=`<div class="tpl-layer">
-      <div class="tpl-layer-head">
-        <div class="tpl-layer-title">📐 第${li+1}层</div>
-        <button class="tpl-layer-del" onclick="removeLayer(${li})" ${window._editingLayers.length<=1?'disabled style="opacity:.3"':''}>🗑 删除该层</button>
-      </div>
-      <div class="fg" style="margin-bottom:8px"><input class="fi" placeholder="层名称（如：急救药层）" value="${layer.name}" onchange="window._editingLayers[${li}].name=this.value"></div>
-      <div class="tpl-cells" id="cells-${li}">`;
-    layer.cells.forEach((cell,ci)=>{
-      html+=`<div class="tpl-cell" draggable="true" ondragstart="dragCell(event,'${li}','${ci}')" ondragover="event.preventDefault()" ondrop="dropCell(event,'${li}','${ci}')">
-        <span>${cell.label}</span>
-        <span class="del-cell" onclick="removeCell(${li},${ci})">✕</span>
-      </div>`;
-    });
-    html+=`<div class="tpl-add-cell" onclick="addCell(${li})">＋ 添加格子</div>`;
-    html+=`</div></div>`;
-  });
-  container.innerHTML=html;
+  window._editingLayers.forEach((layer,li)=>{const letter=String.fromCharCode(65+li);html+=`<div class="tpl-layer"><div class="tpl-layer-head"><div class="tpl-layer-title">📐 第${li+1}层</div><button class="tpl-layer-del" onclick="removeLayer(${li})" ${window._editingLayers.length<=1?'disabled':''}>🗑 删除该层</button></div><div class="fg" style="margin-bottom:8px"><input class="fi" placeholder="层名称" value="${layer.name}" onchange="window._editingLayers[${li}].name=this.value"></div><div class="tpl-cells" id="cells-${li}">`;layer.cells.forEach((cell,ci)=>{html+=`<div class="tpl-cell" draggable="true" ondragstart="dragCell(event,'${li}','${ci}')" ondragover="event.preventDefault()" ondrop="dropCell(event,'${li}','${ci}')"><span>${cell.label}</span><span class="del-cell" onclick="removeCell(${li},${ci})">✕</span></div>`;});html+=`<div class="tpl-add-cell" onclick="addCell(${li})">＋ 添加格子</div></div></div>`;});
+  $('layerEditor').innerHTML=html;
 }
-
-function addCell(layerIdx){
-  const letter=String.fromCharCode(65+layerIdx);
-  const idx=window._editingLayers[layerIdx].cells.length+1;
-  window._editingLayers[layerIdx].cells.push({code:letter+idx,label:'格子'+idx});
-  renderLayerEditor();
-}
-function removeCell(layerIdx,cellIdx){
-  if(window._editingLayers[layerIdx].cells.length<=1){toast('每层至少保留1个格子');return;}
-  window._editingLayers[layerIdx].cells.splice(cellIdx,1);
-  // 重新编号
-  const letter=String.fromCharCode(65+layerIdx);
-  window._editingLayers[layerIdx].cells.forEach((c,i)=>{c.code=letter+(i+1)});
-  renderLayerEditor();
-}
-function removeLayer(idx){
-  if(window._editingLayers.length<=1){toast('至少保留1层');return;}
-  window._editingLayers.splice(idx,1);
-  // 重新渲染
-  $('tplLayerCount').value=window._editingLayers.length;
-  renderLayerEditor();
-}
-
-// 拖拽排序
+function addCell(li){const letter=String.fromCharCode(65+li);const idx=window._editingLayers[li].cells.length+1;window._editingLayers[li].cells.push({code:letter+idx,label:'格子'+idx});renderLayerEditor();}
+function removeCell(li,ci){if(window._editingLayers[li].cells.length<=1){toast('每层至少保留1个格子');return;}window._editingLayers[li].cells.splice(ci,1);const letter=String.fromCharCode(65+li);window._editingLayers[li].cells.forEach((c,i)=>{c.code=letter+(i+1);});renderLayerEditor();}
+function removeLayer(idx){if(window._editingLayers.length<=1){toast('至少保留1层');return;};window._editingLayers.splice(idx,1);$('tplLayerCount').value=window._editingLayers.length;renderLayerEditor();}
 let _dragLayerIdx=null,_dragCellIdx=null;
 function dragCell(e,li,ci){e.dataTransfer.setData('text/plain','');_dragLayerIdx=li;_dragCellIdx=ci;}
-function dropCell(e,li,ci){
-  e.preventDefault();
-  if(_dragLayerIdx===null)return;
-  const dragCell=window._editingLayers[_dragLayerIdx].cells[_dragCellIdx];
-  window._editingLayers[_dragLayerIdx].cells.splice(_dragCellIdx,1);
-  window._editingLayers[li].cells.splice(ci,0,dragCell);
-  // 重新编号
-  window._editingLayers.forEach((layer,lIdx)=>{
-    const letter=String.fromCharCode(65+lIdx);
-    layer.cells.forEach((c,i)=>{c.code=letter+(i+1)});
-  });
-  renderLayerEditor();
-  _dragLayerIdx=null;
-}
-
+function dropCell(e,li,ci){e.preventDefault();if(_dragLayerIdx===null)return;const dc=window._editingLayers[_dragLayerIdx].cells[_dragCellIdx];window._editingLayers[_dragLayerIdx].cells.splice(_dragCellIdx,1);window._editingLayers[li].cells.splice(ci,0,dc);window._editingLayers.forEach((layer,lIdx)=>{const letter=String.fromCharCode(65+lIdx);layer.cells.forEach((c,i)=>{c.code=letter+(i+1);});});renderLayerEditor();_dragLayerIdx=null;}
 function saveTemplate(){
-  const name=$('tplName').value.trim();
-  const desc=$('tplDesc').value.trim();
+  const name=$('tplName').value.trim(),desc=$('tplDesc').value.trim();
   if(!name){toast('请输入模板名称');return;}
-  if(editingTplId){
-    const tpl=TEMPLATES.find(t=>t.id===editingTplId);
-    tpl.name=name;tpl.desc=desc;tpl.layers=JSON.parse(JSON.stringify(window._editingLayers));
-    toast('模板已更新');
-  }else{
-    const newId='TPL-'+Date.now().toString().slice(-6);
-    TEMPLATES.push({id:newId,name,desc,layers:JSON.parse(JSON.stringify(window._editingLayers))});
-    toast('模板已创建');
-  }
-  LS('TEMPLATES',TEMPLATES);
-  closeM('mForm');
-  renderTemplates();
+  if(editingTplId){const t=TEMPLATES.find(t=>t.id===editingTplId);t.name=name;t.desc=desc;t.layers=JSON.parse(JSON.stringify(window._editingLayers));toast('模板已更新');}
+  else{TEMPLATES.push({id:'TPL-'+Date.now().toString().slice(-6),name,desc,layers:JSON.parse(JSON.stringify(window._editingLayers))});toast('模板已创建');}
+  LS('TEMPLATES',TEMPLATES);closeM('mForm');renderTemplates();
 }
-
-function editTemplate(tplId){openTplModal(tplId);}
-
-function deleteTemplate(tplId){
-  const used=CARTS.filter(c=>c.templateId===tplId);
-  if(used.length>0){toast(`该模板正被 ${used.length} 辆抢救车使用，无法删除`);return;}
-  confirm('确定删除该模板？',()=>{
-    TEMPLATES=TEMPLATES.filter(t=>t.id!==tplId);
-    LS('TEMPLATES',TEMPLATES);
-    renderTemplates();
-    $('tplPreviewCard').classList.add('hidden');
-    toast('模板已删除');
-  });
-}
-
-// 分配模板
+function editTemplate(id){openTplModal(id);}
+function deleteTemplate(id){const used=CARTS.filter(c=>c.templateId===id);if(used.length>0){toast(`该模板正被${used.length}辆抢救车使用`);return;}confirm('确定删除？',()=>{TEMPLATES=TEMPLATES.filter(t=>t.id!==id);LS('TEMPLATES',TEMPLATES);renderTemplates();$('tplPreviewCard').classList.add('hidden');toast('已删除');});}
 function openTplAssignModal(){
-  if(CARTS.length===0){toast('暂无抢救车');return;}
-  if(TEMPLATES.length===0){toast('请先创建模板');return;}
-  let html='<div class="fg"><label>选择抢救车</label><select class="fi" id="assignCart">';
-  CARTS.forEach(c=>{html+=`<option value="${c.code}">${c.code} - ${c.name}</option>`});
-  html+=`</select></div><div class="fg"><label>选择模板</label><select class="fi" id="assignTpl">`;
-  TEMPLATES.forEach(t=>{html+=`<option value="${t.id}">${t.name}（${getTemplateCells(t).length}格）</option>`});
-  html+=`</select></div>
-    <div class="ocr-tips" style="background:#fffbe6;border:1px solid #ffe58f;border-radius:6px;padding:10px;font-size:12px;color:#666">
-      ⚠️ 更换模板后，原有物品的位置编码如果新模板不存在，将自动归到新模板的第一个格子。
-    </div>`;
-  $('mFormTitle').textContent='分配模板到抢救车';
-  $('mFormBody').innerHTML=html;
-  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="doAssignTpl()">🔗 确认分配</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
+  if(CARTS.length===0){toast('暂无抢救车');return;}if(TEMPLATES.length===0){toast('请先创建模板');return;}
+  $('mFormTitle').textContent='分配模板';
+  $('mFormBody').innerHTML=`<div class="fg"><label>抢救车</label><select class="fi" id="assignCart">${CARTS.map(c=>`<option value="${c.code}">${c.code} - ${c.name}</option>`).join('')}</select></div><div class="fg"><label>模板</label><select class="fi" id="assignTpl">${TEMPLATES.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select></div>`;
+  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="doAssignTpl()">确认</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
   openM('mForm');
 }
-
 function doAssignTpl(){
-  const cartCode=$('assignCart').value;
-  const tplId=$('assignTpl').value;
-  const cart=CARTS.find(c=>c.code===cartCode);
-  if(!cart)return;
-  const oldTpl=getCartTemplate(cartCode);
-  const newTpl=TEMPLATES.find(t=>t.id===tplId);
-  const newCodes=getTemplateCells(newTpl).map(c=>c.code);
-  
-  // 迁移物品位置
-  [DRUGS,MATS].forEach(store=>{
-    store.forEach(item=>{
-      const parts=item.loc.split('-');
-      const code=parts.pop();
-      const cartPart=parts.join('-');
-      if(cartPart===cartCode && !newCodes.includes(code)){
-        // 旧编码不在新模板中，迁移到第一个格子
-        item.loc=`${cartCode}-${newCodes[0]||'A1'}`;
-      }
-    });
-  });
-  
-  cart.templateId=tplId;
-  LS('CARTS',CARTS);LS('DRUGS',DRUGS);LS('MATS',MATS);
-  closeM('mForm');
-  renderTemplates();
-  toast(`${cartCode} 已绑定模板：${newTpl.name}`);
+  const cc=$('assignCart').value,tid=$('assignTpl').value;
+  const cart=CARTS.find(c=>c.code===cc);if(!cart)return;
+  cart.templateId=tid;LS('CARTS',CARTS);closeM('mForm');renderTemplates();toast(`${cc} 已绑定模板`);
 }
 
-/* ==================== 动态位置选择器（基于模板） ==================== */
-function renderPositionPicker(prefix, cartCode){
-  const tpl=getCartTemplate(cartCode);
-  if(!tpl) return '<p class="text-gray">该车未分配模板</p>';
-  
-  // 统计每个格子的物品数
+/* ==================== 动态位置选择器 ==================== */
+function renderPositionPicker(prefix,cartCode){
+  const tpl=getCartTemplate(cartCode);if(!tpl)return '';
   const cellCounts={};
-  DRUGS.forEach(d=>{const p=d.loc.split('-');const c=p.pop();if(p.join('-')===cartCode)cellCounts[c]=(cellCounts[c]||0)+1});
-  MATS.forEach(m=>{const p=m.loc.split('-');const c=p.pop();if(p.join('-')===cartCode)cellCounts[c]=(cellCounts[c]||0)+1});
-
+  DRUGS.forEach(d=>{const p=d.loc.split('-');const c=p.pop();if(p.join('-')===cartCode)cellCounts[c]=(cellCounts[c]||0)+1;});
+  MATS.forEach(m=>{const p=m.loc.split('-');const c=p.pop();if(p.join('-')===cartCode)cellCounts[c]=(cellCounts[c]||0)+1;});
   let html='';
-  tpl.layers.forEach((layer,li)=>{
-    const cols=Math.min(layer.cells.length,6);
-    html+=`<div style="margin-bottom:6px"><div style="font-size:11px;color:#722ed1;font-weight:600;margin-bottom:4px">${layer.name}</div>`;
-    html+=`<div class="pos-picker" style="grid-template-columns:repeat(${cols},1fr)">`;
-    layer.cells.forEach(cell=>{
-      const cnt=cellCounts[cell.code]||0;
-      html+=`<button type="button" class="pos-btn ${cnt>0?'has-item':''}" data-code="${cell.code}" onclick="selectPosition('${prefix}',this,'${cartCode}')" title="${layer.name} - ${cell.label}">
-        <span>${cell.code}</span>
-        <span class="pos-label">${cell.label}</span>
-      </button>`;
-    });
-    html+=`</div></div>`;
-  });
+  tpl.layers.forEach((layer,li)=>{const cols=Math.min(layer.cells.length,6);html+=`<div style="margin-bottom:6px"><div style="font-size:11px;color:#722ed1;font-weight:600;margin-bottom:4px">${layer.name}</div><div class="pos-picker" style="grid-template-columns:repeat(${cols},1fr)">`;layer.cells.forEach(cell=>{const cnt=cellCounts[cell.code]||0;html+=`<button type="button" class="pos-btn ${cnt>0?'has-item':''}" data-code="${cell.code}" onclick="selectPosition('${prefix}',this,'${cartCode}')"><span>${cell.code}</span><span class="pos-label">${cell.label}</span></button>`;});html+=`</div></div>`;});
   return html;
 }
-
-function selectPosition(prefix, btn, cartCode){
+function selectPosition(prefix,btn,cartCode){
   btn.parentElement.querySelectorAll('.pos-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
-  const preview=$(`${prefix}Preview`);
-  const code=btn.dataset.code;
-  const tpl=getCartTemplate(cartCode);
+  const preview=$(`${prefix}Preview`);const code=btn.dataset.code;
   let desc=code;
-  tpl.layers.forEach(layer=>{
-    const cell=layer.cells.find(c=>c.code===code);
-    if(cell) desc=`${layer.name} - ${cell.label}`;
-  });
-  if(preview){
-    preview.querySelector('.code').textContent=code;
-    preview.querySelector('.desc').textContent=desc;
-  }
+  getCartTemplate(cartCode).layers.forEach(layer=>{const cell=layer.cells.find(c=>c.code===code);if(cell)desc=`${layer.name} - ${cell.label}`;});
+  if(preview){preview.querySelector('.code').textContent=code;preview.querySelector('.desc').textContent=desc;}
 }
 
 /* ==================== 药品管理 ==================== */
-function initDrugCartSelect(){
-  const sel=$('drugCartSelect');sel.innerHTML='';
-  CARTS.forEach(cart=>{sel.add(new Option(`${cart.code}（${cart.name}）`,cart.code))});
-  if(CARTS.length>0){currentDrugCart=CARTS[0].code;sel.value=currentDrugCart;}
-}
-function switchDrugCart(){{currentDrugCart=$('drugCartSelect').value;renderDrug();}}
+function initDrugCartSelect(){const sel=$('drugCartSelect');sel.innerHTML='';CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));if(CARTS.length>0){currentDrugCart=CARTS[0].code;sel.value=currentDrugCart;}}
+function switchDrugCart(){currentDrugCart=$('drugCartSelect').value;renderDrug();}
 function renderDrug(){
   const q=$('drugSearch').value.toLowerCase();
-  const body=$('drugBody');
-  const filtered=DRUGS.filter(d=>{const parts=d.loc.split('-');const c=parts.slice(0,2).join('-');return c===currentDrugCart&&(!q||d.name.toLowerCase().includes(q))});
-  const cartInfo=CARTS.find(c=>c.code===currentDrugCart);
-  $('hdTitle').textContent=`💊 药品管理 | ${cartInfo?.code}（${filtered.length}种）`;
-  body.innerHTML=filtered.map(d=>{
-    const s=statusOf(d.expire);const posCode=d.loc.split('-').pop();
-    return `<tr>
-      <td class="hidden chk-col-drug"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td>
-      <td><span class="cell-edit" onclick="editCell(this,'name',${d.id},'DRUGS')">${d.name}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'spec',${d.id},'DRUGS')">${d.spec}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'stock',${d.id},'DRUGS')">${d.stock}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'batch',${d.id},'DRUGS')">${d.batch}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'expire',${d.id},'DRUGS')">${d.expire}</span></td>
-      <td><div class="text-sm"><div class="text-purple fw-bold">${posCode}</div><div class="text-gray" style="font-size:11px">${cartInfo?.code}</div></div></td>
-      <td><span class="badge ${s.cls}">${s.label}</span></td>
-      <td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'DRUGS','药品')">删除</button></td>
-    </tr>`;
-  }).join('');
+  const filtered=DRUGS.filter(d=>{const p=d.loc.split('-');return p.slice(0,2).join('-')===currentDrugCart&&(!q||d.name.toLowerCase().includes(q));});
+  $('drugBody').innerHTML=filtered.map(d=>{const s=statusOf(d.expire);
+    // v4.9：差异高亮（与标准基数对比）
+    const cartCode = d.loc.split('-').slice(0,2).join('-');
+    const tplId = CARTS.find(c=>c.code===cartCode)?.templateId || 'TPL-DEFAULT';
+    const baseItem = (BASE_TABLES[tplId]||[]).find(b=>b.name===d.name && b.spec===d.spec && b.loc===d.loc.split('-').pop());
+    const baseVal = baseItem ? baseItem.base : null;
+    const diffClass = baseVal!==null && d.stock!==baseVal ? 'diff-cell diff-nonzero' : 'diff-cell diff-zero';
+    const baseDisplay = baseVal!==null ? `<span class="${diffClass}">${d.stock}（基数${baseVal}）</span>` : d.stock;
+    return `<tr><td class="hidden chk-col-drug"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td><td><span class="cell-edit" onclick="editCell(this,'name',${d.id},'DRUGS')">${d.name}</span></td><td><span class="cell-edit" onclick="editCell(this,'spec',${d.id},'DRUGS')">${d.spec}</span></td><td>${baseDisplay}</td><td><span class="cell-edit" onclick="editCell(this,'batch',${d.id},'DRUGS')">${d.batch}</span></td><td><span class="cell-edit" onclick="editCell(this,'expire',${d.id},'DRUGS')">${d.expire}</span></td><td><div class="text-purple fw-bold">${d.loc.split('-').pop()}</div></td><td><span class="badge ${s.cls}">${s.label}</span></td><td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'DRUGS','药品')">删除</button></td></tr>`;}).join('');
 }
 function openDrugModal(){
-  const cartInfo=CARTS.find(c=>c.code===currentDrugCart);
   $('mFormTitle').textContent='新增药品';
-  $('mFormBody').innerHTML=`
-    <div class="fg"><label>药品名称</label><input class="fi" id="ndName" placeholder="如：肾上腺素"></div>
-    <div class="fg"><label>规格</label><input class="fi" id="ndSpec" placeholder="如：1mg/1ml"></div>
-    <div class="fg"><label>库存数量</label><input class="fi" id="ndStock" type="number" value="10"></div>
-    <div class="fg"><label>批号</label><input class="fi" id="ndBatch" placeholder="如：A202401"></div>
-    <div class="fg"><label>有效期</label><input class="fi" id="ndExpire" type="date" value="${new Date(Date.now()+365*24*3600*1000).toISOString().split('T')[0]}"></div>
-    <div class="fg"><label>所属抢救车</label><input class="fi" value="${cartInfo?.code}（${cartInfo?.name}）" readonly style="background:#f5f5f5;color:#666"></div>
-    <div class="fg"><label>存放位置（点击选择格子）</label>${renderPositionPicker('drug',currentDrugCart)}
-      <div id="drugPreview" class="pos-preview"><div class="code">-</div><div class="desc">请选择上方格子</div></div>
-    </div>
-    <div class="fg"><label>药品分类</label><select class="fi" id="ndCat"><option>急救药</option><option>心血管药</option><option>呼吸兴奋剂</option><option>激素类</option><option>其他</option></select></div>
-    <div class="fg"><label>高危等级</label><select class="fi" id="ndLevel"><option>A级（最高危）</option><option>B级（高危）</option><option>C级（一般）</option></select></div>
-  `;
+  $('mFormBody').innerHTML=`<div class="fg"><label>药品名称</label><input class="fi" id="ndName"></div><div class="fg"><label>规格</label><input class="fi" id="ndSpec"></div><div class="fg"><label>库存</label><input class="fi" id="ndStock" type="number" value="10"></div><div class="fg"><label>批号</label><input class="fi" id="ndBatch"></div><div class="fg"><label>有效期</label><input class="fi" id="ndExpire" type="date" value="${new Date(Date.now()+365*86400000).toISOString().split('T')[0]}"></div><div class="fg"><label>位置</label>${renderPositionPicker('drug',currentDrugCart)}<div id="drugPreview" class="pos-preview"><div class="code">-</div><div class="desc">请选择格子</div></div></div><div class="fg"><label>分类</label><select class="fi" id="ndCat"><option>急救药</option><option>心血管药</option><option>其他</option></select></div>`;
   $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveNewDrug()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
   openM('mForm');
 }
 function saveNewDrug(){
-  const name=$('ndName').value.trim(),spec=$('ndSpec').value.trim(),stock=parseInt($('ndStock').value)||0,
-        batch=$('ndBatch').value.trim(),expire=$('ndExpire').value,
-        posBtn=document.querySelector('#mFormBody .pos-btn.selected'),
-        cat=$('ndCat').value,level=$('ndLevel').value.charAt(0);
-  if(!name||!posBtn){toast('药品名称和存放位置必填');return;}
-  const posCode=posBtn.dataset.code;
-  DRUGS.push({id:Date.now(),name,spec,stock,batch:batch||'待填',expire,loc:`${currentDrugCart}-${posCode}`,cat,level});
-  LS('DRUGS',DRUGS);closeM('mForm');renderDrug();updateKpi();
-  toast(`药品已添加到 ${currentDrugCart} ${posCode}`);
+  const name=$('ndName').value.trim(),spec=$('ndSpec').value.trim(),stock=parseInt($('ndStock').value)||0,batch=$('ndBatch').value.trim(),expire=$('ndExpire').value,posBtn=document.querySelector('#mFormBody .pos-btn.selected');
+  if(!name||!posBtn){toast('名称和位置必填');return;}
+  // v4.9：检查批号+有效期+位置唯一性
+  const targetLoc=`${currentDrugCart}-${posBtn.dataset.code}`;
+  const exist=DRUGS.find(d=>d.loc===targetLoc&&d.name===name&&d.spec===spec&&d.batch===batch&&d.expire===expire);
+  if(exist){toast('该位置已存在同药同规同批号同效期的记录');return;}
+  DRUGS.push({id:Date.now(),name,spec,stock,batch:batch||'待填',expire,loc:targetLoc,cat:$('ndCat').value,level:'A'});
+  LS('DRUGS',DRUGS);closeM('mForm');renderDrug();updateKpi();toast('已添加');
 }
 function batchAddCommonDrugs(){
-  const tpl=getCartTemplate(currentDrugCart);
-  const firstCode=getTemplateCells(tpl)[0]?.code||'A1';
-  const existingLocs=DRUGS.filter(d=>d.loc.startsWith(currentDrugCart+'-')).map(d=>d.loc);
+  const tpl=getCartTemplate(currentDrugCart);const firstCode=getTemplateCells(tpl)[0]?.code||'A1';
   let n=0;
-  COMMON_DRUGS.forEach(drug=>{
-    const target=`${currentDrugCart}-${drug.loc}`;
-    if(!existingLocs.includes(target)){
-      DRUGS.push({id:Date.now()+n,name:drug.name,spec:drug.spec,stock:drug.stock,batch:drug.batch,expire:drug.expire,loc:target,cat:drug.cat,level:drug.level.charAt(0)});
-      n++;
-    }
-  });
-  LS('DRUGS',DRUGS);renderDrug();updateKpi();
-  toast(`成功添加 ${n} 种常用药品到 ${currentDrugCart}`);
+  COMMON_DRUGS.forEach(d=>{const target=`${currentDrugCart}-${d.loc}`;if(!DRUGS.some(x=>x.loc===target)){DRUGS.push({id:Date.now()+n,name:d.name,spec:d.spec,stock:d.stock,batch:d.batch,expire:d.expire,loc:target,cat:d.cat,level:d.level.charAt(0)});n++;}});
+  LS('DRUGS',DRUGS);renderDrug();updateKpi();toast(`添加 ${n} 种药品`);
 }
 
 /* ==================== 耗材管理 ==================== */
-function initMatCartSelect(){
-  const sel=$('matCartSelect');if(!sel)return;sel.innerHTML='';
-  CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));
-  currentMatCart=CARTS[0]?.code||'CART-001';sel.value=currentMatCart;
-}
-function switchMatCart(){{currentMatCart=$('matCartSelect').value;renderMaterial();}}
+function initMatCartSelect(){const sel=$('matCartSelect');sel.innerHTML='';CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));currentMatCart=CARTS[0]?.code||'CART-001';sel.value=currentMatCart;}
+function switchMatCart(){currentMatCart=$('matCartSelect').value;renderMaterial();}
 function renderMaterial(){
   const q=$('matSearch').value.toLowerCase();
-  const body=$('matBody');
-  const filtered=MATS.filter(d=>{const parts=d.loc.split('-');const c=parts.slice(0,2).join('-');return c===currentMatCart&&(!q||d.name.toLowerCase().includes(q))});
-  body.innerHTML=filtered.map(d=>{
-    const s=statusOf(d.expire);const posCode=d.loc.split('-').pop();
-    return `<tr>
-      <td class="hidden chk-col-mat"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td>
-      <td><span class="cell-edit" onclick="editCell(this,'name',${d.id},'MATS')">${d.name}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'spec',${d.id},'MATS')">${d.spec}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'stock',${d.id},'MATS')">${d.stock}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'batch',${d.id},'MATS')">${d.batch}</span></td>
-      <td><span class="cell-edit" onclick="editCell(this,'expire',${d.id},'MATS')">${d.expire}</span></td>
-      <td><div class="text-sm"><div class="text-purple fw-bold">${posCode}</div><div class="text-gray" style="font-size:11px">${currentMatCart}</div></div></td>
-      <td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'MATS','耗材')">删除</button></td>
-    </tr>`;
-  }).join('');
-  $('hdTitle').textContent=`📦 耗材管理 | ${currentMatCart}（${filtered.length}种）`;
+  const filtered=MATS.filter(d=>{const p=d.loc.split('-');return p.slice(0,2).join('-')===currentMatCart&&(!q||d.name.toLowerCase().includes(q));});
+  $('matBody').innerHTML=filtered.map(d=>{const s=statusOf(d.expire);return `<tr><td class="hidden chk-col-mat"><input type="checkbox" ${chkSel.has(d.id)?'checked':''} onchange="chkItem(${d.id},this)"></td><td>${d.name}</td><td>${d.spec}</td><td>${d.stock}</td><td>${d.batch}</td><td>${d.expire}</td><td>${d.loc.split('-').pop()}</td><td><button class="btn btn-danger btn-sm" onclick="delItem(${d.id},'MATS','耗材')">删除</button></td></tr>`;}).join('');
 }
-function batchAddCommonMats(){
-  const tpl=getCartTemplate(currentMatCart);
-  const existingLocs=MATS.filter(d=>d.loc.startsWith(currentMatCart+'-')).map(d=>d.loc);
-  let n=0;
-  COMMON_MATS.forEach(m=>{
-    const target=`${currentMatCart}-${m.loc}`;
-    if(!existingLocs.includes(target)){
-      MATS.push({id:Date.now()+n,name:m.name,spec:m.spec,stock:m.stock,batch:'AUTO',expire:'2026-12-01',loc:target});
-      n++;
-    }
-  });
-  LS('MATS',MATS);renderMaterial();updateKpi();
-  toast(`成功添加 ${n} 种常用耗材到 ${currentMatCart}`);
-}
+function batchAddCommonMats(){let n=0;COMMON_MATS.forEach(m=>{const target=`${currentMatCart}-${m.loc}`;if(!MATS.some(x=>x.loc===target)){MATS.push({id:Date.now()+n,name:m.name,spec:m.spec,stock:m.stock,batch:'AUTO',expire:'2026-12-01',loc:target});n++;}});LS('MATS',MATS);renderMaterial();updateKpi();toast(`添加 ${n} 种耗材`);}
 function openMatModal(){
-  const cartInfo=CARTS.find(c=>c.code===currentMatCart);
   $('mFormTitle').textContent='新增耗材';
-  $('mFormBody').innerHTML=`
-    <div class="fg"><label>耗材名称</label><input class="fi" id="nmName" placeholder="如：输液器"></div>
-    <div class="fg"><label>规格</label><input class="fi" id="nmSpec" placeholder="如：7#"></div>
-    <div class="fg"><label>数量</label><input class="fi" id="nmStock" type="number" value="50"></div>
-    <div class="fg"><label>批号</label><input class="fi" id="nmBatch" placeholder="如：M202401"></div>
-    <div class="fg"><label>有效期</label><input class="fi" id="nmExpire" type="date" value="${new Date(Date.now()+365*86400000).toISOString().split('T')[0]}"></div>
-    <div class="fg"><label>所属抢救车</label><input class="fi" value="${cartInfo?.code}（${cartInfo?.name}）" readonly style="background:#f5f5f5;color:#666"></div>
-    <div class="fg"><label>存放位置（点击选择格子）</label>${renderPositionPicker('mat',currentMatCart)}
-      <div id="matPreview" class="pos-preview"><div class="code">-</div><div class="desc">请选择上方格子</div></div>
-    </div>
-  `;
+  $('mFormBody').innerHTML=`<div class="fg"><label>名称</label><input class="fi" id="nmName"></div><div class="fg"><label>规格</label><input class="fi" id="nmSpec"></div><div class="fg"><label>数量</label><input class="fi" id="nmStock" type="number" value="50"></div><div class="fg"><label>有效期</label><input class="fi" id="nmExpire" type="date" value="${new Date(Date.now()+365*86400000).toISOString().split('T')[0]}"></div><div class="fg"><label>位置</label>${renderPositionPicker('mat',currentMatCart)}<div id="matPreview" class="pos-preview"><div class="code">-</div><div class="desc">请选择格子</div></div></div>`;
   $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveNewMat()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
   openM('mForm');
 }
-function saveNewMat(){
-  const name=$('nmName').value.trim(),spec=$('nmSpec').value.trim(),stock=parseInt($('nmStock').value)||0,
-        batch=$('nmBatch').value.trim(),expire=$('nmExpire').value,
-        posBtn=document.querySelector('#mFormBody .pos-btn.selected');
-  if(!name||!posBtn){toast('名称和位置必填');return;}
-  MATS.push({id:Date.now(),name,spec,stock,batch:batch||'待填',expire,loc:`${currentMatCart}-${posBtn.dataset.code}`});
-  LS('MATS',MATS);closeM('mForm');renderMaterial();updateKpi();
-  toast(`耗材已添加到 ${currentMatCart} ${posBtn.dataset.code}`);
-}
+function saveNewMat(){const name=$('nmName').value.trim(),posBtn=document.querySelector('#mFormBody .pos-btn.selected');if(!name||!posBtn){toast('名称和位置必填');return;}MATS.push({id:Date.now(),name,spec:$('nmSpec').value,stock:parseInt($('nmStock').value)||0,batch:'AUTO',expire:$('nmExpire').value,loc:`${currentMatCart}-${posBtn.dataset.code}`});LS('MATS',MATS);closeM('mForm');renderMaterial();updateKpi();toast('已添加');}
 
 /* ==================== 器械管理 ==================== */
-function initEqCartSelect(){
-  const sel=$('eqCartSelect');if(!sel)return;sel.innerHTML='';
-  CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));
-  currentEqCart=CARTS[0]?.code||'CART-001';sel.value=currentEqCart;
-}
-function switchEqCart(){{currentEqCart=$('eqCartSelect').value;renderEquip();}}
-function renderEquip(){
-  const body=$('equipBody');
-  const filtered=EQUIPS.filter(e=>e.loc===currentEqCart||e.loc.startsWith(currentEqCart+'-'));
-  body.innerHTML=filtered.map(e=>`<tr><td>${e.name}</td><td>${e.model}</td><td>${e.stock}</td>
-    <td><span class="badge ${e.status==='正常'?'b-normal':'b-warn'}">${e.status}</span></td>
-    <td>${e.loc}</td><td><button class="btn btn-danger btn-sm" onclick="delEquip(${e.id})">删除</button></td></tr>`).join('');
-  $('hdTitle').textContent=`🔧 器械管理 | ${currentEqCart}（${filtered.length}件）`;
-}
-function openEquipModal(){
-  const cartInfo=CARTS.find(c=>c.code===currentEqCart);
-  $('mFormTitle').textContent='新增器械';
-  $('mFormBody').innerHTML=`
-    <div class="fg"><label>器械名称</label><input class="fi" id="eqName"></div>
-    <div class="fg"><label>型号</label><input class="fi" id="eqModel"></div>
-    <div class="fg"><label>数量</label><input class="fi" id="eqStock" type="number" value="1"></div>
-    <div class="fg"><label>状态</label><select class="fi" id="eqStatus"><option>正常</option><option>待维护</option><option>故障</option></select></div>
-    <div class="fg"><label>所属抢救车</label><input class="fi" value="${cartInfo?.code}（${cartInfo?.name}）" readonly style="background:#f5f5f5;color:#666"></div>
-  `;
-  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveEquip()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
-  openM('mForm');
-}
-function saveEquip(){
-  const name=$('eqName').value.trim();
-  if(!name){toast('器械名称必填');return;}
-  EQUIPS.push({id:Date.now(),name,model:$('eqModel').value,stock:parseInt($('eqStock').value)||1,status:$('eqStatus').value,loc:currentEqCart});
-  LS('EQUIPS',EQUIPS);closeM('mForm');renderEquip();toast(`器械已添加到 ${currentEqCart}`);
-}
-function delEquip(id){confirm('确定删除？',()=>{EQUIPS=EQUIPS.filter(x=>x.id!==id);LS('EQUIPS',EQUIPS);renderEquip();toast('已删除')})}
+function initEqCartSelect(){const sel=$('eqCartSelect');sel.innerHTML='';CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));currentEqCart=CARTS[0]?.code||'CART-001';sel.value=currentEqCart;}
+function switchEqCart(){currentEqCart=$('eqCartSelect').value;renderEquip();}
+function renderEquip(){const filtered=EQUIPS.filter(e=>e.loc===currentEqCart||e.loc.startsWith(currentEqCart+'-'));$('equipBody').innerHTML=filtered.map(e=>`<tr><td>${e.name}</td><td>${e.model}</td><td>${e.stock}</td><td><span class="badge ${e.status==='正常'?'b-normal':'b-warn'}">${e.status}</span></td><td>${e.loc}</td><td><button class="btn btn-danger btn-sm" onclick="delEquip(${e.id})">删除</button></td></tr>`).join('');}
+function openEquipModal(){ $('mFormTitle').textContent='新增器械';$('mFormBody').innerHTML=`<div class="fg"><label>名称</label><input class="fi" id="eqName"></div><div class="fg"><label>型号</label><input class="fi" id="eqModel"></div><div class="fg"><label>数量</label><input class="fi" id="eqStock" type="number" value="1"></div><div class="fg"><label>状态</label><select class="fi" id="eqStatus"><option>正常</option><option>待维护</option><option>故障</option></select></div>`;$('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveEquip()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;openM('mForm');}
+function saveEquip(){const name=$('eqName').value.trim();if(!name){toast('名称必填');return;}EQUIPS.push({id:Date.now(),name,model:$('eqModel').value,stock:parseInt($('eqStock').value)||1,status:$('eqStatus').value,loc:currentEqCart});LS('EQUIPS',EQUIPS);closeM('mForm');renderEquip();toast('已添加');}
+function delEquip(id){confirm('确定？',()=>{EQUIPS=EQUIPS.filter(x=>x.id!==id);LS('EQUIPS',EQUIPS);renderEquip();});}
 
 /* ==================== 清点检查 ==================== */
-function initCheckCartSelect(){
-  const sel=$('chkCart');sel.innerHTML='';
-  CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));
-}
-function renderCheck(){
-  const c=$('chkCart').value||CARTS[0]?.code||'';
-  if(!CARTS.length){$('chkBody').innerHTML='<tr><td colspan="6">暂无抢救车</td></tr>';return;}
+function initCheckCartSelect(){const sel=$('chkCart');sel.innerHTML='';CARTS.forEach(c=>sel.add(new Option(`${c.code}（${c.name}）`,c.code)));}
+function renderCheck(){const c=$('chkCart').value||CARTS[0]?.code;if(!CARTS.length){$('chkBody').innerHTML='<tr><td colspan="6">暂无</td></tr>';return;}
   const items=DRUGS.filter(d=>d.loc.startsWith(c+'-'));
-  const checkData=CHECKS[c]||{};let done=0;
+  const cd=CHECKS[c]||{};
+  const tplId = CARTS.find(x=>x.code===c)?.templateId || 'TPL-DEFAULT';
+  const baseList = BASE_TABLES[tplId] || [];
+  let done=0;
   $('chkBody').innerHTML=items.map(d=>{
-    const cd=checkData[d.id]||{real:d.stock,note:''};const diff=cd.real-d.stock;
-    if(cd.real===d.stock&&cd.note==='')done++;
-    const posCode=d.loc.split('-').pop();
-    return `<tr>
-      <td>${cd.note?'<span class="badge b-warn">异常</span>':'<span class="badge b-normal">✓</span>'}</td>
-      <td>${d.name}</td><td>${d.stock}</td>
-      <td><input class="fi" style="width:60px;padding:4px 8px" type="number" value="${cd.real}" onchange="updCheck('${c}',${d.id},'real',this.value)"></td>
-      <td style="color:${diff<0?'#ff4d4f':'#333'}">${diff>0?'+':''}${diff}</td>
-      <td><input class="fi" style="width:100px;padding:4px 8px" placeholder="备注" value="${cd.note}" onchange="updCheck('${c}',${d.id},'note',this.value)"></td>
-    </tr>`;
+    const x=cd[d.id]||{real:d.stock,note:''};
+    const diff=x.real-d.stock;
+    if(x.real===d.stock&&!x.note)done++;
+    // v4.9：显示基数参考
+    const baseItem = baseList.find(b=>b.name===d.name && b.spec===d.spec && b.loc===d.loc.split('-').pop());
+    const baseRef = baseItem ? `（基数${baseItem.base}）` : '';
+    const diffClass = diff<0?'style="color:#ff4d4f"':diff>0?'style="color:#faad14"':'style="color:#52c41a"';
+    return `<tr><td>${x.note?'<span class="badge b-warn">异常</span>':'<span class="badge b-normal">✓</span>'}</td><td>${d.name} ${baseRef}</td><td>${d.stock}</td><td><input class="fi" style="width:60px;padding:4px 8px" type="number" value="${x.real}" onchange="updCheck('${c}',${d.id},'real',this.value)"></td><td ${diffClass}>${diff>0?'+':''}${diff}</td><td><input class="fi" style="width:100px;padding:4px 8px" placeholder="备注" value="${x.note}" onchange="updCheck('${c}',${d.id},'note',this.value)"></td></tr>`;
   }).join('');
-  const pct=items.length?Math.round(done/items.length*100):0;
-  $('pFill').style.width=pct+'%';$('pText').textContent=pct+'%';
+  const pct=items.length?Math.round(done/items.length*100):0;$('pFill').style.width=pct+'%';$('pText').textContent=pct+'%';
 }
-function updCheck(cart,id,field,val){
-  if(!CHECKS[cart])CHECKS[cart]={};
-  if(!CHECKS[cart][id])CHECKS[cart][id]={real:0,note:''};
-  CHECKS[cart][id][field]=field==='real'?parseInt(val)||0:val;
-  LS('CHECKS',CHECKS);renderCheck();
-}
-function saveCheck(){
-  const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);
-  if(cart){cart.progress=parseInt($('pText').textContent)||0;LS('CARTS',CARTS)}
-  LS('CHECKS',CHECKS);renderCartStatus();toast('清点已保存');
-}
-function saveAndSeal(){
-  saveCheck();
-  const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);
-  if(cart){cart.status='sealed';LS('CARTS',CARTS)}
-  SEALS.push({id:Date.now(),cart:c,time:Date.now(),sealNo:'FZ-'+Date.now().toString().slice(-6),op:U.name});
-  LS('SEALS',SEALS);renderCartStatus();toast('已封存 ✅');
-}
+function updCheck(cart,id,field,val){if(!CHECKS[cart])CHECKS[cart]={};if(!CHECKS[cart][id])CHECKS[cart][id]={real:0,note:''};CHECKS[cart][id][field]=field==='real'?parseInt(val)||0:val;LS('CHECKS',CHECKS);renderCheck();}
+function saveCheck(){const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);if(cart){cart.progress=parseInt($('pText').textContent)||0;LS('CARTS',CARTS);}LS('CHECKS',CHECKS);renderCartStatus();toast('已保存');}
+function saveAndSeal(){saveCheck();const c=$('chkCart').value;const cart=CARTS.find(x=>x.code===c);if(cart){cart.status='sealed';LS('CARTS',CARTS);}SEALS.push({id:Date.now(),cart:c,time:Date.now(),sealNo:'FZ-'+Date.now().toString().slice(-6),op:U.name});LS('SEALS',SEALS);renderCartStatus();toast('已封存 ✅');}
 
 /* ==================== 效期预警 ==================== */
-function renderExpiry(){
-  const all=[...DRUGS.map(d=>({...d,type:'药品'})),...MATS.map(d=>({...d,type:'耗材'}))];
-  const groups={exp:[],urgent:[],warn:[],normal:[],safe:[]};
-  all.forEach(d=>{const days=daysUntil(d.expire);if(days<0)groups.exp.push(d);else if(days<=cfg.urgent)groups.urgent.push(d);else if(days<=cfg.warn)groups.warn.push(d);else if(days<=180)groups.normal.push(d);else groups.safe.push(d)});
-  let h='';
-  if(groups.exp.length){h+=`<div class="fw-bold text-danger mb10">🔴 已过期（${groups.exp.length}）</div>`+groups.exp.map(d=>`<div class="user-item" style="border-left:4px solid #ff4d4f"><strong>${d.name}</strong> [${d.type}] <span class="badge b-danger">${d.expire}</span> ${d.loc}</div>`).join('')}
-  if(groups.urgent.length){h+=`<div class="fw-bold mt10 mb10" style="color:#fa8c16">🟠 紧急≤${cfg.urgent}天（${groups.urgent.length}）</div>`+groups.urgent.map(d=>`<div class="user-item" style="border-left:4px solid #faad14"><strong>${d.name}</strong> [${d.type}] <span class="badge b-warn">${d.expire} (${daysUntil(d.expire)}天)</span> ${d.loc}</div>`).join('')}
-  if(groups.warn.length){h+=`<div class="fw-bold mt10 mb10" style="color:#faad14">🟡 预警≤${cfg.warn}天（${groups.warn.length}）</div>`+groups.warn.map(d=>`<div class="user-item" style="border-left:4px solid #faad14"><strong>${d.name}</strong> [${d.type}] <span class="badge b-warn">${d.expire} (${daysUntil(d.expire)}天)</span> ${d.loc}</div>`).join('')}
-  $('expiryContent').innerHTML=h||'<p class="text-gray">暂无数据</p>';
-}
+function renderExpiry(){const all=[...DRUGS.map(d=>({...d,type:'药品'})),...MATS.map(d=>({...d,type:'耗材'}))];const g={exp:[],urgent:[],warn:[],normal:[]};all.forEach(d=>{const days=daysUntil(d.expire);if(days<0)g.exp.push(d);else if(days<=cfg.urgent)g.urgent.push(d);else if(days<=cfg.warn)g.warn.push(d);else g.normal.push(d);});let h='';if(g.exp.length)h+=`<div class="fw-bold text-danger mb10">🔴 已过期（${g.exp.length}）</div>`+g.exp.map(d=>`<div class="user-item" style="border-left:4px solid #ff4d4f"><strong>${d.name}</strong> [${d.type}] <span class="badge b-danger">${d.expire}</span></div>`).join('');if(g.urgent.length)h+=`<div class="fw-bold mt10 mb10" style="color:#fa8c16">🟠 紧急≤${cfg.urgent}天（${g.urgent.length}）</div>`+g.urgent.map(d=>`<div class="user-item" style="border-left:4px solid #faad14"><strong>${d.name}</strong> [${d.type}] <span class="badge b-warn">${d.expire}</span></div>`).join('');$('expiryContent').innerHTML=h||'<p class="text-gray">暂无</p>';}
 
 /* ==================== 抢救车管理 ==================== */
-function renderCarts(){
-  $('cartList').innerHTML=CARTS.map(c=>{
-    const st=c.status==='sealed'?'<span class="badge b-normal">已封存</span>':'<span class="badge b-warn">开启中</span>';
-    const tpl=TEMPLATES.find(t=>t.id===c.templateId);
-    return `<div class="user-item"><div class="row"><div><strong>${c.code}</strong> - ${c.name} ${st}<br><span class="text-sm text-gray">${c.loc} | ${c.manager} | 模板：${tpl?tpl.name:'未分配'} | 进度 ${c.progress}%</span></div><div class="flex gap10"><button class="btn btn-danger btn-sm" onclick="delCart(${c.id})">删除</button></div></div></div>`;
-  }).join('');
-}
-function openCartModal(){
-  $('mFormTitle').textContent='新增抢救车';
-  $('mFormBody').innerHTML=`
-    <div class="fg"><label>编号</label><input class="fi" id="fcCode" placeholder="如 CART-005"></div>
-    <div class="fg"><label>名称</label><input class="fi" id="fcName" placeholder="如 儿科抢救车"></div>
-    <div class="fg"><label>位置</label><input class="fi" id="fcLoc" placeholder="如 儿科病房"></div>
-    <div class="fg"><label>负责人</label><input class="fi" id="fcMgr" placeholder="如 赵护士"></div>
-    <div class="fg"><label>使用模板</label><select class="fi" id="fcTpl">${TEMPLATES.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select></div>
-  `;
-  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveCart()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
-  openM('mForm');
-}
-function saveCart(){
-  const code=$('fcCode').value.trim(),name=$('fcName').value.trim();
-  if(!code||!name){toast('编号和名称必填');return;}
-  const tplId=$('fcTpl').value||'TPL-DEFAULT';
-  CARTS.push({id:Date.now(),code,name,loc:$('fcLoc').value,manager:$('fcMgr').value,progress:100,status:'sealed',templateId:tplId});
-  LS('CARTS',CARTS);closeM('mForm');renderCarts();updateKpi();toast('抢救车已添加');
-}
-function delCart(id){confirm('确定删除该抢救车？',()=>{CARTS=CARTS.filter(x=>x.id!==id);LS('CARTS',CARTS);renderCarts();updateKpi()})}
+function renderCarts(){$('cartList').innerHTML=CARTS.map(c=>{const st=c.status==='sealed'?'<span class="badge b-normal">已封存</span>':'<span class="badge b-warn">开启中</span>';return `<div class="user-item"><div class="row"><div><strong>${c.code}</strong> - ${c.name} ${st}<br><span class="text-sm text-gray">${c.loc} | ${c.manager} | 进度 ${c.progress}%</span></div><button class="btn btn-danger btn-sm" onclick="delCart(${c.id})">删除</button></div></div>`;}).join('');}
+function openCartModal(){ $('mFormTitle').textContent='新增抢救车';$('mFormBody').innerHTML=`<div class="fg"><label>编号</label><input class="fi" id="fcCode"></div><div class="fg"><label>名称</label><input class="fi" id="fcName"></div><div class="fg"><label>位置</label><input class="fi" id="fcLoc"></div><div class="fg"><label>负责人</label><input class="fi" id="fcMgr"></div><div class="fg"><label>模板</label><select class="fi" id="fcTpl">${TEMPLATES.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select></div>`;$('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveCart()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;openM('mForm');}
+function saveCart(){const code=$('fcCode').value.trim(),name=$('fcName').value.trim();if(!code||!name){toast('编号和名称必填');return;}CARTS.push({id:Date.now(),code,name,loc:$('fcLoc').value,manager:$('fcMgr').value,progress:100,status:'sealed',templateId:$('fcTpl').value||'TPL-DEFAULT'});LS('CARTS',CARTS);closeM('mForm');renderCarts();updateKpi();toast('已添加');}
+function delCart(id){confirm('确定？',()=>{CARTS=CARTS.filter(x=>x.id!==id);LS('CARTS',CARTS);renderCarts();updateKpi();});}
 
 /* ==================== 抢救记录 ==================== */
-function renderRecords(){
-  $('recordList').innerHTML=RECORDS.length?RECORDS.slice().reverse().map(r=>`<div class="user-item"><div class="row"><div><strong>${r.patient}</strong> - ${r.diagnosis}<br><span class="text-sm text-gray">${fmtDate(r.time)} | ${r.op} | ${r.items}</span></div><button class="btn btn-danger btn-sm" onclick="delRecord(${r.id})">删除</button></div></div>`).join(''):'<p class="text-gray">暂无记录</p>';
-}
-function openRecordModal(){
-  $('mFormTitle').textContent='新增抢救记录';
-  $('mFormBody').innerHTML=`<div class="fg"><label>患者姓名</label><input class="fi" id="rrPat"></div><div class="fg"><label>诊断</label><input class="fi" id="rrDiag"></div><div class="fg"><label>使用物品</label><input class="fi" id="rrItems" placeholder="如 肾上腺素2支+输液器1套"></div>`;
-  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveRecord()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
-  openM('mForm');
-}
-function saveRecord(){
-  RECORDS.push({id:Date.now(),patient:$('rrPat').value,diagnosis:$('rrDiag').value,items:$('rrItems').value,op:U.name,time:Date.now()});
-  LS('RECORDS',RECORDS);closeM('mForm');renderRecords();toast('记录已保存');
-}
-function delRecord(id){confirm('确定删除？',()=>{RECORDS=RECORDS.filter(x=>x.id!==id);LS('RECORDS',RECORDS);renderRecords()})}
+function renderRecords(){$('recordList').innerHTML=RECORDS.length?RECORDS.slice().reverse().map(r=>`<div class="user-item"><div class="row"><div><strong>${r.patient}</strong> - ${r.diagnosis}<br><span class="text-sm text-gray">${fmtDate(r.time)} | ${r.op}</span></div><button class="btn btn-danger btn-sm" onclick="delRecord(${r.id})">删除</button></div></div>`).join(''):'<p class="text-gray">暂无</p>';}
+function openRecordModal(){ $('mFormTitle').textContent='新增记录';$('mFormBody').innerHTML=`<div class="fg"><label>患者</label><input class="fi" id="rrPat"></div><div class="fg"><label>诊断</label><input class="fi" id="rrDiag"></div><div class="fg"><label>使用物品</label><input class="fi" id="rrItems"></div>`;$('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveRecord()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;openM('mForm');}
+function saveRecord(){RECORDS.push({id:Date.now(),patient:$('rrPat').value,diagnosis:$('rrDiag').value,items:$('rrItems').value,op:U.name,time:Date.now()});LS('RECORDS',RECORDS);closeM('mForm');renderRecords();toast('已保存');}
+function delRecord(id){confirm('确定？',()=>{RECORDS=RECORDS.filter(x=>x.id!==id);LS('RECORDS',RECORDS);renderRecords();});}
 
 /* ==================== 封条管理 ==================== */
-function renderSeals(){
-  $('sealList').innerHTML=SEALS.length?SEALS.slice().reverse().map(s=>`<div class="user-item"><div class="row"><div><strong>${s.sealNo}</strong> - ${s.cart}<br><span class="text-sm text-gray">${fmtDate(s.time)} | ${s.op}</span></div></div></div>`).join(''):'<p class="text-gray">暂无封存记录</p>';
+function renderSeals(){$('sealList').innerHTML=SEALS.length?SEALS.slice().reverse().map(s=>`<div class="user-item"><div class="row"><div><strong>${s.sealNo}</strong> - ${s.cart}<br><span class="text-sm text-gray">${fmtDate(s.time)} | ${s.op}</span></div></div></div>`).join(''):'<p class="text-gray">暂无</p>';}
+
+/* ==================== v4.9 药品标准基数管理（核心修复版） ==================== */
+
+// v4.9 修复说明：
+// 1. 套用基数时，按 name+spec+loc+batch+expire 五维唯一性判断，避免误覆盖不同批号的同种药品
+// 2. 位置冲突时弹出详细提示，告知用户哪些物品占用了该位置
+// 3. 复位为基数时，仅复位有基数定义的物品，其余保持不动并提示
+
+function applyBaseToCurrentCart(){
+  const cartCode = document.getElementById('drugCartSelect').value || currentDrugCart;
+  const cart = CARTS.find(c=>c.code===cartCode);
+  if(!cart){toast('未找到当前抢救车');return;}
+  const tplId = cart.templateId || 'TPL-DEFAULT';
+  const base = BASE_TABLES[tplId] || [];
+  if(base.length===0){toast('该模板尚未配置标准基数表，请先去「🗂️ 模板管理」配置');return;}
+
+  let updated=0, added=0, conflict=0, conflictDetails=[];
+  const usedLocs = new Set(DRUGS.filter(d=>d.loc.startsWith(cartCode+'-')).map(d=>d.loc));
+
+  base.forEach(b=>{
+    const targetLoc = cartCode + '-' + b.loc;
+    // v4.9：五维匹配（name+spec+loc），更精确
+    const exist = DRUGS.find(d=>d.loc===targetLoc && d.name===b.name && d.spec===b.spec);
+    if(exist){
+      // 仅当库存不一致时才更新
+      if(exist.stock !== b.base){
+        exist.stock = b.base;
+        updated++;
+      }
+    }else{
+      // 检查位置是否被其他药品占用
+      const locOccupied = DRUGS.find(d=>d.loc===targetLoc);
+      if(locOccupied && !(locOccupied.name===b.name && locOccupied.spec===b.spec)){
+        conflict++;
+        conflictDetails.push(`${b.loc}（${b.name}）被「${locOccupied.name}」占用`);
+        return;
+      }
+      DRUGS.push({
+        id:Date.now()+Math.random(), name:b.name, spec:b.spec, stock:b.base,
+        batch:b.batch||'BASE', expire:b.expire||'2026-12-31', loc:targetLoc,
+        cat:b.cat||'急救药', level:b.level||'A'
+      });
+      added++;
+    }
+  });
+  LS('DRUGS',DRUGS);
+  renderDrug(); renderMaterial(); updateKpi();
+  let msg = `✅ 已套用：${updated} 项更新`;
+  if(added) msg += `，${added} 项新增`;
+  if(conflict) msg += `，${conflict} 项位置冲突已跳过`;
+  if(conflictDetails.length>0 && conflict<=3){
+    msg += `（${conflictDetails.join('；')}）`;
+  }
+  toast(msg);
+}
+
+// 打开"配置标准基数"弹窗（按模板）
+function openBaseTableModal(tplId){
+  const base = BASE_TABLES[tplId] || [];
+  let html = `<div style="background:#f0f5ff;border:1px solid #d6e4ff;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#444;line-height:1.8">
+    💡 <b>配置说明：</b>在此维护该模板对应的"标准药品基数表"。套用时，系统会按 药品名+规格+位置 匹配，把库存覆盖为这里的"基数"。<br>
+    位置建议与模板格子编码一致（如 A1、B2、C1）。<br>
+    <b>v4.9 新增：</b>支持 batch（批号）和 expire（有效期）字段，套用时保留批号维度。
+  </div>`;
+  html += `<div class="tx"><table class="base-tbl" style="width:100%;border-collapse:collapse;font-size:12px;min-width:680px">
+    <thead><tr style="background:#fafafa">
+      <th style="border:1px solid #eee;padding:6px 8px">药品名称</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:120px">规格</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:50px">位置</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:55px">基数</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:80px">批号</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:110px">有效期</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:70px">分类</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:45px">等级</th>
+      <th style="border:1px solid #eee;padding:6px 8px;width:50px">操作</th>
+    </tr></thead><tbody>`;
+  base.forEach((b,i)=>{
+    html += `<tr>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px" value="${b.name}" onchange="BASE_TABLES['${tplId}'][${i}].name=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px" value="${b.spec}" onchange="BASE_TABLES['${tplId}'][${i}].spec=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px;text-align:center" value="${b.loc}" onchange="BASE_TABLES['${tplId}'][${i}].loc=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" type="number" style="width:100%;padding:4px 6px;font-size:12px;text-align:center" value="${b.base}" onchange="BASE_TABLES['${tplId}'][${i}].base=parseInt(this.value)||0"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px" value="${b.batch||''}" onchange="BASE_TABLES['${tplId}'][${i}].batch=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" type="date" style="width:100%;padding:4px 6px;font-size:12px" value="${b.expire||'2026-12-31'}" onchange="BASE_TABLES['${tplId}'][${i}].expire=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px" value="${b.cat||''}" onchange="BASE_TABLES['${tplId}'][${i}].cat=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px"><input class="fi" style="width:100%;padding:4px 6px;font-size:12px;text-align:center" value="${b.level||'A'}" onchange="BASE_TABLES['${tplId}'][${i}].level=this.value"></td>
+      <td style="border:1px solid #eee;padding:4px 6px;text-align:center"><button class="btn btn-danger btn-sm" style="padding:2px 8px;font-size:11px" onclick="BASE_TABLES['${tplId}'].splice(${i},1);openBaseTableModal('${tplId}')">删除</button></td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  html += `<button class="btn btn-success btn-sm mt10" onclick="BASE_TABLES['${tplId}'].push({name:'新药名',spec:'',loc:'A1',base:1,batch:'',expire:'2026-12-31',cat:'急救药',level:'A'});openBaseTableModal('${tplId}')">➕ 新增一行</button>`;
+  html += `<button class="btn btn-warning btn-sm mt10" style="margin-left:8px" onclick="fillBaseFromCurrentCart('${tplId}')">📥 从当前车辆导入</button>`;
+
+  $('mFormTitle').textContent='配置标准基数表 - '+tplId;
+  $('mFormBody').innerHTML=html;
+  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveBaseTable('${tplId}')">💾 保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
+  openM('mForm');
+}
+
+// 保存基数表（含校验）
+function saveBaseTable(tplId){
+  const base = BASE_TABLES[tplId] || [];
+  // v4.9：去重校验（同name+spec+loc只能有一条）
+  const seen = new Set();
+  const dupes = [];
+  base.forEach((b,idx)=>{
+    if(!b.name||!b.spec){toast(`第${idx+1}行：请补全"药品名称"和"规格"`);return;}
+    b.base = parseInt(b.base)||0;
+    if(b.base<0){toast(`第${idx+1}行：基数不能为负数`);return;}
+    const key = b.name+'|'+b.spec+'|'+b.loc;
+    if(seen.has(key)){dupes.push(b.name+'@'+b.loc);}
+    seen.add(key);
+  });
+  if(dupes.length>0){toast('⚠️ 存在重复项：'+dupes.join('、'));return;}
+  LS('BASE_TABLES',BASE_TABLES);
+  closeM('mForm');
+  renderTemplates();
+  toast(`✅ 标准基数表已保存（${base.length} 项）`);
+}
+
+// 从当前车辆的现有药品，反向填充基数表
+function fillBaseFromCurrentCart(tplId){
+  const cartCode = document.getElementById('drugCartSelect').value || currentDrugCart;
+  const drugs = DRUGS.filter(d=>d.loc.startsWith(cartCode+'-'));
+  if(drugs.length===0){toast('当前车辆没有药品可导入');return;}
+  const list = drugs.map(d=>{
+    const loc = d.loc.split('-').pop();
+    return {name:d.name,spec:d.spec,loc,base:d.stock,batch:d.batch,expire:d.expire,cat:d.cat||'急救药',level:d.level||'A'};
+  });
+  BASE_TABLES[tplId] = list;
+  toast(`已导入 ${list.length} 项，请核对后保存`);
+  openBaseTableModal(tplId);
+}
+
+// 清点页"复位为基数"：把当前车药品库存按模板基数表回填
+// v4.9：仅复位有基数定义的物品，其余保持不动
+function resetCheckToBase(){
+  const cartCode = document.getElementById('chkCart').value || CARTS[0]?.code;
+  if(!cartCode){toast('请先选择抢救车');return;}
+  const cart = CARTS.find(c=>c.code===cartCode);
+  const tplId = cart?.templateId || 'TPL-DEFAULT';
+  const base = BASE_TABLES[tplId] || [];
+  if(base.length===0){toast('该模板未配置标准基数表');return;}
+  let cnt=0, skipped=0;
+  base.forEach(b=>{
+    const target = cartCode+'-'+b.loc;
+    const item = DRUGS.find(d=>d.loc===target && d.name===b.name && d.spec===b.spec);
+    if(item && item.stock!==b.base){item.stock=b.base;cnt++;}
+    else if(!item){skipped++;}
+  });
+  LS('DRUGS',DRUGS);
+  renderDrug(); renderCheck(); updateKpi();
+  let msg = `已复位 ${cnt} 项库存为基数`;
+  if(skipped) msg += `（${skipped} 项基数表中存在但车辆中无对应药品，未自动新增）`;
+  toast(msg);
 }
 
 /* ==================== 统计报表 ==================== */
 function renderReport(){
-  const cats={};DRUGS.forEach(d=>{cats[d.cat]=(cats[d.cat]||0)+1});
+  // 药品分类 KPI
+  const cats={};DRUGS.forEach(d=>{cats[d.cat]=(cats[d.cat]||0)+1;});
+  // 基数符合率
+  let match=0, baseTotal=0;
+  CARTS.forEach(cart=>{
+    const ctpl = cart.templateId || 'TPL-DEFAULT';
+    const cbase = BASE_TABLES[ctpl] || [];
+    baseTotal += cbase.length;
+    cbase.forEach(b=>{
+      const item = DRUGS.find(d=>d.loc===`${cart.code}-${b.loc}` && d.name===b.name && d.spec===b.spec);
+      if(item && item.stock===b.base) match++;
+    });
+  });
+  const rate = baseTotal>0 ? Math.round(match/baseTotal*100) : 0;
+
   let h='<div class="kpi-grid">';
-  Object.entries(cats).forEach(([k,v])=>{h+=`<div class="kpi"><div class="v">${v}</div><div class="l">${k}</div></div>`});
+  Object.entries(cats).forEach(([k,v])=>{h+=`<div class="kpi"><div class="v">${v}</div><div class="l">${k}</div></div>`;});
   h+=`<div class="kpi"><div class="v" style="color:#faad14">${DRUGS.filter(d=>daysUntil(d.expire)<=cfg.warn).length}</div><div class="l">近效期</div></div>`;
-  h+=`<div class="kpi"><div class="v" style="color:#ff4d4f">${DRUGS.filter(d=>daysUntil(d.expire)<0).length}</div><div class="l">已过期</div></div></div>`;
+  h+=`<div class="kpi"><div class="v" style="color:#ff4d4f">${DRUGS.filter(d=>daysUntil(d.expire)<0).length}</div><div class="l">已过期</div></div>`;
+  h+=`<div class="kpi"><div class="v" style="color:#722ed1">${rate}%</div><div class="l">🔢 基数符合率</div></div>`;
+  h+='</div>';
   $('reportKpi').innerHTML=h;
+
   const top5=DRUGS.filter(d=>daysUntil(d.expire)>0).sort((a,b)=>daysUntil(a.expire)-daysUntil(b.expire)).slice(0,5);
   $('reportTop5').innerHTML=top5.map(d=>`<div class="user-item"><strong>${d.name}</strong> - ${d.expire} <span class="badge b-warn">${daysUntil(d.expire)}天</span></div>`).join('');
+
+  const total=SHIFTS.length,today=SHIFTS.filter(s=>new Date(s.time).toDateString()===new Date().toDateString()).length,normal=SHIFTS.filter(s=>s.status==='正常').length,abnormal=SHIFTS.filter(s=>s.status==='异常').length;
+  $('reportShift').innerHTML=`<div class="kpi-grid"><div class="kpi"><div class="v">${total}</div><div class="l">交接班总数</div></div><div class="kpi"><div class="v" style="color:#52c41a">${normal}</div><div class="l">正常</div></div><div class="kpi"><div class="v" style="color:#ff4d4f">${abnormal}</div><div class="l">异常</div></div><div class="kpi"><div class="v" style="color:#722ed1">${today}</div><div class="l">今日</div></div></div>`;
 }
 
 /* ==================== 账户管理 ==================== */
 function renderAccount(){
   const pd=PENDING.filter(u=>u.status==='pending');
   $('pendingCnt').textContent=pd.length;
-  $('pendingList').innerHTML=pd.length?pd.map(u=>`<div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-warn">待审核</span><br><span class="text-sm text-gray">${u.username} | ${u.dept}</span></div><div class="flex gap10"><button class="btn btn-success btn-sm" onclick="audit('${u.id}','approved')">通过</button><button class="btn btn-danger btn-sm" onclick="audit('${u.id}','rejected')">拒绝</button></div></div></div>`).join(''):'<p class="text-gray">暂无待审核</p>';
-  $('approvedList').innerHTML=USERS.filter(u=>u.status==='approved').map(u=>`<div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-normal">已通过</span><br><span class="text-sm text-gray">${u.username}</span></div>${u.username!==AID?`<button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">删除</button>`:''}</div></div>`).join('');
+  $('pendingList').innerHTML=pd.length?pd.map(u=>`<div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-warn">待审核</span><br><span class="text-sm text-gray">${u.username}</span></div><div class="flex gap10"><button class="btn btn-success btn-sm" onclick="audit('${u.id}','approved')">通过</button><button class="btn btn-danger btn-sm" onclick="audit('${u.id}','rejected')">拒绝</button></div></div></div>`).join(''):'<p class="text-gray">无</p>';
+  $('approvedList').innerHTML=USERS.filter(u=>u.status==='approved').map(u=>`<div class="user-item"><div class="row"><div><strong>${u.name}</strong>（${u.role}）<span class="badge b-normal">已通过</span><br><span class="text-sm text-gray">${u.username}</span></div><div class="flex gap10"><button class="btn btn-info btn-sm" onclick="openSigModal('${u.username}','${u.name}')">✍️ ${SIGNATURES[u.username]?'重写签名':'设置签名'}</button>${u.username!==AID?`<button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')">删除</button>`:''}</div></div></div>`).join('');
+  // v4.5 签名统计
+  const totalUsers=USERS.filter(u=>u.status==='approved').length;
+  const hasSig=Object.keys(SIGNATURES).length;
+  let sigHtml=`<div class="kpi-grid"><div class="kpi"><div class="v">${totalUsers}</div><div class="l">已审核用户</div></div><div class="kpi"><div class="v" style="color:#52c41a">${hasSig}</div><div class="l">已设签名</div></div><div class="kpi"><div class="v" style="color:#ff4d4f">${totalUsers-hasSig}</div><div class="l">未设签名</div></div><div class="kpi"><div class="v">${Math.round(hasSig/totalUsers*100)||0}%</div><div class="l">签名覆盖率</div></div></div>`;
+  const noSigUsers=USERS.filter(u=>u.status==='approved'&&!SIGNATURES[u.username]);
+  if(noSigUsers.length){sigHtml+=`<div class="mt10"><div class="fw-bold mb10" style="color:#ff4d4f">⚠️ 以下用户尚未设置签名：</div>${noSigUsers.map(u=>`<div class="user-item" style="border-left:3px solid #ff4d4f"><strong>${u.name}</strong>（${u.username}）<button class="btn btn-warning btn-sm" onclick="openSigModal('${u.username}','${u.name}')">去设置</button></div>`).join('')}</div>`;}
+  $('sigStatList').innerHTML=sigHtml;
 }
 function audit(id,st){PENDING=PENDING.map(u=>u.id===id?{...u,status:st}:u);USERS=USERS.map(u=>u.id===id?{...u,status:st}:u);LS('PENDING',PENDING);LS('USERS',USERS);renderAccount();toast(st==='approved'?'已通过':'已拒绝');}
-function delUser(id){confirm('确定？',()=>{USERS=USERS.filter(u=>u.id!==id);LS('USERS',USERS);renderAccount()})}
-function openAddUserModal(){
-  $('mFormTitle').textContent='新增用户';
-  $('mFormBody').innerHTML=`<div class="fg"><label>姓名</label><input class="fi" id="nuName"></div><div class="fg"><label>工号</label><input class="fi" id="nuUser"></div><div class="fg"><label>密码</label><input class="fi" id="nuPwd" type="password"></div><div class="fg"><label>角色</label><select class="fi" id="nuRole"><option>护士</option><option>护士长</option><option>主任</option></select></div><div class="fg"><label>科室</label><input class="fi" id="nuDept"></div>`;
-  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveNewUser()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
-  openM('mForm');
-}
-function saveNewUser(){
-  const name=$('nuName').value.trim(),u=$('nuUser').value.trim(),p=$('nuPwd').value;
-  if(!name||!u||!p){toast('请填写完整');return}
-  if(USERS.some(x=>x.username===u)){toast('工号已存在');return}
-  USERS.push({id:Date.now().toString(),name,username:u,password:p,role:$('nuRole').value,dept:$('nuDept').value,status:'approved',createdAt:Date.now()});
-  LS('USERS',USERS);closeM('mForm');renderAccount();toast('用户已添加');
-}
+function delUser(id){confirm('确定？',()=>{USERS=USERS.filter(u=>u.id!==id);LS('USERS',USERS);renderAccount();});}
+function openAddUserModal(){ $('mFormTitle').textContent='新增用户';$('mFormBody').innerHTML=`<div class="fg"><label>姓名</label><input class="fi" id="nuName"></div><div class="fg"><label>工号</label><input class="fi" id="nuUser"></div><div class="fg"><label>密码</label><input class="fi" id="nuPwd" type="password"></div><div class="fg"><label>角色</label><select class="fi" id="nuRole"><option>护士</option><option>护士长</option><option>主任</option></select></div>`;$('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveNewUser()">保存</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;openM('mForm');}
+function saveNewUser(){const name=$('nuName').value.trim(),u=$('nuUser').value.trim(),p=$('nuPwd').value;if(!name||!u||!p){toast('请填写完整');return;}if(USERS.some(x=>x.username===u)){toast('工号已存在');return;}USERS.push({id:Date.now().toString(),name,username:u,password:p,role:$('nuRole').value,dept:'',status:'approved',createdAt:Date.now()});LS('USERS',USERS);closeM('mForm');renderAccount();toast('已添加');}
 
 /* ==================== 系统参数 ==================== */
-function saveCfg(){cfg={warn:parseInt($('cfgWarn').value)||90,urgent:parseInt($('cfgUrgent').value)||30,pct:parseInt($('cfgPct').value)||100};LS('cfg',JSON.stringify(cfg));toast('设置已保存');}
-function resetAll(){confirm('⚠️ 确定重置全部数据？不可恢复！',()=>{['DRUGS','MATS','EQUIPS','CARTS','RECORDS','SEALS','CHECKS','PENDING','USERS','cfg','TEMPLATES','CART_TPL_MAP'].forEach(k=>localStorage.removeItem(k));toast('数据已重置...');setTimeout(()=>location.reload(),1500);});}
+function saveCfg(){cfg={warn:parseInt($('cfgWarn').value)||90,urgent:parseInt($('cfgUrgent').value)||30,pct:parseInt($('cfgPct').value)||100};LS('cfg',JSON.stringify(cfg));toast('已保存');}
 
-/* ==================== OCR ==================== */
-function openOCR(){OCR=[];renderOcr();openM('mOcr')}
-function startCam(){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{let v=document.createElement('video');v.srcObject=s;v.play();$('ocrArea').innerHTML='';$('ocrArea').appendChild(v);}).catch(e=>{toast('摄像头不可用，已打开文本识别');openTextOCR();});}
-function capture(){const v=$('ocrArea').querySelector('video');if(!v){toast('请先开启摄像头');return}const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);simulateOCR(c.toDataURL());}
-function uploadImg(){$('imgUpload').click();}
-function handleImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>simulateOCR(ev.target.result);r.readAsDataURL(f);}
-function simulateOCR(imgData){$('ocrArea').innerHTML=`<img src="${imgData}" style="max-height:100%;">`;OCR=[{name:'肾上腺素',spec:'1mg/1ml',stock:10},{name:'阿托品',spec:'0.5mg/1ml',stock:8}];renderOcr();toast('识别完成，共'+OCR.length+'项');}
-function renderOcr(){$('ocrCnt').textContent=OCR.length;$('ocrList').innerHTML=OCR.map(d=>`<div class="ocr-result"><div class="fw-bold">${d.name}</div><div class="text-sm text-gray">${d.spec} | ${d.stock}</div></div>`).join('');}
-function addOcrToTable(){if(OCR.length===0){toast('暂无识别结果');return;}const c=$('drugCartSelect').value;OCR.forEach(item=>{DRUGS.push({id:Date.now()+Math.random(),name:item.name,spec:item.spec,stock:item.stock,batch:'OCR',expire:'2026-12-31',loc:`${c}-A1`,cat:'急救药',level:'A'})});LS('DRUGS',DRUGS);closeM('mOcr');renderDrug();updateKpi();toast(`已添加${OCR.length}项到${c}`);}
+/* ==================== v4.9 数据备份与恢复 ==================== */
+function backupData(){
+  const allData = {
+    DATA_VERSION,
+    DRUGS, MATS, EQUIPS, CARTS, RECORDS, SEALS, USERS, PENDING,
+    CHECKS, SHIFTS, SIGNATURES, BASE_TABLES, TEMPLATES, CART_TPL_MAP, cfg
+  };
+  const json = JSON.stringify(allData, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `小陈智能管理系统_数据备份_v${DATA_VERSION}_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✅ 数据备份已导出');
+}
+
+function restoreDataPrompt(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = function(e){
+    const f = e.target.files[0];if(!f)return;
+    const r = new FileReader();
+    r.onload = function(ev){
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(!data.DATA_VERSION){toast('⚠️ 无效备份文件（缺少版本号）');return;}
+        // 恢复所有数据
+        DRUGS = data.DRUGS || [];MATS = data.MATS || [];EQUIPS = data.EQUIPS || [];
+        CARTS = data.CARTS || [];RECORDS = data.RECORDS || [];SEALS = data.SEALS || [];
+        USERS = data.USERS || [];PENDING = data.PENDING || [];
+        CHECKS = data.CHECKS || {};SHIFTS = data.SHIFTS || [];
+        SIGNATURES = data.SIGNATURES || {};BASE_TABLES = data.BASE_TABLES || {};
+        TEMPLATES = data.TEMPLATES || [];CART_TPL_MAP = data.CART_TPL_MAP || {};
+        cfg = data.cfg || {warn:90,urgent:30,pct:100};
+        // 持久化
+        LS('DRUGS',DRUGS);LS('MATS',MATS);LS('EQUIPS',EQUIPS);
+        LS('CARTS',CARTS);LS('RECORDS',RECORDS);LS('SEALS',SEALS);
+        LS('USERS',USERS);LS('PENDING',PENDING);
+        LS('CHECKS',CHECKS);LS('SHIFTS',SHIFTS);
+        LS('SIGNATURES',SIGNATURES);LS('BASE_TABLES',BASE_TABLES);
+        LS('TEMPLATES',TEMPLATES);LS('CART_TPL_MAP',CART_TPL_MAP);
+        LS('cfg',JSON.stringify(cfg));
+        LS('DATA_VERSION', data.DATA_VERSION);
+        toast(`✅ 已从 v${data.DATA_VERSION} 恢复数据，刷新后生效`);
+        setTimeout(()=>location.reload(), 1500);
+      }catch(err){toast('⚠️ 文件解析失败：'+err.message);}
+    };
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+function resetAll(){confirm('⚠️ 确定重置全部数据？此操作不可恢复！建议先备份。',()=>{
+  ['DRUGS','MATS','EQUIPS','CARTS','RECORDS','SEALS','CHECKS','PENDING','USERS','cfg','TEMPLATES','CART_TPL_MAP','SHIFTS','SIGNATURES','BASE_TABLES','DATA_VERSION'].forEach(k=>localStorage.removeItem(k));
+  toast('重置中...');setTimeout(()=>location.reload(),1500);
+});}
+
+/* ==================== v4.9 权限控制 ==================== */
+// v4.9：细化权限粒度
+const PERMISSIONS = {
+  '护士':     { canEdit: false, canDelete: false, canManageTemplate: false, canManageUser: false, canReset: false },
+  '护士长':   { canEdit: true,  canDelete: false, canManageTemplate: false, canManageUser: false, canReset: false },
+  '主任':     { canEdit: true,  canDelete: true,  canManageTemplate: false, canManageUser: false, canReset: false },
+  '主管理员': { canEdit: true,  canDelete: true,  canManageTemplate: true,  canManageUser: true,  canReset: true  }
+};
+
+function getPerm(){
+  if(!U) return PERMISSIONS['护士'];
+  return PERMISSIONS[U.role] || PERMISSIONS['护士'];
+}
+
+// v4.9：根据权限动态隐藏/显示操作按钮
+function applyPermissions(){
+  const perm = getPerm();
+  // 删除按钮
+  const delBtns = document.querySelectorAll('.btn-danger');
+  delBtns.forEach(btn=>{
+    if(btn.id==='btnBatchDelDrug'||btn.id==='btnBatchDelMat'){
+      btn.style.display = perm.canDelete ? '' : 'none';
+    }
+  });
+  // 危险操作区
+  const dangerZone = document.querySelector('.bdt.pt15.mt15');
+  if(dangerZone) dangerZone.style.display = perm.canReset ? '' : 'none';
+  // 账户管理入口
+  const accountMenu = document.querySelector('.sb-menu a[onclick*="account"]');
+  if(accountMenu) accountMenu.parentElement.style.display = perm.canManageUser ? '' : 'none';
+  // 模板管理入口
+  const tplMenu = document.querySelector('.sb-menu a[onclick*="template"]');
+  if(tplMenu) tplMenu.parentElement.style.display = perm.canManageTemplate ? '' : 'none';
+}
+
+// applyPermissions 已在 loginOK 中调用
+// (已内联到 loginOK 中)
+
+/* ==================== v4.9 真 OCR（Tesseract.js，含内存管理） ==================== */
+let _ocrStream=null, _ocrWorker=null, _ocrReady=false, _ocrBusy=false, _ocrImgData='';
+
+// v4.9：Worker 单例 + 超时保护 + 页面卸载清理
+async function _ensureWorker(){
+  if(_ocrWorker)return _ocrWorker;
+  setOcrStatus('run','加载 OCR 引擎（首次约 10-30 秒）…');
+  const timeoutP = new Promise((_,rej)=>setTimeout(()=>rej(new Error('OCR 加载超时（60s），请检查网络后重试')),60000));
+  try{
+    const workerP = Tesseract.createWorker('chi_sim+eng',1,{
+      logger:p=>{
+        if(p.status==='recognizing text'){
+          const pct=Math.round(p.progress*100);
+          setOcrProgress(pct);
+          setOcrStatus('run','识别中 '+pct+'%');
+        }else if(p.status==='loading language traineddata'){
+          setOcrStatus('run','下载中文语言包…（约 12MB，请保持网络）');
+        }else if(p.status==='initializing api'){
+          setOcrStatus('run','初始化识别引擎…');
+        }else{
+          setOcrStatus('run',p.status||'加载中…');
+        }
+      }
+    });
+    _ocrWorker = await Promise.race([workerP, timeoutP]);
+    _ocrReady=true;
+    setOcrStatus('ok','OCR 引擎就绪');
+    return _ocrWorker;
+  }catch(e){
+    setOcrStatus('err','OCR 加载失败：'+(e.message||e));
+    toast('⚠️ OCR 引擎加载失败，可改用「📝 文本识别」功能');
+    throw e;
+  }
+}
+
+// v4.9：清理 OCR 资源
+function cleanupOCR(){
+  if(_ocrStream){_ocrStream.getTracks().forEach(t=>t.stop());_ocrStream=null;}
+  if(_ocrWorker){try{_ocrWorker.terminate();}catch(e){} _ocrWorker=null;_ocrReady=false;}
+}
+function cleanupOnUnload(){cleanupOCR();}
+
+function setOcrStatus(cls,text){const el=document.getElementById('ocrStatusTag');if(el){el.className='ocr-status-tag '+cls;el.textContent=text;}}
+function setOcrProgress(pct){const bar=document.getElementById('ocrProgressBar');if(bar)bar.style.width=Math.min(100,Math.max(0,pct))+'%';}
+function stopCamera(){if(_ocrStream){_ocrStream.getTracks().forEach(t=>t.stop());_ocrStream=null;}const v=document.querySelector('#ocrArea video');if(v){v.srcObject=null;}}
+
+async function recognizeImage(imgData){
+  if(_ocrBusy){toast('识别中，请稍候');return;}
+  _ocrBusy=true;_ocrImgData=imgData;
+  document.getElementById('ocrArea').innerHTML='<img src="'+imgData+'" style="max-height:100%">';
+  setOcrStatus('run','准备 OCR 引擎…');setOcrProgress(0);
+  try{
+    const worker=await _ensureWorker();
+    const {data:{text}}=await worker.recognize(imgData);
+    const items=parseOcrText(text);
+    OCR=items;renderOcr();
+    setOcrStatus('ok','识别完成 '+items.length+' 项');setOcrProgress(100);
+    const lineEl=document.getElementById('ocrLine');
+    if(items.length===0){
+      if(lineEl)lineEl.textContent=text||'(无文本)';
+      toast('未匹配到药品格式，已展示原文');
+    }else{
+      if(lineEl)lineEl.textContent=items.map(r=>'✓ '+r.name+' '+r.spec+' × '+r.stock).join('\n');
+      toast('识别完成：'+items.length+' 项');
+    }
+  }catch(err){
+    console.error(err);setOcrStatus('err','识别失败');
+    toast('OCR 失败：'+(err.message||err));
+  }finally{_ocrBusy=false;}
+}
+
+// 解析 OCR 文本 → 结构化条目
+function parseOcrText(text){
+  const lines=text.split(/[\n\r]+/).map(l=>l.trim()).filter(Boolean);
+  const dict={
+    '肾上腺':'肾上腺素','Adrenaline':'肾上腺素','Adrenalin':'肾上腺素',
+    '阿拖品':'阿托品','Atropine':'阿托品','Atropin':'阿托品',
+    '多巴分':'多巴胺','Dopamine':'多巴胺','Dopamin':'多巴胺',
+    '去甲':'去甲肾上腺素','Norepinephrine':'去甲肾上腺素','Noradrenaline':'去甲肾上腺素',
+    '利分卡因':'利多卡因','Lidocaine':'利多卡因','Lidocain':'利多卡因',
+    '安碘酮':'胺碘酮','Amiodarone':'胺碘酮','Amiodaron':'胺碘酮',
+    '地米':'地塞米松','Dexamethasone':'地塞米松',
+    '速尿':'呋塞米','Furosemide':'呋塞米','Furosemid':'呋塞米',
+    '可拉明':'尼可刹米','Nikethamide':'尼可刹米','Coramine':'尼可刹米',
+    '洛贝林':'山梗菜碱','Lobeline':'山梗菜碱','Lobelin':'山梗菜碱',
+    '去乙酰毛花苷':'西地兰','Digoxin':'西地兰',
+    '葡萄糖':'葡萄糖酸钙','Calcium':'葡萄糖酸钙',
+    '输液器':'输液器','注射器':'注射器','纱布':'纱布块','绷带':'绷带',
+    '手套':'无菌手套','棉签':'碘伏棉签','酒精棉':'酒精棉片','口罩':'口罩'
+  };
+  const results=[];
+  const batchRe=/批号[::]?\s*([A-Za-z0-9\-]{3,20})/i;
+  const expRe=/有效期[::]?\s*(\d{4})[\-\/.年](\d{1,2})[\-\/.月](\d{1,2})/i;
+  let pendingBatch='',pendingExp='';
+  for(const line of lines){
+    const bM=line.match(batchRe);if(bM){pendingBatch=bM[1].trim();continue;}
+    const eM=line.match(expRe);if(eM){pendingExp=eM[1]+'-'+String(eM[2]).padStart(2,'0')+'-'+String(eM[3]).padStart(2,'0');continue;}
+    const qM=line.match(/(\d+)\s*(?:支|盒|瓶|片|包|套|个)\s*$/i)||line.match(/[x×*]\s*(\d+)/i);
+    const qty=qM?parseInt(qM[1]):1;
+    let name=line.replace(/[\d\sx×*\-.]+\s*(?:支|盒|瓶|片|包|套|个)?\s*$/i,'').trim();
+    name=name.replace(/^\d+(?:\.\d+)?\s*(?:mg|g|ml|mcg|ug)\s*/i,'').trim();
+    let norm=name;for(const k in dict){if(name.includes(k)){norm=dict[k];break;}}
+    if(norm.length<2)continue;
+    const sM=line.match(/(\d+(?:\.\d+)?\s*(?:mg|g|ml|mcg|ug)(?:\/\d+(?:\.\d+)?\s*(?:mg|g|ml))?)/i);
+    const spec=sM?sM[1].trim():'待识别';
+    results.push({name:norm,spec,stock:qty,batch:pendingBatch||'OCR',expire:pendingExp||'2026-12-31',warn:false});
+    pendingBatch='';pendingExp='';
+  }
+  // 去重合并
+  const map=new Map();
+  for(const r of results){const k=r.name+'|'+r.spec;if(map.has(k))map.get(k).stock+=r.stock;else map.set(k,r);}
+  return [...map.values()];
+}
+
+/* ---- UI 入口 ---- */
+function openOCR(){
+  OCR=[];renderOcr();_ocrImgData='';
+  if(typeof Tesseract==='undefined'){
+    setOcrStatus('err','OCR 引擎尚未加载完，请稍候 5-10 秒再试');
+    toast('⏳ OCR 引擎加载中，请稍候…可先拍照/选图，稍后点「重新识别」');
+  }else{
+    setOcrStatus('idle','就绪，可拍照/选图');
+  }
+  setOcrProgress(0);
+  const le=document.getElementById('ocrLine');if(le)le.textContent='';
+  openM('mOcr');
+}
+function startCam(){
+  stopCamera();
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{
+    _ocrStream=s;const v=document.createElement('video');v.autoplay=true;v.playsInline=true;v.srcObject=s;
+    document.getElementById('ocrArea').innerHTML='';document.getElementById('ocrArea').appendChild(v);
+    setOcrStatus('idle','摄像头已开启，点击拍照');
+  }).catch(e=>{console.error(e);toast('摄像头不可用：'+e.message);});
+}
+function capture(){
+  const v=document.querySelector('#ocrArea video');
+  if(!v||!_ocrStream){toast('请先开启摄像头');return;}
+  if(typeof Tesseract==='undefined'){toast('⏳ OCR 引擎还在加载，请等 5-10 秒再试');return;}
+  const c=document.createElement('canvas');c.width=v.videoWidth||640;c.height=v.videoHeight||480;
+  c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+  recognizeImage(c.toDataURL('image/png'));
+}
+function uploadImg(){document.getElementById('imgUpload').click();}
+function handleImg(e){const f=e.target.files[0];if(!f)return;if(typeof Tesseract==='undefined'){toast('⏳ OCR 引擎还在加载，请等 5-10 秒再试');return;}const r=new FileReader();r.onload=ev=>recognizeImage(ev.target.result);r.readAsDataURL(f);}
+function reOcrCurrent(){if(!_ocrImgData){toast('没有可识别的图片');return;}recognizeImage(_ocrImgData);}
+function stopCamBtn(){stopCamera();setOcrStatus('idle','摄像头已关闭');toast('摄像头已关闭');}
+
+window.__ocrSet=function(i,field,val){if(OCR[i]){OCR[i][field]=val;}};
+function renderOcr(){
+  document.getElementById('ocrCnt').textContent=OCR.length;
+  const list=document.getElementById('ocrList');
+  if(OCR.length===0){list.innerHTML='<p class="text-gray">暂无识别结果</p>';return;}
+  list.innerHTML=OCR.map((d,i)=>{
+    const isMat=/输液器|注射器|纱布|手套|绷带|棉签|口罩|敷贴|导管|胶带|针头/i.test(d.name);
+    const expVal=(d.expire&&d.expire!=='2026-12-31')?d.expire:'2026-12-31';
+    const bch=d.batch=='OCR'?'':d.batch;
+    const batchAttr=String(bch).replace(/"/g,'&quot;');
+    const expAttr=String(expVal).replace(/"/g,'&quot;');
+    return '<div class="ocr-result">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'+
+        '<div><strong>'+d.name+'</strong> <span class="text-gray">'+d.spec+' × '+d.stock+'</span>'+
+        ' <span class="badge '+(isMat?'b-info':'b-purple')+'">'+(isMat?'耗材':'药品')+'</span></div>'+
+        '<div class="ocr-actions">'+
+          '<input class="fi" style="width:110px;padding:4px 8px;font-size:12px" placeholder="批号" value="'+batchAttr+'" onchange="window.__ocrSet('+i+',&quot;batch&quot;,this.value||&quot;OCR&quot;)">'+
+          '<input class="fi" style="width:140px;padding:4px 8px;font-size:12px" type="date" value="'+expAttr+'" onchange="window.__ocrSet('+i+',&quot;expire&quot;,this.value)">'+
+          '<button class="btn-ghost" onclick="OCR.splice('+i+',1);renderOcr()">移除</button>'+
+        '</div></div></div>';
+  }).join('');
+}
+
+// 写入表格时按模板动态分配位置
+function pickNextFreePos(cartCode,used){
+  const tpl=getCartTemplate(cartCode);const cells=getTemplateCells(tpl);
+  for(const cell of cells){const k=cartCode+'-'+cell.code;if(!used.has(k)){used.add(k);return cell.code;}}
+  return cells[0]&&cells[0].code||'A1';
+}
+function addOcrToTable(){
+  if(!OCR.length){toast('无数据');return;}
+  const c=document.getElementById('drugCartSelect').value;
+  const used=new Set(DRUGS.filter(d=>d.loc.startsWith(c+'-')).map(d=>d.loc));
+  let added=0,skipped=0;
+  OCR.forEach(item=>{
+    const isMat=/输液器|注射器|纱布|手套|绷带|棉签|口罩|敷贴|导管|胶带|针头/i.test(item.name);
+    const store=isMat?MATS:DRUGS;
+    if(store.some(d=>d.loc.startsWith(c+'-')&&d.name===item.name&&d.spec===item.spec)){skipped++;return;}
+    const code=pickNextFreePos(c,used);
+    store.push({id:Date.now()+Math.random(),name:item.name,spec:item.spec,stock:item.stock||1,
+      batch:item.batch||'OCR',expire:item.expire||'2026-12-31',loc:c+'-'+code,
+      cat:isMat?'耗材':(item.name.includes('注射')||item.name.includes('胶囊')?'药品':'急救药'),level:'A'});
+    added++;
+  });
+  LS('DRUGS',DRUGS);LS('MATS',MATS);
+  closeM('mOcr');renderDrug();renderMaterial();updateKpi();
+  toast('添加 '+added+' 项'+(skipped?'，跳过 '+skipped+' 项重复':''));
+}
 
 /* ==================== 文本识别 ==================== */
 let TEXT_OCR_RESULT=[];
-function openTextOCR(){TEXT_OCR_RESULT=[];$('ocrTextArea').value='';$('textOcrCnt').textContent='0';$('textOcrPreview').innerHTML='暂无数据';openM('mTextOcr');}
-function useSampleText(){$('ocrTextArea').value="肾上腺素 1mg/ml 10\n阿托品 0.5mg 8\n多巴胺 20mg/2ml x12\n去甲肾上腺素 2mg/ml 5\n输液器 7# 50\n注射器 5ml 100\n阿莫西林胶囊 500mg x24\n布洛芬混悬液 100ml 1";toast('已填入示例，点击「解析文本」');}
+function openTextOCR(){TEXT_OCR_RESULT=[];$('ocrTextArea').value='';$('textOcrCnt').textContent='0';$('textOcrPreview').innerHTML='暂无';openM('mTextOcr');}
+function useSampleText(){$('ocrTextArea').value="肾上腺素 1mg/ml 10\n阿托品 0.5mg 8\n多巴胺 20mg/2ml x12";toast('已填入示例');}
 function clearTextOcr(){$('ocrTextArea').value='';TEXT_OCR_RESULT=[];$('textOcrCnt').textContent='0';$('textOcrPreview').innerHTML='已清空';}
-function parseTextOCR(){const text=$('ocrTextArea').value.trim();if(!text){toast('请先粘贴文本');return;}const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);const results=[];lines.forEach(line=>{results.push(parseLineForOCR(line))});TEXT_OCR_RESULT=results;$('textOcrCnt').textContent=results.length;$('textOcrPreview').innerHTML=results.map(function(r){return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0"><span class="'+(r.warn?'text-danger':'')+'">'+r.name+'</span><span style="color:#999;font-size:11px">'+r.spec+' × '+r.stock+(r.warn?'(格式待确认)':'')+'</span></div>';}).join('');toast('解析完成：'+results.length+' 项'+(results.some(function(r){return r.warn;})?'，部分格式需确认':''));}function parseLineForOCR(line){var nm=line.match(/^(.+?)\s+[\d\.]+(?:\s*)(?:mg|g|ml|cm|#)/i);var name,rest;if(nm){name=nm[1].trim();rest=line.substring(nm[1].length).trim()}else{var m=line.match(/^(.+?)\s+(\d+)\s*(?:支|套|个|瓶|盒|片|包)?\s*$/);if(m)return{name:m[1].trim(),spec:'待识别',stock:parseInt(m[2])};return{name:line,spec:'待识别',stock:1,warn:true}}var spec='',stock=1;var qm=rest.match(/(\d+)\s*(?:支|套|个|瓶|盒|片|包)?\s*$/);if(qm)stock=parseInt(qm[1]);spec=rest.replace(/[\s×x*]*\d+\s*(?:支|套|个|瓶|盒|片|包)?\s*$/,'').trim().replace(/[\(\)（）]/g,'');if(!spec)spec='待识别';return{name:name.replace(/[_\-]+$/,' '),spec:spec,stock:stock}}
-function addTextOcrToTable(){if(TEXT_OCR_RESULT.length===0){toast('暂无解析结果');return;}const tc=$('drugCartSelect')?.value||currentMatCart||'CART-001';let added=0,skipped=0;TEXT_OCR_RESULT.forEach(r=>{const isMat=/输液器|注射器|纱布|手套|绷带|棉签|棉片|口罩|导管|贴膜|胶带|针头|敷贴/i.test(r.name);const store=isMat?MATS:DRUGS;const exist=store.some(d=>d.loc.startsWith(tc+'-')&&d.name===r.name&&d.spec===r.spec);if(exist){skipped++;return;}const tpl=getCartTemplate(tc);const firstCode=getTemplateCells(tpl)[0]?.code||'A1';store.push({id:Date.now()+Math.random(),name:r.name,spec:r.spec,stock:r.stock||1,batch:'OCR文本',expire:'2026-12-31',loc:`${tc}-${firstCode}`,cat:isMat?'耗材':'急救药',level:'A'});added++});LS('DRUGS',DRUGS);LS('MATS',MATS);closeM('mTextOcr');if(!$('sec-drug').classList.contains('hidden'))renderDrug();if(!$('sec-material').classList.contains('hidden'))renderMaterial();updateKpi();toast(`已添加 ${added} 项${skipped?`，跳过${skipped}项重复`:''}`);}
+function parseTextOCR(){const text=$('ocrTextArea').value.trim();if(!text){toast('请先粘贴文本');return;}const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);const results=[];lines.forEach(line=>{const m=line.match(/^(.+?)\s+(\d+(?:\.\d+)?)\s*(?:mg|g|ml|#)?\s*(?:x|\*|\×)?\s*(\d+)?/i);if(m){results.push({name:m[1].trim(),spec:m[2],stock:parseInt(m[3])||1});}else{results.push({name:line,spec:'待识别',stock:1,warn:true});}});TEXT_OCR_RESULT=results;$('textOcrCnt').textContent=results.length;$('textOcrPreview').innerHTML=results.map(r=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f0f0f0"><span>${r.name}</span><span style="color:#999">${r.spec} × ${r.stock}</span></div>`).join('');toast(`解析${results.length}项`);}
+function addTextOcrToTable(){if(!TEXT_OCR_RESULT.length){toast('无数据');return;}const tc=$('drugCartSelect')?.value||currentMatCart||'CART-001';let added=0;TEXT_OCR_RESULT.forEach(r=>{const isMat=/输液器|注射器|纱布|手套|绷带|棉签|口罩/i.test(r.name);const store=isMat?MATS:DRUGS;if(!store.some(d=>d.loc.startsWith(tc+'-')&&d.name===r.name)){store.push({id:Date.now()+Math.random(),name:r.name,spec:r.spec,stock:r.stock||1,batch:'OCR',expire:'2026-12-31',loc:`${tc}-A1`,cat:isMat?'耗材':'急救药',level:'A'});added++;}});LS('DRUGS',DRUGS);LS('MATS',MATS);closeM('mTextOcr');renderDrug();renderMaterial();updateKpi();toast(`添加${added}项`);}
 
 /* ==================== 通用编辑/删除 ==================== */
-function editCell(el,field,id,store){const arr=eval(store);const item=arr.find(x=>x.id===id);if(!item)return;const v=prompt(`修改${field}：`,item[field]);if(v===null||v===item[field])return;item[field]=v;LS(store,JSON.stringify(arr));if(store==='DRUGS'){DRUGS=arr;renderDrug();updateKpi()}if(store==='MATS'){MATS=arr;renderMaterial()}toast('修改成功');}
-function delItem(id,store,label){confirm(`确定删除此项${label}？`,()=>{const arr=JSON.parse(LS(store)).filter(x=>x.id!==id);LS(store,JSON.stringify(arr));if(store==='DRUGS'){DRUGS=arr;renderDrug();updateKpi()}if(store==='MATS'){MATS=arr;renderMaterial()}toast('已删除');});}
+function editCell(el,field,id,store){const arr=JSON.parse(LS(store));const item=arr.find(x=>x.id===id);if(!item)return;const v=prompt(`修改${field}：`,item[field]);if(v===null||v===item[field])return;item[field]=v;LS(store,JSON.stringify(arr));if(store==='DRUGS'){DRUGS=arr;renderDrug();updateKpi();}if(store==='MATS'){MATS=arr;renderMaterial();}toast('修改成功');}
+function delItem(id,store,label){confirm(`删除此项${label}？`,()=>{const arr=JSON.parse(LS(store)).filter(x=>x.id!==id);LS(store,JSON.stringify(arr));if(store==='DRUGS'){DRUGS=arr;renderDrug();updateKpi();}if(store==='MATS'){MATS=arr;renderMaterial();}chkSel.clear();toast('已删除');});}
 function toggleCheckMode(type){chkMode=!chkMode;chkSel.clear();document.querySelectorAll('.chk-col-'+type).forEach(e=>e.classList.toggle('hidden',!chkMode));$('btnBatchDel'+(type==='drug'?'Drug':type==='material'?'Mat':'')).classList.toggle('hidden',!chkMode);type==='drug'?renderDrug():renderMaterial();}
-function chkItem(id,cb){cb.checked?chkSel.add(id):chkSel.delete(id)}
-function chkAll(type,cb){const list=type==='drug'?DRUGS:MATS;list.forEach(d=>{cb.checked?chkSel.add(d.id):chkSel.delete(d.id)});type==='drug'?renderDrug():renderMaterial();}
-function batchDel(type){if(chkSel.size===0){toast('请先选择');return;}confirm(`确定删除 ${chkSel.size} 项？`,()=>{if(type==='drug'){DRUGS=DRUGS.filter(d=>!chkSel.has(d.id));LS('DRUGS',DRUGS);renderDrug();updateKpi()}if(type==='material'){MATS=MATS.filter(d=>!chkSel.has(d.id));LS('MATS',MATS);renderMaterial()}chkSel.clear();toast('批量删除成功');});}
+function chkItem(id,cb){cb.checked?chkSel.add(id):chkSel.delete(id);}
+function chkAll(type,cb){const list=type==='drug'?DRUGS:MATS;list.forEach(d=>{cb.checked?chkSel.add(d.id):chkSel.delete(d.id);});type==='drug'?renderDrug():renderMaterial();}
+function batchDel(type){if(!chkSel.size){toast('请先选择');return;}confirm(`删除${chkSel.size}项？`,()=>{if(type==='drug'){DRUGS=DRUGS.filter(d=>!chkSel.has(d.id));LS('DRUGS',DRUGS);renderDrug();updateKpi();}if(type==='material'){MATS=MATS.filter(d=>!chkSel.has(d.id));LS('MATS',MATS);renderMaterial();}chkSel.clear();toast('已删除');});}
+
+/* ====================================================================
+   v4.5 / v4.9 电子签名系统
+   ==================================================================== */
+function openSigModal(username,name){
+  _sigTargetUser=username;
+  $('mSignTitle').textContent=`✍️ ${name} 的电子签名`;
+  $('mSignDesc').textContent=SIGNATURES[username]?'已存在签名，重写将覆盖旧签名':'请在下方区域手写签名';
+  openM('mSign');
+  setTimeout(()=>initSignature('sigCanvas'),100);
+}
+function initSignature(canvasId){
+  const c=$(canvasId);if(!c)return;
+  _sigCanvas=c;_sigCtx=c.getContext('2d');
+  _sigCtx.strokeStyle='#722ed1';_sigCtx.lineWidth=2.5;_sigCtx.lineCap='round';_sigCtx.lineJoin='round';
+  _sigDone=false;_sigDataUrl='';
+  let drawing=false;
+  function pos(e){const rect=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{tX:t.clientX-rect.left,tY:t.clientY-rect.top};}
+  const start=e=>{drawing=true;const p=pos(e);_sigCtx.beginPath();_sigCtx.moveTo(p.tX,p.tY);e.preventDefault();};
+  const move=e=>{if(!drawing)return;const p=pos(e);_sigCtx.lineTo(p.tX,p.tY);_sigCtx.stroke();e.preventDefault();};
+  const end=_=>{drawing=false;if(_sigCanvas.width>0){_sigDataUrl=_sigCanvas.toDataURL('image/png');_sigDone=true;}};
+  c.onmousedown=start;c.onmousemove=move;c.onmouseup=end;c.onmouseleave=end;
+  c.addEventListener('touchstart',start,{passive:false});c.addEventListener('touchmove',move,{passive:false});c.addEventListener('touchend',end);
+}
+function clearSignature(){if(!_sigCtx)return;_sigCtx.clearRect(0,0,_sigCanvas.width,_sigCanvas.height);_sigDone=false;_sigDataUrl='';}
+function saveSignature(){
+  if(!_sigDone||!_sigDataUrl){toast('请先手写签名');return;}
+  const target = _sigTargetUser || (U && U.username) || null;
+  if(!target){toast('⚠️ 无法确定签名归属人');return;}
+  SIGNATURES[target] = _sigDataUrl;
+  LS('SIGNATURES',SIGNATURES);
+  toast(`✅ ${target} 的签名已保存（仅本人可用）`);
+  closeM('mSign');
+  if($('sec-account')&&!$('sec-account').classList.contains('hidden'))renderAccount();
+  if($('sfFromSignPreview')) onShiftPersonChange('from');
+  if($('sfToSignPreview')) onShiftPersonChange('to');
+}
+
+/* ====================================================================
+   v4.4 / v4.7 / v4.9 交接班管理
+   ==================================================================== */
+
+function renderRecentShifts(){
+  const c=$('recentShifts');if(!c)return;
+  const recent=SHIFTS.slice().reverse().slice(0,3);
+  if(!recent.length){c.innerHTML='<p class="text-gray">暂无交接班记录</p>';return;}
+  c.innerHTML=recent.map(s=>{
+    const cart=CARTS.find(x=>x.code===s.cartCode);
+    const badge=s.status==='正常'?'<span class="badge b-normal">正常</span>':'<span class="badge b-danger">异常</span>';
+    return `<div class="user-item ${s.status==='异常'?'border-left:4px solid #ff4d4f':''}"><div class="row"><div><strong>${s.cartCode}</strong> - ${cart?.name||''} ${badge}<br><span class="text-sm text-gray">${s.from} → ${s.to} | ${fmtDate(s.time)}</span></div></div></div>`;
+  }).join('');
+}
+
+function initPrintFilters(){
+  const sel=$('printCartFilter');if(!sel)return;
+  sel.innerHTML='<option value="">全部抢救车</option>'+CARTS.map(c=>`<option value="${c.code}">${c.code}（${c.name}）</option>`).join('');
+}
+
+function getUserOptions(selectedUser){
+  const users=USERS.filter(u=>u.status==='approved');
+  return users.map(u=>{
+    const hasSig=SIGNATURES[u.username]?' ✅':' ⚠️无签名';
+    return `<option value="${u.username}" ${selectedUser===u.username?'selected':''}>${u.name}（${u.username}）${hasSig}</option>`;
+  }).join('');
+}
+
+function renderShifts(){
+  initPrintFilters();
+  const cartFilter=$('printCartFilter')?.value||'';
+  const statusFilter=$('printStatusFilter')?.value||'';
+  let list=SHIFTS.slice();
+  if(cartFilter)list=list.filter(s=>s.cartCode===cartFilter);
+  if(statusFilter)list=list.filter(s=>s.status===statusFilter);
+
+  const c=$('shiftList');
+  if(list.length===0){c.innerHTML='<p class="text-gray">暂无交接班记录</p>';return;}
+
+  const perm = getPerm();
+  c.innerHTML=list.slice().reverse().map(s=>{
+    const cart=CARTS.find(x=>x.code===s.cartCode);
+    const badge=s.status==='正常'?'<span class="badge b-normal">正常</span>':'<span class="badge b-danger">异常</span>';
+    const fromSign=(s.fromSign||SIGNATURES[s.from])
+      ? `<img src="${s.fromSign||SIGNATURES[s.from]}" class="shift-sign" style="max-height:40px" title="交班人：${s.from}">`
+      : '<span class="sig-status none">无签名</span>';
+    const toSign=(s.toSign||SIGNATURES[s.to])
+      ? `<img src="${s.toSign||SIGNATURES[s.to]}" class="shift-sign" style="max-height:40px" title="接班人：${s.to}">`
+      : '<span class="sig-status none">无签名</span>';
+    const canDelete = perm.canDelete || (U && (U.role==='护士长'||U.role==='主管理员'));
+    return `<div class="user-item shift-card ${s.status==='异常'?'border-left:4px solid #ff4d4f':''}">
+      <button class="btn btn-primary btn-sm print-btn no-print" onclick="printSingleShift('${s.id}')">🖨️ 打印</button>
+      <button class="btn btn-warning btn-sm export-btn no-print" onclick="exportSingleShiftHTML('${s.id}')">💾 导出</button>
+      <div class="row" style="margin-top:30px">
+        <div style="flex:1">
+          <strong>${s.cartCode}</strong> - ${cart?.name||''} ${badge}<br>
+          <span class="text-sm text-gray">${fmtDate(s.time)}</span><br>
+          <div style="margin-top:6px;font-size:13px">
+            <span class="text-gray">交班人：</span><strong>${s.from}</strong> ${fromSign}<br>
+            <span class="text-gray">接班人：</span><strong>${s.to}</strong> ${toSign}
+          </div>
+          ${s.remark?`<div class="mt10 text-sm">📝 ${s.remark}</div>`:''}
+          ${s.abnormal?`<div class="mt10 text-sm" style="color:#ff4d4f">⚠️ ${s.abnormal}</div>`:''}
+        </div>
+        ${canDelete?`<button class="btn btn-danger btn-sm no-print" onclick="delShift('${s.id}')">删除</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openShiftModal(){
+  $('mFormTitle').textContent='新增交接班记录（v4.9 签名隔离）';
+  $('mFormBody').innerHTML=`
+    <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px;font-size:12px;color:#333;margin-bottom:12px;line-height:1.7">
+      ✅ <b>v4.9 签名隔离机制：</b>下拉选择交班人/接班人后，系统自动带出<b>该人本人已存</b>的电子签名。<br>
+      ⚠️ 如提示"尚未设置签名"，请先到「👥 账户管理」为其设置；或现场在下方画布补签后点"赋给当前选中人"。
+    </div>
+    <div class="fg"><label>抢救车</label><select class="fi" id="sfCart">${CARTS.map(c=>`<option value="${c.code}">${c.code}（${c.name}）</option>`).join('')}</select></div>
+
+    <div class="fg"><label>交班人</label><select class="fi" id="sfFrom" onchange="onShiftPersonChange('from')">${getUserOptions(U?.username)}</select></div>
+    <div id="sfFromSignPreview" class="fg"></div>
+
+    <div class="fg"><label>接班人</label><select class="fi" id="sfTo" onchange="onShiftPersonChange('to')">${getUserOptions('')}</select></div>
+    <div id="sfToSignPreview" class="fg"></div>
+
+    <div class="fg"><label>总体状态</label><select class="fi" id="sfStatus"><option value="正常">正常</option><option value="异常">异常</option></select></div>
+    <div class="fg"><label>备注</label><input class="fi" id="sfRemark" placeholder="如：封条完好，药品齐全"></div>
+    <div class="fg"><label>异常情况说明</label><input class="fi" id="sfAbnormal" placeholder="如无异常可留空"></div>
+
+    <div class="fg">
+      <label>✍️ 现场补签 / 重写（可选）</label>
+      <div class="sig-box" onclick="this.querySelector('canvas').focus()">
+        <canvas id="sigCanvas2" width="420" height="140"></canvas>
+        <div class="sig-tip">如某一方尚未设置签名，可在此现场补签。点"赋给当前选中人"将签名写入该人账户。</div>
+      </div>
+      <div class="sig-actions">
+        <button class="clear" onclick="clearSignature()">🧹 重写</button>
+        <button class="ok" onclick="applyCanvasSignToSelected()">✅ 将签名赋给当前选中的接班人</button>
+      </div>
+    </div>
+  `;
+  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="saveShift()">💾 保存交接班</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
+  openM('mForm');
+  setTimeout(()=>{initSignature('sigCanvas2');onShiftPersonChange('from');onShiftPersonChange('to');},100);
+}
+
+// v4.9 核心：下拉选人 → 自动带出该人已存签名
+function onShiftPersonChange(role){
+  const isFrom = role==='from';
+  const selId = isFrom ? 'sfFrom' : 'sfTo';
+  const prevId = isFrom ? 'sfTo' : 'sfFrom';
+  const previewId = isFrom ? 'sfFromSignPreview' : 'sfToSignPreview';
+  const sel = $(selId); if(!sel) return;
+  const username = sel.value;
+  const name = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : username;
+  const sig = SIGNATURES[username];
+  const container = $(previewId);
+
+  if(username && sig){
+    container.innerHTML = `<div style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="color:#52c41a;font-size:12px;font-weight:600">✅ ${name} 的签名：</span>
+      <img src="${sig}" style="max-height:42px;border:1px solid #e8e8e8;border-radius:4px;background:#fff;padding:2px">
+      <span style="color:#999;font-size:11px">（来自该人账户，自动带出，不可篡改）</span>
+    </div>`;
+  } else if(username){
+    container.innerHTML = `<div style="background:#fff2f0;border:1px solid #ffccc7;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="color:#ff4d4f;font-size:12px;font-weight:600">⚠️ ${name} 尚未设置签名</span>
+      <span style="color:#999;font-size:11px">请到「账户管理」为其设置，或在下方画布现场补签</span>
+    </div>`;
+  } else {
+    container.innerHTML = '';
+  }
+  // 防止交班人和接班人选同一个人
+  const prevSel = $(prevId);
+  if(prevSel && prevSel.value && prevSel.value===username){
+    toast('⚠️ 交班人和接班人不能相同');
+    sel.value = '';
+    container.innerHTML = '';
+  }
+}
+
+// 将画布签名写入当前选中的接班人账户
+function applyCanvasSignToSelected(){
+  if(!_sigDone || !_sigDataUrl){toast('请先在画布上手写签名');return;}
+  const toSel = $('sfTo'); if(!toSel){toast('请先选择接班人');return;}
+  const username = toSel.value;
+  if(!username){toast('请先选择接班人');return;}
+  SIGNATURES[username] = _sigDataUrl;
+  LS('SIGNATURES',SIGNATURES);
+  onShiftPersonChange('to');
+  toast(`✅ 签名已写入 ${username} 的账户（仅本人可用）`);
+}
+
+function saveShift(){
+  const cartCode=$('sfCart').value;
+  const from=$('sfFrom').value;
+  const to=$('sfTo').value;
+  const status=$('sfStatus').value;
+  const remark=$('sfRemark').value.trim();
+  const abnormal=$('sfAbnormal').value.trim();
+
+  if(from===to){toast('交班人和接班人不能相同');return;}
+
+  // v4.9：签名从 SIGNATURES 字典按 username 严格读取
+  const fromSig = SIGNATURES[from] || '';
+  const toSig   = SIGNATURES[to]   || '';
+
+  if(!fromSig && !_sigDone){toast('⚠️ 交班人「'+from+'」尚未设置签名');return;}
+  if(!toSig && !_sigDone){toast('⚠️ 接班人「'+to+'」尚未设置签名');return;}
+
+  // 画布签名优先（现场补签场景）
+  let finalFromSig = fromSig, finalToSig = toSig;
+  if(_sigDone && _sigDataUrl){
+    if(!SIGNATURES[from]){ SIGNATURES[from] = _sigDataUrl; finalFromSig = _sigDataUrl; }
+    if(!SIGNATURES[to])  { SIGNATURES[to]   = _sigDataUrl; finalToSig   = _sigDataUrl; }
+    LS('SIGNATURES',SIGNATURES);
+  }
+
+  SHIFTS.push({
+    id:Date.now().toString(),
+    cartCode,from,to,
+    fromSign: finalFromSig,
+    toSign:   finalToSig,
+    time:Date.now(),status,remark,abnormal
+  });
+  LS('SHIFTS',SHIFTS);
+  closeM('mForm');
+  renderShifts();
+  toast('交接班记录已保存 ✅ 签名已严格隔离');
+}
+
+// v4.9 快速接班（权限控制）
+function quickShift(){
+  if(!U){toast('请先登录');return;}
+  const perm = getPerm();
+  if(!perm.canEdit){toast('⚠️ 您的角色无权执行接班操作');return;}
+  if(!SIGNATURES[U.username]){toast('您尚未设置电子签名，请先去账户管理设置');openSigModal(U.username,U.name);return;}
+  const lastShift=SHIFTS[SHIFTS.length-1];
+  const defaultCart=lastShift?lastShift.cartCode:CARTS[0]?.code;
+  $('mFormTitle').textContent='⚡ 快速接班';
+  $('mFormBody').innerHTML=`
+    <div style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:6px;padding:10px;font-size:12px;color:#555;margin-bottom:12px">
+      ✅ 系统将自动使用您的电子签名（${U.name}）完成接班登记。
+    </div>
+    <div class="fg"><label>抢救车</label><select class="fi" id="qsCart">${CARTS.map(c=>`<option value="${c.code}" ${c.code===defaultCart?'selected':''}>${c.code}（${c.name}）</option>`).join('')}</select></div>
+    <div class="fg"><label>交班人</label><select class="fi" id="qsFrom">${getUserOptions('')}</select></div>
+    <div class="fg"><label>接班人</label><input class="fi" value="${U.name}（${U.username}）✅已签名" readonly style="background:#f5f5f5;color:#52c41a;font-weight:500"></div>
+    <div class="fg"><label>备注</label><input class="fi" id="qsRemark" placeholder="接班情况备注"></div>
+    <div style="text-align:center;margin-top:8px"><img src="${SIGNATURES[U.username]}" style="max-height:50px;border:1px solid #e8e8e8;border-radius:6px;background:#fff;padding:4px"></div>
+  `;
+  $('mFormFoot').innerHTML=`<button class="btn btn-success" onclick="doQuickShift()">⚡ 确认接班</button><button class="btn" style="background:#eee" onclick="closeM('mForm')">取消</button>`;
+  openM('mForm');
+}
+
+function doQuickShift(){
+  const cartCode=$('qsCart').value;
+  const from=$('qsFrom').value;
+  if(from===U.username){toast('交班人和接班人不能相同');return;}
+  SHIFTS.push({
+    id:Date.now().toString(),
+    cartCode,from,to:U.username,
+    fromSign:SIGNATURES[from]||'',
+    toSign:SIGNATURES[U.username]||'',
+    time:Date.now(),status:'正常',remark:$('qsRemark').value.trim(),abnormal:''
+  });
+  LS('SHIFTS',SHIFTS);
+  closeM('mForm');
+  renderShifts();
+  toast('快速接班成功 ✅');
+}
+
+function delShift(id){
+  const perm = getPerm();
+  if(!perm.canDelete){toast('⚠️ 您的角色无权删除交接班记录');return;}
+  confirm('确定删除该交接班记录？',()=>{SHIFTS=SHIFTS.filter(s=>s.id!==id);LS('SHIFTS',SHIFTS);renderShifts();toast('已删除');});
+}
+
+/* ==================== v4.7 / v4.9 打印 / 导出 ==================== */
+
+function buildShiftPrintHTML(s){
+  const cart=CARTS.find(x=>x.code===s.cartCode);
+  const fromSign = s.fromSign || SIGNATURES[s.from] || '';
+  const toSign   = s.toSign   || SIGNATURES[s.to]   || '';
+  return `<div class="shift-print-item">
+    <h3>🚑 ${s.cartCode} - ${cart?.name||''}</h3>
+    <table>
+      <tr><td class="label">交接时间</td><td>${fmtDate(s.time)}</td></tr>
+      <tr><td class="label">交班人</td><td>${s.from}</td></tr>
+      <tr><td class="label">交班人签名</td><td>${fromSign?`<img src="${fromSign}" class="shift-sign">`:'<span style="color:#999">未签名</span>'}</td></tr>
+      <tr><td class="label">接班人</td><td>${s.to}</td></tr>
+      <tr><td class="label">接班人签名</td><td>${toSign?`<img src="${toSign}" class="shift-sign">`:'<span style="color:#999">未签名</span>'}</td></tr>
+      <tr><td class="label">总体状态</td><td>${s.status==='正常'?'<span style="color:#52c41a;font-weight:600">✅ 正常</span>':'<span style="color:#ff4d4f;font-weight:600">⚠️ 异常</span>'}</td></tr>
+      ${s.remark?`<tr><td class="label">备注</td><td>${s.remark}</td></tr>`:''}
+      ${s.abnormal?`<tr><td class="label">异常说明</td><td style="color:#ff4d4f">${s.abnormal}</td></tr>`:''}
+    </table>
+  </div>`;
+}
+
+function printSingleShift(id){
+  const s=SHIFTS.find(x=>x.id===id);if(!s)return;
+  $('printTime').textContent=new Date().toLocaleString('zh-CN');
+  const main=$('main');
+  const origHtml=main.innerHTML;
+  main.innerHTML=`<div class="print-header"><h1>小陈智能管理系统 v5.0</h1><div class="sub">交接班记录 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>${buildShiftPrintHTML(s)}<div class="print-footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>`;
+  window.print();
+  main.innerHTML=origHtml;
+  renderShifts();
+}
+
+function printShifts(){
+  const cartFilter=$('printCartFilter')?.value||'';
+  const statusFilter=$('printStatusFilter')?.value||'';
+  let list=SHIFTS.slice();
+  if(cartFilter)list=list.filter(s=>s.cartCode===cartFilter);
+  if(statusFilter)list=list.filter(s=>s.status===statusFilter);
+  if(!list.length){toast('当前筛选无记录可打印');return;}
+
+  $('printTime').textContent=new Date().toLocaleString('zh-CN');
+  const main=$('main');
+  const origHtml=main.innerHTML;
+  let html=`<div class="print-header"><h1>小陈智能管理系统 v5.0</h1><div class="sub">交接班记录汇总 · 共 ${list.length} 条 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>`;
+  list.slice().reverse().forEach((s,i)=>{html+=buildShiftPrintHTML(s);});
+  html+=`<div class="print-footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>`;
+  main.innerHTML=html;
+  window.print();
+  main.innerHTML=origHtml;
+  renderShifts();
+}
+
+function exportSingleShiftHTML(id){
+  const s=SHIFTS.find(x=>x.id===id);if(!s)return;
+  const cart=CARTS.find(x=>x.code===s.cartCode);
+  const fromSign=SIGNATURES[s.from]||s.fromSign||'';
+  const toSign=SIGNATURES[s.to]||s.toSign||'';
+  const html=`<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>交接班记录 ${s.cartCode} ${fmtDate(s.time)}</title>
+<style>
+body{font-family:"PingFang SC",Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#333;line-height:1.8}
+.header{text-align:center;padding-bottom:16px;border-bottom:2px solid #722ed1;margin-bottom:24px}
+.header h1{color:#722ed1;font-size:20pt;margin-bottom:4px}
+.header .sub{color:#666;font-size:11pt}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:12pt}
+td{padding:10px 14px;border:1px solid #ddd}
+.label{background:#f9f0ff;font-weight:600;width:140px;color:#555}
+.sign-img{max-height:60px;max-width:240px}
+.footer{margin-top:30px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#999;text-align:center}
+.status-ok{color:#52c41a;font-weight:600}
+.status-bad{color:#ff4d4f;font-weight:600}
+</style></head>
+<body>
+
+<!-- ==================== v5.0 云端同步状态栏 ==================== -->
+<div class="cloud-bar offline" id="cloudBar">
+  <div class="dot"></div>
+  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
+  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
+  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
+</div>
+
+<!-- v5.0 云端配置弹窗 -->
+<div class="modal" id="mCloud">
+  <div class="mc" style="max-width:540px">
+    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
+    <div class="mb">
+      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
+        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
+        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
+        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
+        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
+      </div>
+      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
+      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
+      <div class="fg"><label>同步模式</label>
+        <select class="fi" id="cfgMode">
+          <option value="cloud">☁️ 云端优先（推荐）</option>
+          <option value="local">💾 仅本地（离线）</option>
+          <option value="hybrid">🔄 云端 + 本地双写</option>
+        </select>
+      </div>
+      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
+      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
+-- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
+create table if not exists kv (
+  key text primary key,
+  val text not null,
+  updated_at timestamptz default now()
+);
+alter table kv enable row level security;
+create policy "public all" on kv for all to anon using (true) with check (true);
+-- 可选：开启实时订阅 --
+alter publication supabase_realtime add table kv;
+
+-- 导入初始数据（可选，系统首次启动会自动建）--
+-- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
+      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
+      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
+    </div>
+  </div>
+</div>
+<div class="header"><h1>🚑 抢救车交接班记录</h1><div class="sub">小陈智能管理系统 v5.0 · ${fmtDate(s.time)}</div></div>
+<table>
+<tr><td class="label">抢救车</td><td><strong>${s.cartCode}</strong> - ${cart?.name||''}</td></tr>
+<tr><td class="label">交接时间</td><td>${fmtDate(s.time)}</td></tr>
+<tr><td class="label">交班人</td><td>${s.from}</td></tr>
+<tr><td class="label">交班人签名</td><td>${fromSign?`<img src="${fromSign}" class="sign-img">`:'<span style="color:#999">未签名</span>'}</td></tr>
+<tr><td class="label">接班人</td><td>${s.to}</td></tr>
+<tr><td class="label">接班人签名</td><td>${toSign?`<img src="${toSign}" class="sign-img">`:'<span style="color:#999">未签名</span>'}</td></tr>
+<tr><td class="label">总体状态</td><td class="${s.status==='正常'?'status-ok':'status-bad'}">${s.status==='正常'?'✅ 正常':'⚠️ 异常'}</td></tr>
+${s.remark?`<tr><td class="label">备注</td><td>${s.remark}</td></tr>`:''}
+${s.abnormal?`<tr><td class="label">异常说明</td><td style="color:#ff4d4f">${s.abnormal}</td></tr>`:''}
+</table>
+<div class="footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>
+</body></html>`;
+  downloadFile(`交接班记录_${s.cartCode}_${new Date(s.time).toISOString().slice(0,10)}.html`,html,'text/html');
+  toast('文件已导出 ✅');
+}
+
+function exportShiftsHTML(){
+  const cartFilter=$('printCartFilter')?.value||'';
+  const statusFilter=$('printStatusFilter')?.value||'';
+  let list=SHIFTS.slice();
+  if(cartFilter)list=list.filter(s=>s.cartCode===cartFilter);
+  if(statusFilter)list=list.filter(s=>s.status===statusFilter);
+  if(!list.length){toast('当前筛选无记录可导出');return;}
+
+  let itemsHtml='';
+  list.slice().reverse().forEach(s=>{itemsHtml+=buildShiftPrintHTMLRaw(s);});
+  const html=`<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>交接班记录汇总</title>
+<style>
+body{font-family:"PingFang SC",Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#333;line-height:1.8}
+.header{text-align:center;padding-bottom:16px;border-bottom:2px solid #722ed1;margin-bottom:24px}
+.header h1{color:#722ed1;font-size:20pt}
+.shift-item{margin-bottom:20px;padding:16px;border:1px solid #ddd;border-radius:8px;page-break-inside:avoid}
+.shift-item h3{color:#722ed1;margin-bottom:10px;font-size:13pt}
+table{width:100%;border-collapse:collapse;font-size:11pt}
+td{padding:6px 12px;border:1px solid #eee}
+.label{background:#f9f0ff;font-weight:600;width:130px;color:#555}
+.sign-img{max-height:50px;max-width:200px}
+.footer{margin-top:30px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#999;text-align:center}
+</style></head>
+<body>
+
+<!-- ==================== v5.0 云端同步状态栏 ==================== -->
+<div class="cloud-bar offline" id="cloudBar">
+  <div class="dot"></div>
+  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
+  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
+  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
+</div>
+
+<!-- v5.0 云端配置弹窗 -->
+<div class="modal" id="mCloud">
+  <div class="mc" style="max-width:540px">
+    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
+    <div class="mb">
+      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
+        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
+        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
+        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
+        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
+      </div>
+      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
+      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
+      <div class="fg"><label>同步模式</label>
+        <select class="fi" id="cfgMode">
+          <option value="cloud">☁️ 云端优先（推荐）</option>
+          <option value="local">💾 仅本地（离线）</option>
+          <option value="hybrid">🔄 云端 + 本地双写</option>
+        </select>
+      </div>
+      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
+      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
+-- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
+create table if not exists kv (
+  key text primary key,
+  val text not null,
+  updated_at timestamptz default now()
+);
+alter table kv enable row level security;
+create policy "public all" on kv for all to anon using (true) with check (true);
+-- 可选：开启实时订阅 --
+alter publication supabase_realtime add table kv;
+
+-- 导入初始数据（可选，系统首次启动会自动建）--
+-- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
+      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
+      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
+    </div>
+  </div>
+</div>
+<div class="header"><h1>🤝 抢救车交接班记录汇总</h1><div>小陈智能管理系统 v5.0 · 共 ${list.length} 条 · ${new Date().toLocaleString('zh-CN')}</div></div>
+${itemsHtml}
+<div class="footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>
+</body></html>`;
+  downloadFile(`交接班记录汇总_${new Date().toISOString().slice(0,10)}.html`,html,'text/html');
+  toast(`导出 ${list.length} 条记录 ✅`);
+}
+
+function buildShiftPrintHTMLRaw(s){
+  const cart=CARTS.find(x=>x.code===s.cartCode);
+  const fromSign=SIGNATURES[s.from]||s.fromSign||'';
+  const toSign=SIGNATURES[s.to]||s.toSign||'';
+  return `<div class="shift-item">
+    <h3>🚑 ${s.cartCode} - ${cart?.name||''}（${fmtDate(s.time)}）</h3>
+    <table>
+      <tr><td class="label">交班人</td><td>${s.from}</td><td class="label">接班人</td><td>${s.to}</td></tr>
+      <tr><td class="label">交班签名</td><td>${fromSign?`<img src="${fromSign}" class="sign-img" title="交班人：${s.from}">`:'<span style="color:#999">未签名</span>'}</td><td class="label">接班签名</td><td>${toSign?`<img src="${toSign}" class="sign-img" title="接班人：${s.to}">`:'<span style="color:#999">未签名</span>'}</td></tr>
+      <tr><td class="label">状态</td><td colspan="3">${s.status==='正常'?'✅ 正常':'⚠️ 异常'}</td></tr>
+      ${s.remark?`<tr><td class="label">备注</td><td colspan="3">${s.remark}</td></tr>`:''}
+      ${s.abnormal?`<tr><td class="label">异常</td><td colspan="3" style="color:#ff4d4f">${s.abnormal}</td></tr>`:''}
+    </table>
+  </div>`;
+}
+
+// 通用文件下载
+function downloadFile(filename,content,mimeType){
+  const blob=new Blob([content],{type:mimeType});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+// 页面加载自动填充Supabase配置，无需手动弹窗填写
+(function(){
+  const fixedConfig = {
+    url: "https://tldijjneachwlpuyjdz.supabase.co",
+    key: "sb_publishable_kwn0dg2JiagMWy5MBFrrnw_uWgq7OUh",
+    mode: "cloud"
+  };
+  // 写入本地存储
+  localStorage.setItem('CLOUD_CFG', JSON.stringify(fixedConfig));
+  // 初始化连接
+  if(typeof supabase !== 'undefined'){
+    _cloudMode = fixedConfig.mode;
+    initSupabase(fixedConfig.url, fixedConfig.key);
+    _cloudInited = true;
+    if(_cloudReady){
+      setCloudStatus('syncing','⏳ 正在从云端同步抢救车数据...');
+      initCloudSync();
+    }else{
+      setCloudStatus('offline','⚠️ 云端连接失败，切换本地模式');
+    }
+  }
+})();
 </script>
 </body>
 </html>
