@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>小陈智能管理系统 v5.0（Supabase 共用版）</title>
+<title>小陈智能管理系统 v4.9（药品基数管理版）</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:"PingFang SC","Helvetica Neue",Arial,sans-serif}
 body{background:#f0f2f5;color:#333;height:100vh;overflow:hidden;font-size:14px}
@@ -243,23 +243,6 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 
 <!-- v4.9 真 OCR 引擎（Tesseract.js v5，纯前端） -->
 <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-/* ==================== v5.0 云端同步状态栏 ==================== */
-.cloud-bar{display:flex;align-items:center;gap:10px;padding:6px 16px;font-size:12px;background:#f0f5ff;border-bottom:1px solid #d6e4ff;color:#333;z-index:101;min-height:36px}
-.cloud-bar .dot{width:8px;height:8px;border-radius:50%;background:#bbb;flex-shrink:0;transition:background .3s}
-.cloud-bar.online .dot{background:#52c41a;box-shadow:0 0 6px #52c41a}
-.cloud-bar.offline .dot{background:#ff4d4f}
-.cloud-bar.syncing .dot{background:#faad14;animation:cloudPulse 1s infinite}
-@keyframes cloudPulse{0%,100%{opacity:1}50%{opacity:.4}}
-.cloud-bar .text{flex:1}
-.cloud-bar button{font-size:12px;padding:4px 12px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;cursor:pointer;color:#555;transition:all .2s}
-.cloud-bar button:hover{background:#f5f5f5}
-.cloud-bar button.primary{background:#722ed1;color:#fff;border-color:#722ed1}
-.cloud-bar button.primary:hover{background:#5b25b0}
-.cloud-bar button:disabled{opacity:.5;cursor:not-allowed}
-</style>
 <style>
 .ocr-progress{margin:10px 0;padding:10px;background:#f0f5ff;border:1px solid #d6e4ff;border-radius:8px;font-size:13px;color:#333}
 .ocr-progress .bar{height:6px;background:#e6e6e6;border-radius:3px;overflow:hidden;margin-top:6px}
@@ -291,59 +274,6 @@ input.edit-input{width:80px;padding:4px 8px;border:1px solid #722ed1;border-radi
 </style>
 </head>
 <body>
-
-<!-- ==================== v5.0 云端同步状态栏 ==================== -->
-<div class="cloud-bar offline" id="cloudBar">
-  <div class="dot"></div>
-  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
-  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
-  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
-</div>
-
-<!-- v5.0 云端配置弹窗 -->
-<div class="modal" id="mCloud">
-  <div class="mc" style="max-width:540px">
-    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
-    <div class="mb">
-      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
-        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
-        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
-        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
-        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
-      </div>
-      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
-      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
-      <div class="fg"><label>同步模式</label>
-        <select class="fi" id="cfgMode">
-          <option value="cloud">☁️ 云端优先（推荐）</option>
-          <option value="local">💾 仅本地（离线）</option>
-          <option value="hybrid">🔄 云端 + 本地双写</option>
-        </select>
-      </div>
-      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
-      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
--- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
-create table if not exists kv (
-  key text primary key,
-  val text not null,
-  updated_at timestamptz default now()
-);
-alter table kv enable row level security;
-create policy "public all" on kv for all to anon using (true) with check (true);
--- 可选：开启实时订阅 --
-alter publication supabase_realtime add table kv;
-
--- 导入初始数据（可选，系统首次启动会自动建）--
--- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
-      </div>
-    </div>
-    <div class="mf">
-      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
-      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
-      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
-    </div>
-  </div>
-</div>
 
 <!-- ==================== 登录/注册页 ==================== -->
 <div id="loginPage">
@@ -384,7 +314,7 @@ alter publication supabase_realtime add table kv;
     <button class="btn btn-primary" onclick="doReg()">提 交 注 册</button>
     <div class="switch-link">已有账号？<a onclick="swTab('login')">返回登录</a></div>
   </div>
-  <div class="footer-text">© 2026 小陈智能管理系统 v5.0 | Supabase 共用版</div>
+  <div class="footer-text">© 2026 小陈智能管理系统 v4.9 | 药品基数管理版</div>
   <div id="bootStatus" style="text-align:center;font-size:12px;color:#aaa;margin-top:8px">⏳ 系统初始化中…（首次加载约 1-3 秒）</div>
 </div>
 </div>
@@ -788,11 +718,11 @@ alter publication supabase_realtime add table kv;
 
 <!-- 打印隐藏页眉页脚模板 -->
 <div class="print-header">
-  <h1>小陈智能管理系统 v5.0</h1>
+  <h1>小陈智能管理系统 v4.9</h1>
   <div class="sub">交接班记录 · 打印时间：<span id="printTime"></span></div>
 </div>
 <div class="print-footer">
-  本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。
+  本记录由「小陈智能管理系统 v4.9」自动生成，含电子签名，具有法律效力。
 </div>
 <div class="page-num">第 <span id="pageNum">1</span> 页</div>
 
@@ -800,7 +730,7 @@ alter publication supabase_realtime add table kv;
 
 <script>
 /* ==================== v4.9 全局状态 ==================== */
-const DATA_VERSION = '5.0';  // v4.9 数据版本号，用于迁移检测
+const DATA_VERSION = '4.9';  // v4.9 数据版本号，用于迁移检测
 let U=null;
 const AID='5180', APWD='5180', D7=7*24*3600*1000;
 let DRUGS=[], MATS=[], EQUIPS=[], CARTS=[], RECORDS=[], SEALS=[], USERS=[], PENDING=[], CHECKS=[], OCR=[];
@@ -1004,301 +934,7 @@ function initData(){
 }
 
 /* ==================== 工具函数 ==================== */
-/* ==================== v5.0 存储层（localStorage + Supabase 叠加） ==================== */
-let _sbClient = null;
-let _cloudMode = 'local';
-let _cloudOnline = false;
-let _cloudReady = false;
-let _cloudInited = false;
-
-// 启动：从 localStorage 恢复云端配置
-(function loadCloudConfig(){
-  try{
-    const c = JSON.parse(localStorage.getItem('CLOUD_CFG')||'null');
-    if(c && c.url && c.key){
-      _cloudMode = c.mode || 'cloud';
-      initSupabase(c.url, c.key);
-    }
-  }catch(e){ console.warn('[v5.0] 读取云端配置失败', e); }
-  _cloudInited = true;
-  // 异步尝试连接
-  if(_cloudReady) {
-    setCloudStatus('syncing','⏳ 正在从云端同步...');
-    initCloudSync();
-  } else {
-    setCloudStatus('offline','⚠️ 未连接云端 — 当前为本地模式');
-  }
-})();
-
-function initSupabase(url, key){
-  try{
-    _sbClient = supabase.createClient(url, key);
-    _cloudReady = true;
-    console.log('[v5.0] Supabase client created');
-  }catch(e){
-    console.error('[v5.0] Supabase init failed', e);
-    _sbClient = null;
-    _cloudReady = false;
-  }
-}
-
-// 同步 LS（保持原 v4.9 行为不变）
-function LS(k,v){
-  if(v===undefined) return localStorage.getItem(k);
-  localStorage.setItem(k, typeof v==='string' ? v : JSON.stringify(v));
-  // 叠加：异步同步到云端（不阻塞）
-  cloudWrite(k, typeof v==='string' ? v : JSON.stringify(v));
-  return;
-}
-
-// 云端写入（fire-and-forget）
-function cloudWrite(k, val){
-  if(!_cloudReady || !_sbClient || _cloudMode==='local') return;
-  _sbClient
-    .from('kv')
-    .upsert({ key:k, val:val, updated_at:new Date().toISOString() })
-    .then(({error})=>{
-      if(error) console.warn('[v5.0] 云端写入失败', k, error.message);
-    })
-    .catch(e=>console.warn('[v5.0] 云端写入异常', e));
-}
-
-// 云端读取
-async function cloudRead(k){
-  if(!_cloudReady || !_sbClient) return null;
-  try{
-    const { data, error } = await _sbClient
-      .from('kv').select('val').eq('key', k).single();
-    if(error) throw error;
-    return data ? data.val : null;
-  }catch(e){ return null; }
-}
-
-// 批量从云端加载全部数据 → 写入 localStorage → 触发刷新
-async function initCloudSync(){
-  if(!_cloudReady || !_sbClient) return false;
-  try{
-    const { data, error } = await _sbClient.from('kv').select('key,val');
-    if(error) throw error;
-    let count = 0;
-    if(data && data.length){
-      data.forEach(row=>{
-        try{ localStorage.setItem(row.key, row.val); count++; }catch(e){}
-      });
-      console.log('[v5.0] 从云端加载了', count, '条数据');
-      // 同步到内存
-      syncCloudToMemory();
-      setCloudStatus('online', `☁️ 云端已连接 · 已同步 ${count} 条数据`);
-      // 刷新所有视图
-      refreshAllViews();
-      return true;
-    }
-  }catch(e){
-    console.warn('[v5.0] 批量加载失败', e);
-  }
-  setCloudStatus('offline','⚠️ 云端连接失败 — 使用本地数据');
-  return false;
-}
-
-// 云端数据 → 内存变量
-function syncCloudToMemory(){
-  try{
-    if(localStorage.getItem('cfg')) cfg = JSON.parse(localStorage.getItem('cfg'));
-    if(localStorage.getItem('USERS')) USERS = JSON.parse(localStorage.getItem('USERS'));
-    if(localStorage.getItem('PENDING')) PENDING = JSON.parse(localStorage.getItem('PENDING'));
-    if(localStorage.getItem('TEMPLATES')) TEMPLATES = JSON.parse(localStorage.getItem('TEMPLATES'));
-    if(localStorage.getItem('CART_TPL_MAP')) CART_TPL_MAP = JSON.parse(localStorage.getItem('CART_TPL_MAP'));
-    if(localStorage.getItem('CARTS')) CARTS = JSON.parse(localStorage.getItem('CARTS'));
-    if(localStorage.getItem('DRUGS')) DRUGS = JSON.parse(localStorage.getItem('DRUGS'));
-    if(localStorage.getItem('MATS')) MATS = JSON.parse(localStorage.getItem('MATS'));
-    if(localStorage.getItem('EQUIPS')) EQUIPS = JSON.parse(localStorage.getItem('EQUIPS'));
-    if(localStorage.getItem('RECORDS')) RECORDS = JSON.parse(localStorage.getItem('RECORDS'));
-    if(localStorage.getItem('SEALS')) SEALS = JSON.parse(localStorage.getItem('SEALS'));
-    if(localStorage.getItem('CHECKS')) CHECKS = JSON.parse(localStorage.getItem('CHECKS'));
-    if(localStorage.getItem('SHIFTS')) SHIFTS = JSON.parse(localStorage.getItem('SHIFTS'));
-    if(localStorage.getItem('SIGNATURES')) SIGNATURES = JSON.parse(localStorage.getItem('SIGNATURES'));
-    if(localStorage.getItem('BASE_TABLES')) BASE_TABLES = JSON.parse(localStorage.getItem('BASE_TABLES'));
-  }catch(e){ console.warn('[v5.0] syncCloudToMemory 部分失败', e); }
-}
-
-// 刷新所有可见视图
-function refreshAllViews(){
-  try{
-    renderDashboard();
-    if(document.getElementById('sec-drug') && !document.getElementById('sec-drug').classList.contains('hidden')) renderDrug();
-    if(document.getElementById('sec-material') && !document.getElementById('sec-material').classList.contains('hidden')) renderMaterial();
-    if(document.getElementById('sec-equip') && !document.getElementById('sec-equip').classList.contains('hidden')) renderEquip();
-    if(document.getElementById('sec-cart') && !document.getElementById('sec-cart').classList.contains('hidden')) renderCarts();
-    if(document.getElementById('sec-record') && !document.getElementById('sec-record').classList.contains('hidden')) renderRecords();
-    if(document.getElementById('sec-seal') && !document.getElementById('sec-seal').classList.contains('hidden')) renderSeals();
-    if(document.getElementById('sec-shift') && !document.getElementById('sec-shift').classList.contains('hidden')) renderShifts();
-    if(document.getElementById('sec-report') && !document.getElementById('sec-report').classList.contains('hidden')) renderReport();
-    if(document.getElementById('sec-template') && !document.getElementById('sec-template').classList.contains('hidden')) renderTemplates();
-    if(document.getElementById('sec-account') && !document.getElementById('sec-account').classList.contains('hidden')) renderAccount();
-    if(document.getElementById('sec-setting') && !document.getElementById('sec-setting').classList.contains('hidden')) {/* settings has no render */}
-  }catch(e){ console.warn('[v5.0] refreshAllViews', e); }
-}
-
-// 状态栏
-function setCloudStatus(state, text){
-  const bar = document.getElementById('cloudBar');
-  const txt = document.getElementById('cloudText');
-  const btn = document.getElementById('btnCloudToggle');
-  if(!bar) return;
-  bar.className = 'cloud-bar ' + state;
-  if(txt) txt.textContent = text;
-  if(btn){
-    if(state==='online'){ btn.textContent='☁️ 云端在线'; btn.disabled=true; }
-    else { btn.textContent='启用云端'; btn.disabled=false; }
-  }
-}
-
-// 测试连接
-async function testCloudConnection(){
-  const url = document.getElementById('cfgUrl').value.trim();
-  const key = document.getElementById('cfgKey').value.trim();
-  const out = document.getElementById('cloudTestResult');
-  if(!url || !key){ out.innerHTML='<span style="color:#ff4d4f">请先填写 URL 和 Key</span>'; return; }
-  out.innerHTML='<span style="color:#faad14">⏳ 测试中...</span>';
-  try{
-    const testClient = supabase.createClient(url, key);
-    const { data, error } = await testClient.from('kv').select('key').limit(1);
-    if(error) throw error;
-    out.innerHTML='<span style="color:#52c41a">✅ 连接成功！表结构正常。</span>';
-  }catch(e){
-    out.innerHTML='<span style="color:#ff4d4f">❌ 连接失败：'+ (e.message||e) +'<br>请检查 URL/Key，并确认已执行 SQL 建表脚本。</span>';
-  }
-}
-
-// 显示/隐藏 SQL 帮助
-function showSQLHelp(){
-  const el = document.getElementById('sqlHelp');
-  if(el) el.style.display = (el.style.display==='none') ? 'block' : 'none';
-}
-
-// 保存配置
-function saveCloudConfig(){
-  const url = document.getElementById('cfgUrl').value.trim();
-  const key = document.getElementById('cfgKey').value.trim();
-  const mode = document.getElementById('cfgMode').value;
-  if(!url || !key){ toast('请填写完整的 URL 和 Key'); return; }
-  localStorage.setItem('CLOUD_CFG', JSON.stringify({url, key, mode}));
-  _cloudMode = mode;
-  initSupabase(url, key);
-  setCloudStatus('syncing','⏳ 正在从云端同步...');
-  initCloudSync().then(ok=>{
-    if(ok){
-      toast('✅ 云端已启用，数据已同步');
-      closeM('mCloud');
-      // 重新初始化
-      initData();
-      renderDashboard();
-      subscribeRealtime();
-    } else {
-      setCloudStatus('offline','⚠️ 云端连接失败 — 使用本地模式');
-      toast('⚠️ 云端连接失败，使用本地模式');
-      closeM('mCloud');
-    }
-  });
-}
-
-// 切换云端/本地
-function toggleCloudMode(){
-  if(_cloudReady){
-    _cloudMode = (_cloudMode==='cloud'||_cloudMode==='hybrid') ? 'local' : 'cloud';
-    localStorage.setItem('CLOUD_CFG', JSON.stringify({
-      url: _sbClient.supabaseUrl, key: _sbClient.supabaseKey, mode: _cloudMode
-    }));
-    toast(`已切换为 ${_cloudMode==='cloud'?'☁️ 云端':'💾 本地'} 模式`);
-    if(_cloudMode==='cloud'||_cloudMode==='hybrid'){
-      initCloudSync(); subscribeRealtime();
-    } else {
-      unsubscribeRealtime();
-      setCloudStatus('offline','💾 本地模式（云端已暂停）');
-    }
-  } else {
-    openCloudConfig();
-  }
-}
-
-function openCloudConfig(){
-  try{
-    const c = JSON.parse(localStorage.getItem('CLOUD_CFG')||'null');
-    if(c){
-      document.getElementById('cfgUrl').value = c.url||'';
-      document.getElementById('cfgKey').value = c.key||'';
-      document.getElementById('cfgMode').value = c.mode||'local';
-    }
-  }catch(e){}
-  openM('mCloud');
-}
-
-// ==================== v5.0 Realtime 实时订阅 ====================
-let _realtimeChannel = null;
-function subscribeRealtime(){
-  if(!_cloudReady || !_sbClient) return;
-  try{
-    if(_realtimeChannel) _realtimeChannel.unsubscribe();
-    const channel = _sbClient
-      .channel('kv-changes')
-      .on('postgres_changes', { event:'*', schema:'public', table:'kv' }, payload=>{
-        console.log('[v5.0] 实时更新:', payload);
-        if(payload.new && payload.new.key){
-          try{ localStorage.setItem(payload.new.key, payload.new.val); }catch(e){}
-          // 同步到内存 + 防抖刷新
-          debouncedRefresh(payload.new.key);
-        }
-      })
-      .subscribe();
-    _realtimeChannel = channel;
-    console.log('[v5.0] Realtime subscribed');
-  }catch(e){ console.warn('[v5.0] Realtime failed', e); }
-}
-function unsubscribeRealtime(){
-  if(_realtimeChannel){ _realtimeChannel.unsubscribe(); _realtimeChannel=null; }
-}
-
-let _refreshTimer = null;
-function debouncedRefresh(key){
-  clearTimeout(_refreshTimer);
-  _refreshTimer = setTimeout(()=>{
-    // 同步该 key 到内存
-    try{
-      const raw = localStorage.getItem(key);
-      if(raw){
-        if(key==='DRUGS') DRUGS = JSON.parse(raw);
-        else if(key==='MATS') MATS = JSON.parse(raw);
-        else if(key==='CARTS') CARTS = JSON.parse(raw);
-        else if(key==='USERS') USERS = JSON.parse(raw);
-        else if(key==='PENDING') PENDING = JSON.parse(raw);
-        else if(key==='TEMPLATES') TEMPLATES = JSON.parse(raw);
-        else if(key==='CART_TPL_MAP') CART_TPL_MAP = JSON.parse(raw);
-        else if(key==='EQUIPS') EQUIPS = JSON.parse(raw);
-        else if(key==='RECORDS') RECORDS = JSON.parse(raw);
-        else if(key==='SEALS') SEALS = JSON.parse(raw);
-        else if(key==='CHECKS') CHECKS = JSON.parse(raw);
-        else if(key==='SHIFTS') SHIFTS = JSON.parse(raw);
-        else if(key==='SIGNATURES') SIGNATURES = JSON.parse(raw);
-        else if(key==='BASE_TABLES') BASE_TABLES = JSON.parse(raw);
-        else if(key==='cfg') cfg = JSON.parse(raw);
-      }
-    }catch(e){}
-    // 刷新对应视图
-    if(key==='DRUGS'||key==='MATS'){ if($('sec-drug')&&!$('sec-drug').classList.contains('hidden')) renderDrug(); if($('sec-material')&&!$('sec-material').classList.contains('hidden')) renderMaterial(); }
-    if(key==='CARTS'){ renderCartStatus(); }
-    if(key==='SHIFTS'){ renderShifts(); renderRecentShifts(); }
-    if(key==='USERS'||key==='PENDING'||key==='SIGNATURES'){ if($('sec-account')&&!$('sec-account').classList.contains('hidden')) renderAccount(); }
-    if(key==='TEMPLATES'||key==='BASE_TABLES'){ if($('sec-template')&&!$('sec-template').classList.contains('hidden')) renderTemplates(); }
-    updateKpi();
-  }, 300);
-}
-
-// 页面卸载时清理
-window.addEventListener('beforeunload', ()=>{
-  unsubscribeRealtime();
-  cleanupOCR();
-});
-
+function LS(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));}
 function $(id){return document.getElementById(id);}
 function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
 function openM(id){$(id).classList.add('show');}
@@ -2443,7 +2079,7 @@ function printSingleShift(id){
   $('printTime').textContent=new Date().toLocaleString('zh-CN');
   const main=$('main');
   const origHtml=main.innerHTML;
-  main.innerHTML=`<div class="print-header"><h1>小陈智能管理系统 v5.0</h1><div class="sub">交接班记录 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>${buildShiftPrintHTML(s)}<div class="print-footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>`;
+  main.innerHTML=`<div class="print-header"><h1>小陈智能管理系统 v4.9</h1><div class="sub">交接班记录 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>${buildShiftPrintHTML(s)}<div class="print-footer">本记录由「小陈智能管理系统 v4.9」自动生成，含电子签名，具有法律效力。</div>`;
   window.print();
   main.innerHTML=origHtml;
   renderShifts();
@@ -2460,9 +2096,9 @@ function printShifts(){
   $('printTime').textContent=new Date().toLocaleString('zh-CN');
   const main=$('main');
   const origHtml=main.innerHTML;
-  let html=`<div class="print-header"><h1>小陈智能管理系统 v5.0</h1><div class="sub">交接班记录汇总 · 共 ${list.length} 条 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>`;
+  let html=`<div class="print-header"><h1>小陈智能管理系统 v4.9</h1><div class="sub">交接班记录汇总 · 共 ${list.length} 条 · 打印时间：${new Date().toLocaleString('zh-CN')}</div></div>`;
   list.slice().reverse().forEach((s,i)=>{html+=buildShiftPrintHTML(s);});
-  html+=`<div class="print-footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>`;
+  html+=`<div class="print-footer">本记录由「小陈智能管理系统 v4.9」自动生成，含电子签名，具有法律效力。</div>`;
   main.innerHTML=html;
   window.print();
   main.innerHTML=origHtml;
@@ -2491,60 +2127,7 @@ td{padding:10px 14px;border:1px solid #ddd}
 .status-bad{color:#ff4d4f;font-weight:600}
 </style></head>
 <body>
-
-<!-- ==================== v5.0 云端同步状态栏 ==================== -->
-<div class="cloud-bar offline" id="cloudBar">
-  <div class="dot"></div>
-  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
-  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
-  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
-</div>
-
-<!-- v5.0 云端配置弹窗 -->
-<div class="modal" id="mCloud">
-  <div class="mc" style="max-width:540px">
-    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
-    <div class="mb">
-      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
-        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
-        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
-        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
-        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
-      </div>
-      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
-      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
-      <div class="fg"><label>同步模式</label>
-        <select class="fi" id="cfgMode">
-          <option value="cloud">☁️ 云端优先（推荐）</option>
-          <option value="local">💾 仅本地（离线）</option>
-          <option value="hybrid">🔄 云端 + 本地双写</option>
-        </select>
-      </div>
-      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
-      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
--- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
-create table if not exists kv (
-  key text primary key,
-  val text not null,
-  updated_at timestamptz default now()
-);
-alter table kv enable row level security;
-create policy "public all" on kv for all to anon using (true) with check (true);
--- 可选：开启实时订阅 --
-alter publication supabase_realtime add table kv;
-
--- 导入初始数据（可选，系统首次启动会自动建）--
--- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
-      </div>
-    </div>
-    <div class="mf">
-      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
-      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
-      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
-    </div>
-  </div>
-</div>
-<div class="header"><h1>🚑 抢救车交接班记录</h1><div class="sub">小陈智能管理系统 v5.0 · ${fmtDate(s.time)}</div></div>
+<div class="header"><h1>🚑 抢救车交接班记录</h1><div class="sub">小陈智能管理系统 v4.9 · ${fmtDate(s.time)}</div></div>
 <table>
 <tr><td class="label">抢救车</td><td><strong>${s.cartCode}</strong> - ${cart?.name||''}</td></tr>
 <tr><td class="label">交接时间</td><td>${fmtDate(s.time)}</td></tr>
@@ -2556,7 +2139,7 @@ alter publication supabase_realtime add table kv;
 ${s.remark?`<tr><td class="label">备注</td><td>${s.remark}</td></tr>`:''}
 ${s.abnormal?`<tr><td class="label">异常说明</td><td style="color:#ff4d4f">${s.abnormal}</td></tr>`:''}
 </table>
-<div class="footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>
+<div class="footer">本记录由「小陈智能管理系统 v4.9」自动生成，含电子签名，具有法律效力。</div>
 </body></html>`;
   downloadFile(`交接班记录_${s.cartCode}_${new Date(s.time).toISOString().slice(0,10)}.html`,html,'text/html');
   toast('文件已导出 ✅');
@@ -2588,62 +2171,9 @@ td{padding:6px 12px;border:1px solid #eee}
 .footer{margin-top:30px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#999;text-align:center}
 </style></head>
 <body>
-
-<!-- ==================== v5.0 云端同步状态栏 ==================== -->
-<div class="cloud-bar offline" id="cloudBar">
-  <div class="dot"></div>
-  <div class="text" id="cloudText">⚠️ 未连接云端 — 当前为本地模式（数据仅存本浏览器）</div>
-  <button id="btnCloudConfig" onclick="openCloudConfig()">⚙️ 配置云端</button>
-  <button id="btnCloudToggle" class="primary" onclick="toggleCloudMode()">启用云端</button>
-</div>
-
-<!-- v5.0 云端配置弹窗 -->
-<div class="modal" id="mCloud">
-  <div class="mc" style="max-width:540px">
-    <div class="mh"><div class="mt">☁️ 配置 Supabase 云端（v5.0）</div><button class="mx" onclick="closeM('mCloud')">×</button></div>
-    <div class="mb">
-      <div style="background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#444;line-height:1.8">
-        💡 <b>为什么要用云端？</b> 配置后，所有设备（护士站电脑、平板、手机）访问同一网址，看到的是<b>同一份实时数据</b>。<br>
-        💡 <b>免费额度：</b> 500MB 数据库 / 2 个项目 / 无限 API 请求，科室级使用绰绰有余。<br>
-        💡 <b>建表 SQL：</b> <a href="#" onclick="showSQLHelp();return false;" style="color:#722ed1">点此查看一键建表脚本</a> → 在 Supabase SQL Editor 执行即可。<br>
-        <a href="https://supabase.com" target="_blank" style="color:#722ed1">👉 没有账号？去 supabase.com 免费注册</a>
-      </div>
-      <div class="fg"><label>Supabase URL</label><input class="fi" id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
-      <div class="fg"><label>Anon Public Key</label><input class="fi" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIs..."></div>
-      <div class="fg"><label>同步模式</label>
-        <select class="fi" id="cfgMode">
-          <option value="cloud">☁️ 云端优先（推荐）</option>
-          <option value="local">💾 仅本地（离线）</option>
-          <option value="hybrid">🔄 云端 + 本地双写</option>
-        </select>
-      </div>
-      <div id="cloudTestResult" style="margin-top:8px;font-size:12px;color:#666;min-height:20px"></div>
-      <div id="sqlHelp" style="display:none;margin-top:10px;background:#1e1e2e;color:#a5d6ff;padding:12px;border-radius:px;font-size:11px;font-family:monospace;line-height:1.6;overflow-x:auto;white-space:pre-wrap">
--- 在 Supabase SQL Editor 中执行以下脚本（一键建表）--
-create table if not exists kv (
-  key text primary key,
-  val text not null,
-  updated_at timestamptz default now()
-);
-alter table kv enable row level security;
-create policy "public all" on kv for all to anon using (true) with check (true);
--- 可选：开启实时订阅 --
-alter publication supabase_realtime add table kv;
-
--- 导入初始数据（可选，系统首次启动会自动建）--
--- 你也可以先用 v4.9 的「导出全部数据备份」得到 JSON，再手动导入 --
-      </div>
-    </div>
-    <div class="mf">
-      <button class="btn btn-info btn-sm" onclick="testCloudConnection()">🔍 测试连接</button>
-      <button class="btn btn-success" onclick="saveCloudConfig()">💾 保存并启用</button>
-      <button class="btn" style="background:#eee" onclick="closeM('mCloud')">取消</button>
-    </div>
-  </div>
-</div>
-<div class="header"><h1>🤝 抢救车交接班记录汇总</h1><div>小陈智能管理系统 v5.0 · 共 ${list.length} 条 · ${new Date().toLocaleString('zh-CN')}</div></div>
+<div class="header"><h1>🤝 抢救车交接班记录汇总</h1><div>小陈智能管理系统 v4.9 · 共 ${list.length} 条 · ${new Date().toLocaleString('zh-CN')}</div></div>
 ${itemsHtml}
-<div class="footer">本记录由「小陈智能管理系统 v5.0」自动生成，含电子签名，具有法律效力。</div>
+<div class="footer">本记录由「小陈智能管理系统 v4.9」自动生成，含电子签名，具有法律效力。</div>
 </body></html>`;
   downloadFile(`交接班记录汇总_${new Date().toISOString().slice(0,10)}.html`,html,'text/html');
   toast(`导出 ${list.length} 条记录 ✅`);
@@ -2675,28 +2205,6 @@ function downloadFile(filename,content,mimeType){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-// 页面加载自动填充Supabase配置，无需手动弹窗填写
-(function(){
-  const fixedConfig = {
-    url: "https://tldijjneachwlpuyjdz.supabase.co",
-    key: "sb_publishable_kwn0dg2JiagMWy5MBFrrnw_uWgq7OUh",
-    mode: "cloud"
-  };
-  // 写入本地存储
-  localStorage.setItem('CLOUD_CFG', JSON.stringify(fixedConfig));
-  // 初始化连接
-  if(typeof supabase !== 'undefined'){
-    _cloudMode = fixedConfig.mode;
-    initSupabase(fixedConfig.url, fixedConfig.key);
-    _cloudInited = true;
-    if(_cloudReady){
-      setCloudStatus('syncing','⏳ 正在从云端同步抢救车数据...');
-      initCloudSync();
-    }else{
-      setCloudStatus('offline','⚠️ 云端连接失败，切换本地模式');
-    }
-  }
-})();
 </script>
 </body>
 </html>
